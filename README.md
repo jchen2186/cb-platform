@@ -26,5 +26,7 @@ export FLASK_APP=cbapp
 python -m flask run
 ```
 
-## Updating the Requirements
+Updating the Requirements
+```python
 pip freeze > requirements.txt
+```
