@@ -1,6 +1,10 @@
 from flask import render_template
 from flask import request
-from cbapp import app
+if __name__ != '__main__':
+	from cbapp import app
+else:
+	from flask import Flask
+	app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -13,3 +17,6 @@ def login():
 @app.route('/chorusinfo/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
+
+if __name__ == '__main__':
+	app.run(debug=True)
