@@ -36,3 +36,14 @@ class TestCBAppUnit(unittest.TestCase):
 			call_args = render_template.call_args
 			filename = call_args[0][0]
 			self.assertEqual(filename, "index.html")
+
+	def test_cbinfo_get_cbinfo_template(self):
+		with patch.multiple("cbapp.routes",
+							request=DEFAULT,
+							render_template=DEFAULT) as mock_functions:
+			cbapp.routes.chorusInfo()
+			render_template = mock_functions["render_template"]
+			self.assertTrue(render_template.called)
+			call_args = render_template.call_args
+			file_name = call_args[0][0]
+			self.assertEqual(file_name, "chorusinfo.html")
