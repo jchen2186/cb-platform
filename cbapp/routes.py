@@ -1,7 +1,7 @@
 from flask import render_template
 from flask import request
 from cbapp import app
-from forms import SignupForm, LoginForm
+from cbapp.forms import SignupForm, LoginForm
 
 if __name__ != '__main__':
 	from cbapp import app

@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-# from models import db
+from cbapp.models import db
 
 app = Flask(__name__)       # pylint: disable=invalid-name
 
