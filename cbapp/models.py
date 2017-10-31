@@ -87,6 +87,8 @@ class Entry(db.Model):
   """
   __tablename__ = 'entries'
   id = db.Column(db.Integer, primary_key = True)
+  title = db.Column(db.String(200))
+  description = db.Column(db.String(100))
   submission_date = db.Column(db.DateTime) 
   owners = db.relationship(
     'User', 

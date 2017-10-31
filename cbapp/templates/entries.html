@@ -16,6 +16,14 @@
 
 <section class="section">
 	{% for entry in entries %}
+		<article class="media">
+		<div class="media-content">
+			<div class="content">
+				<h2> entry.title </h2>
+				<p> entry.owners </p>
+				<p> entry.description </p>
+			</div>
+		</div>
 	{% end for%}
 </section>
 
