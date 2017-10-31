@@ -35,5 +35,4 @@ class TestCBAppUnit(unittest.TestCase):
 			# Check if the template rendered is index.html
 			call_args = render_template.call_args
 			template_filename = call_args[0][0]
-			self.assertEqual(template_name, "index.html")
 			self.assertEqual(template_filename, "index.html")
