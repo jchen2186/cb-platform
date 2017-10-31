@@ -11,9 +11,9 @@ class TestCBAppUnit(unittest.TestCase):
 	def test_login_gets_login_template(self):
 		with patch.multiple("cbapp.routes",
 							request=DEFAULT,
-							render_template=DEFAULT) as mock_funcs:
+							render_template=DEFAULT) as mock_functions:
 			cbapp.routes.login()
-			render_template = mock_funcs["render_template"]
+			render_template = mock_functions["render_template"]
 			#makes sure we are rendering a template on the login route
 			self.assertTrue(render_template.called)
 			call_args = render_template.call_args
@@ -34,5 +34,5 @@ class TestCBAppUnit(unittest.TestCase):
 
 			# Check if the template rendered is index.html
 			call_args = render_template.call_args
-			template_filename = call_args[0][0]
-			self.assertEqual(template_filename, "index.html")
+			filename = call_args[0][0]
+			self.assertEqual(filename, "index.html")
