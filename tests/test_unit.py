@@ -28,7 +28,6 @@ class TestCBAppUnit(unittest.TestCase):
 							request=DEFAULT,
 							render_template=DEFAULT) as mock_functions:
 			cbapp.routes.index()
-			
 			# Check if render_template is called when index route is visited
 			render_template = mock_functions['render_template']
 			self.assertTrue(render_template.called)
@@ -37,3 +36,4 @@ class TestCBAppUnit(unittest.TestCase):
 			call_args = render_template.call_args
 			template_filename = call_args[0][0]
 			self.assertEqual(template_name, "index.html")
+			self.assertEqual(template_filename, "index.html")

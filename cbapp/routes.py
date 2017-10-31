@@ -3,6 +3,12 @@ from flask import request
 from cbapp import app
 from forms import SignupForm, LoginForm
 
+if __name__ != '__main__':
+	from cbapp import app
+else:
+	from flask import Flask
+	app = Flask(__name__)
+
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
@@ -30,3 +36,6 @@ def signup():
 @app.route('/chorusinfo/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
+
+if __name__ == '__main__':
+	app.run(debug=True)
