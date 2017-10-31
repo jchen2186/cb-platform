@@ -14,16 +14,19 @@ class User(db.Model):
   lastname = db.Column(db.String(100))
   email = db.Column(db.String(120), unique=True)
   password_hash = db.Column(db.String(54))
+  username = db.Column(db.String(100))
 
-  def __init__(self, firstname, lastname, email, password):
+
+  def __init__(self, firstname, lastname, email, password,username):
     self.firstname = firstname.title()
     self.lastname = lastname.title()
     self.email = email.lower()
-    self.set_password(password)
+    self.set_password(password) # encrypt password with salted hash
+    self.username = username
 
   def set_password(self, password):
   """
-  Allows password to be changed.
+  Sets password by converting plain text password to hashed password.
   
   Args:
     password (str): new password to replace current password
