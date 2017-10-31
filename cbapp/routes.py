@@ -1,6 +1,5 @@
 from flask import render_template
 from flask import request
-from cbapp import app
 from cbapp.forms import SignupForm, LoginForm
 
 if __name__ != '__main__':
