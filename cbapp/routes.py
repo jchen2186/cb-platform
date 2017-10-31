@@ -1,7 +1,7 @@
 from flask import render_template
 from flask import request
 from cbapp import app
-from forms import SignupForm, LoginForm
+from cbapp.forms import SignupForm, LoginForm
 
 @app.route('/', methods=['GET'])
 def index():
