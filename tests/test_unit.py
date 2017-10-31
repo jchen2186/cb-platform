@@ -23,15 +23,15 @@ class TestCBAppUnit(unittest.TestCase):
 	def test_index_get_index_template(self):
 		# Create mock functions
 		with patch.multiple('cbapp.routes',
-							request=DEFAULT
+							request=DEFAULT,
 							render_template=DEFAULT) as mock_functions:
-		cbapp.routes.index()
-		
-		# Check if render_template is called when index route is visited
-		render_template = mock_functions['render_template']
-		self.assertTrue(render_template.called)
+			cbapp.routes.index()
+      
+			# Check if render_template is called when index route is visited
+			render_template = mock_functions['render_template']
+			self.assertTrue(render_template.called)
 
-		# Check if the template rendered is index.html
-		call_args = render_template.call_args
-		template_filename = call_args[0][0]
-		self.assertEqual(template_name, "index.html")
+			# Check if the template rendered is index.html
+			call_args = render_template.call_args
+			template_filename = call_args[0][0]
+			self.assertEqual(template_filename, "index.html")
