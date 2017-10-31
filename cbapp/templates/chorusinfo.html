@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero is-primary" id="chorus-title">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <h1 class="title is-1">
+        {{chorusTitle}}
+      </h1>
+      <h2 class="subtitle">
+        {{chorusMotto}}
+        Welcome to the CB!
+      </h2>
+    </div>
+  </div> <!-- hero-body -->
+</section>
+
+<section class="section">
+	<div class="container">
+		<div class="level">
+			<div class ="level-left">
+				<div class="level-item">
+					<a class="button">
+    					<span class="icon is-small">
+     					 <i class="fa fa-star"></i>
+    					</span>
+    					<span> Subscribe</span>
+ 					</a>
+				</div>
+				<div class="level-item">
+					<a class="button is-success">
+    					<span>Join this chorus battle</span>
+ 					</a>
+				</div>
+			</div> <!-- level-left -->
+		</div> <!-- level -->
+	</div> <!-- container -->
+</section>
+
+<section class="section">
+</section>
+{% endblock %}
