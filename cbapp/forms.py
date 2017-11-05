@@ -25,4 +25,4 @@ class LoginForm(Form):
         validators=[DataRequired('Please enter your username.')])
     password = PasswordField('Password', 
         validators=[DataRequired('Please enter your password.')])
-    submit = SubmitField('Login')
+    submit = SubmitField('Sign in')

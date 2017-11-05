@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, session, redirect, url_for
 from forms import SignupForm, LoginForm
 from models import db, User #, ChorusBattle, UserRole, Entry
 from cbapp import app
@@ -17,8 +17,20 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST':
-        # temporary, change later
-        return 'Success'
+        if form.validate() == False:
+            return render_template('login.html', form=form)
+        else:
+            username = form.username.data
+            password = form.password.data
+
+            user = User.query.filter_by(username=username).first()
+            if user is not None and user.check_password(password):
+                session['username'] = form.username.data
+                return redirect(url_for('home'))
+            else:
+                # no error is displayed when user logs in with wrong credentials yet
+                # this needs to be added
+                return redirect(url_for('login'))
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
@@ -29,15 +41,25 @@ def signup():
     if request.method == 'POST':
         if form.validate() == False:
             return render_template('signup.html', form=form)
-        # temporary, change later
         else:
             newuser = User(form.first_name.data, form.last_name.data, form.email.data, 
                 form.password.data, form.username.data, form.role.data)
             db.session.add(newuser)
             db.session.commit()
-            return 'Success'
+
+            session['username'] = newuser.username
+            return redirect(url_for('home'))
     elif request.method == 'GET':
         return render_template('signup.html', form=form)
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
 
 @app.route('/chorusinfo/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
