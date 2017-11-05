@@ -14,6 +14,9 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if 'username' in session:
+        return redirect(url_for('home'))
+
     form = LoginForm()
 
     if request.method == 'POST':
@@ -36,6 +39,9 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if 'username' in session:
+        return redirect(url_for('home'))
+
     form = SignupForm()
 
     if request.method == 'POST':
@@ -59,6 +65,8 @@ def logout():
 
 @app.route('/home')
 def home():
+    if 'username' not in session:
+        return redirect(url_for('login'))
     return render_template('home.html')
 
 @app.route('/chorusinfo/<cb>', methods=['GET'])
