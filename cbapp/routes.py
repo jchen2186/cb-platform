@@ -36,5 +36,9 @@ def signup():
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
 
+@app.route('/team/<name>', methods=['GET'])
+def team(name=None):
+    return render_template('team.html')
+
 if __name__ == '__main__':
 	app.run(debug=True)

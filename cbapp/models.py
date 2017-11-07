@@ -93,3 +93,13 @@ class Entry(db.Model):
         backref='entry', 
         lazy='dynamic'
     )
+
+class Round(db.Model):
+    """ Chorus Battle Rounds """
+    __tablename__ = 'rounds'
+    id = db.Column(db.Integer, primary_key = True)
+
+class Team(db.Model):
+    """ Information for a team of a chorus battle """
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key = True)
