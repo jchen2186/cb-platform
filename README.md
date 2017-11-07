@@ -9,7 +9,7 @@ git clone https://github.com/jchen2186/cbplatform.git
 
 2. Create and use a virtual env
 ```python
-virtualenv venv
+virtualenv .venv
 source .venv/bin/activate
 ```
 
@@ -21,9 +21,7 @@ pip install -e .
 
 4. Run the development server
 ```python
-export FLASK_DEBUG=true
-export FLASK_APP=cbapp
-python -m flask run
+python application.py
 ```
 
 Updating the Requirements
