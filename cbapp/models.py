@@ -16,7 +16,6 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True)
     # role = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
-
     def __init__(self, firstname, lastname, email, password, username, role):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
@@ -24,7 +23,7 @@ class User(db.Model):
         self.set_password(password) # encrypt password with salted hash
         self.username = username
         self.role = role
-
+  
     def set_password(self, password):
         """
         Sets password by converting plain text password to hashed password
@@ -39,12 +38,13 @@ class User(db.Model):
         Checks if password matches hashed password
 
         Args:
-            password (str): password to be checked
+          password (str): password to be checked
 
         Returns:
-            bool: True if password matches hashed password and false if not
-        """    
-        return check_password_hash(self.password_hash, password)
+          bool: True if password matches hashed password and false if not
+        """
+        return check_password_hash(self.password_hash,password)
+
 
 # class ChorusBattle(db.Model):
 #     """
@@ -91,3 +91,14 @@ class User(db.Model):
 #         backref='entry', 
 #         lazy='dynamic'
 #     )
+
+# class Round(db.Model):
+#     """ Chorus Battle Rounds """
+#     __tablename__ = 'rounds'
+#     id = db.Column(db.Integer, primary_key = True)
+
+# class Team(db.Model):
+#     """ Information for a team of a chorus battle """
+#     __tablename__ = 'teams'
+#     id = db.Column(db.Integer, primary_key = True)
+

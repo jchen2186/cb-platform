@@ -72,3 +72,7 @@ def home():
 @app.route('/chorusinfo/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
+
+@app.route('/team/<name>', methods=['GET'])
+def team(name=None):
+    return render_template('team.html')
