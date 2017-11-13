@@ -46,48 +46,48 @@ class User(db.Model):
         return check_password_hash(self.password_hash,password)
 
 
-# class ChorusBattle(db.Model):
-#     """
-#     Chorus battle class
-#     """
-#     __tablename__ = 'chorusbattles'
-#     id = db.Column(db.Integer, primary_key = True)
-#     name = db.Column(db.String(150))
-#     organizers = db.relationship(
-#         'User', 
-#         backref='chorusbattle', 
-#         lazy='dynamic'
-#     )
-#     entries = db.relationship(
-#         'Entry', 
-#         backref='chorusbattle', 
-#         lazy='dynamic'
-#     )
+class ChorusBattle(db.Model):
+    """
+    Chorus battle class
+    """
+    __tablename__ = 'chorusbattles'
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(150))
+    organizers = db.relationship(
+        'User', 
+        backref='chorusbattle', 
+        lazy='dynamic'
+    )
+    entries = db.relationship(
+        'Entry', 
+        backref='chorusbattle', 
+        lazy='dynamic'
+    )
 
-#     def __init__(self,title):
-#         self.name = name
+    def __init__(self,title):
+        self.name = name
 
-# class UserRole(db.Model):
-#     """
-#     User role class
-#     """
-#     __tablename__ = 'userroles'
-#     id = db.Column(db.Integer, primary_key = True)
-#     role_title = db.Column(db.String(100))
+class UserRole(db.Model):
+    """
+    User role class
+    """
+    __tablename__ = 'userroles'
+    id = db.Column(db.Integer, primary_key = True)
+    role_title = db.Column(db.String(100))
 
-#     def __init__(self, role_id, role_title):
-#         self.id = role_id
-#         self.role_title = role_title
+    def __init__(self, role_id, role_title):
+        self.id = role_id
+        self.role_title = role_title
 
-# class Entry(db.Model):
-#     """
-#     Chorus battle entry
-#     """
-#     __tablename__ = 'entries'
-#     id = db.Column(db.Integer, primary_key = True)
-#     submission_date = db.Column(db.DateTime) 
-#     owners = db.relationship(
-#         'User', 
-#         backref='entry', 
-#         lazy='dynamic'
-#     )
+class Entry(db.Model):
+    """
+    Chorus battle entry
+    """
+    __tablename__ = 'entries'
+    id = db.Column(db.Integer, primary_key = True)
+    submission_date = db.Column(db.DateTime) 
+    owners = db.relationship(
+        'User', 
+        backref='entry', 
+        lazy='dynamic'
+    )
