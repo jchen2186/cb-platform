@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id serial PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     firstname VARCHAR(100) not null,
     lastname VARCHAR(100) not null,
     email VARCHAR(120) not null unique,
@@ -9,8 +9,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE userroles (
-	id serial PRIMARY KEY,
-	role_title VARCHAR(100) not null 
+	id serial NOT NULL PRIMARY KEY,
+	role_title VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE chorusbattles (
@@ -20,3 +20,6 @@ CREATE TABLE chorusbattles (
 	entries integer NOT NULL
 );
 
+CREATE TABLE entries (
+	id serial NOT NULL PRIMARY KEY
+);
