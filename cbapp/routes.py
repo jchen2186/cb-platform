@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, url_for
 from .forms import SignupForm, LoginForm
-from .models import db, User #, ChorusBattle, UserRole, Entry
+from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 
 # connect app to the postgresql database (local to our machines)
@@ -73,6 +73,7 @@ def home():
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
 
-@app.route('/entries/<cb>',methods=['GET'])
-def entries():
+@app.route('/entries/<int:id>',methods=['GET'])
+def entries(id):
+    chorusBattle = ChorusBattle.query.get_or_404(id)
     return render_template('entries.html', chorusTitle=cb)

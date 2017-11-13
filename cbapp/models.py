@@ -3,6 +3,13 @@ from werkzeug import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+user_chorusbattles = db.Table(
+    'user_chorusbattles',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'))
+)
+
+
 class User(db.Model):
     """
     Chorus battle user class
@@ -14,6 +21,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
+    chorusbattles = db.relationship('ChorusBattle', secondary=user_chorusbattles)
     # role = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
     def __init__(self, firstname, lastname, email, password, username, role):
@@ -53,16 +61,8 @@ class ChorusBattle(db.Model):
     __tablename__ = 'chorusbattles'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
-    organizers = db.relationship(
-        'User', 
-        backref='chorusbattle', 
-        lazy='dynamic'
-    )
-    entries = db.relationship(
-        'Entry', 
-        backref='chorusbattle', 
-        lazy='dynamic'
-    )
+    organizers = db.relationship('User')
+    entries = db.relationship('Entry')
 
     def __init__(self,title):
         self.name = name
@@ -85,9 +85,6 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
-    submission_date = db.Column(db.DateTime) 
-    owners = db.relationship(
-        'User', 
-        backref='entry', 
-        lazy='dynamic'
-    )
+    submission_date = db.Column(db.Date) 
+    owners = db.relationship('User')
+    chorusbattle = db.Column(Integer)
