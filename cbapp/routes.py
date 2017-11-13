@@ -73,7 +73,13 @@ def home():
 def chorusInfo(cb=None):
     return render_template('chorusinfo.html', chorusTitle=cb)
 
+
 @app.route('/entries/<int:id>',methods=['GET'])
 def entries(id):
     chorusBattle = ChorusBattle.query.get_or_404(id)
     return render_template('entries.html', chorusTitle=cb)
+
+@app.route('/team/<name>', methods=['GET'])
+def team(name=None):
+    return render_template('team.html')
+

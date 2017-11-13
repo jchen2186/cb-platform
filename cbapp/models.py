@@ -3,8 +3,11 @@ from werkzeug import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-user_chorusbattles = db.Table(
-    'user_chorusbattles',
+"""
+Association Table for User and Chorus Battles (Many to many relationship)
+"""
+organizers = db.Table(
+    'organizers',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'))
 )
@@ -61,7 +64,6 @@ class ChorusBattle(db.Model):
     __tablename__ = 'chorusbattles'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
-    organizers = db.relationship('User')
     entries = db.relationship('Entry')
 
     def __init__(self,title):
@@ -87,4 +89,20 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     submission_date = db.Column(db.Date) 
     owners = db.relationship('User')
-    chorusbattle = db.Column(Integer)
+    chorusbattle = db.Column(db.Integer)
+
+
+class Round(db.Model):
+    """ 
+    Chorus Battle Rounds
+    """
+    __tablename__ = 'rounds'
+    id = db.Column(db.Integer, primary_key = True)
+
+class Team(db.Model):
+    """
+    Information for a team of a chorus battle
+    """
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key = True)
+
