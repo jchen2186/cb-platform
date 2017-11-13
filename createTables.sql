@@ -8,9 +8,15 @@ CREATE TABLE users (
     -- role int REFERENCES userroles(id)
 );
 
-CREATE TABLE ChorusBattle (
+CREATE TABLE userroles (
+	id serial PRIMARY KEY,
+	role_title VARCHAR(100) not null 
+);
+
+CREATE TABLE chorusbattles (
 	id serial NOT NULL PRIMARY KEY, 
 	name VARCHAR(150) NOT NULL, 
 	organizers integer NOT NULL, 
 	entries integer NOT NULL
 );
+
