@@ -13,6 +13,7 @@ organizers = db.Table(
 )
 
 
+
 class User(db.Model):
     """
     Chorus battle user class
