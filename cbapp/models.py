@@ -8,8 +8,8 @@ Association table showing organizers for chorus battles)
 """
 class Judge(db.Model):
     __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
 
 """
@@ -17,16 +17,16 @@ Association table showing chorus battlers for each entry
 """
 class ChorusBattle_Entry(db.Model):
     __tablename__ = 'chorusbattle_entries'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
-    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
 
 """
 Association table showing users on a particular team
 """
 class User_Team(db.Model):
      __tablename__ = 'user_teams'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
 
 class User(db.Model):
