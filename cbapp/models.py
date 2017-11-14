@@ -17,13 +17,13 @@ class User(db.Model):
     chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
-    def __init__(self, firstname, lastname, email, password, username, role):
+    def __init__(self, firstname, lastname, email, password, username, role_id):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
         self.email = email.lower()
         self.set_password(password) # encrypt password with salted hash
         self.username = username
-        self.role = role
+        self.role_id = role_id
   
     def set_password(self, password):
         """
@@ -54,13 +54,21 @@ class ChorusBattle(db.Model):
     __tablename__ = 'chorusbattles'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
+    description = db.Column(db.String(500))
     entries = db.relationship('Entry')
     teams = db.relationship('Team')
-    # Refers to Organizers association table
-    organizers = db.relationship('Organizer', secondary=organizers)
+    judges = db.relationship('Judge', secondary=judges)
 
-    def __init__(self,title):
+    def __init__(self, name, description = None):
         self.name = name
+        self.description = description
+
+    def changeName(self, newName):
+        self.name = newName
+        
+    def addDescription(self, description):
+        self.description = description
+
 
 class UserRole(db.Model):
     """
@@ -80,9 +88,13 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
-    submission_date = db.Column(db.TimeStamp) 
+    submission_date = db.Column(db.TimeStamp(timezone=True)) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
+    def __init__(self, id, submission_date, chorusbattle):
+        self.id = id
+        self.submission_date = submission_date
+        self.chorusbattle = chorusbattle
 
 class Round(db.Model):
     """ 
@@ -92,6 +104,9 @@ class Round(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
+    def __init__(self,id,chorusbattle):
+        self.id = id
+        self.chorusbattle = chorusbattle
 
 class Team(db.Model):
     """
@@ -101,28 +116,42 @@ class Team(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
+    def __init__(self, id, chorusbattle):
+        self.id = id
+        self.chorusbattle = chorusbattle
+
 """
 Association table showing organizers for chorus battles)
 """
 class Judge(db.Model):
     __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
+    def __init__(self, user_id, chorusbattle_id):
+        self.user_id = user_id
+        self.chorusbattle_id = chorusbattle_id
 
 """
 Association table showing chorus battlers for each entry
 """
 class ChorusBattle_Entry(db.Model):
     __tablename__ = 'chorusbattle_entries'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
 
+    def __init__(self, user_id, entry_id):
+        self.user_id = user_id
+        self.entry_id = entry_id
 """
 Association table showing users on a particular team
 """
 class User_Team(db.Model):
      __tablename__ = 'user_teams'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
+
+    def __init__(self, user_id, team_id):
+        self.user_id = user_id
+        self.team_id = team_id
 
