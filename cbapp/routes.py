@@ -111,8 +111,8 @@ def chorusEntries(cb=None):
     The route '/chorusinfo/<cb>/entries' will direct the user to a page where
     they can view all the entries for the selected chorus battle.
     """
-	entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
-	return render_template('entries.html', entries=entries)
+    entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
+    return render_template('entries.html', entries=entries)
 
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
