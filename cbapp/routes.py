@@ -1,6 +1,6 @@
 from flask import render_template, request, session, redirect, url_for
-from forms import SignupForm, LoginForm
-from models import db, User #, ChorusBattle, UserRole, Entry
+from .forms import SignupForm, LoginForm
+from .models import db, User #, ChorusBattle, UserRole, Entry
 from cbapp import app
 
 # connect app to the postgresql database (local to our machines)
