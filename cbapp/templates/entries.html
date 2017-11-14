@@ -1,18 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+
+{% include "chorusheader.html"%}
+
 <!-- Contains the entries for the chorus battle-->
-<section class="hero">
-  <div class="hero-body">
-    <div class="container">
-      <h1 class="title is-1">
-       {{ chorusTitle }}
-      </h1>
-      <h2 class="subtitle">
-        {{ chorusDescription }}
-      </h2>
-    </div>
-  </div>
-</section>
 <div class="tabs">
   <ul>
     <li class="round-tabs is-active"><a onclick="changeTab(event,1)">Round 1</a></li>
