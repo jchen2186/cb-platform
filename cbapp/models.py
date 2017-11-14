@@ -14,7 +14,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
-    chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
+    # chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
     def __init__(self, firstname, lastname, email, password, username, role_id):
@@ -57,7 +57,7 @@ class ChorusBattle(db.Model):
     description = db.Column(db.String(500))
     entries = db.relationship('Entry')
     teams = db.relationship('Team')
-    judges = db.relationship('Judge', secondary=judges)
+    # judges = db.relationship('Judge', secondary=judges)
 
     def __init__(self, name, description = None):
         self.name = name
@@ -88,7 +88,7 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
-    submission_date = db.Column(db.TimeStamp(timezone=True)) 
+    # submission_date = db.Column(db.TimeStamp(timezone=True)) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
     def __init__(self, id, submission_date, chorusbattle):
@@ -120,10 +120,10 @@ class Team(db.Model):
         self.id = id
         self.chorusbattle = chorusbattle
 
-"""
-Association table showing organizers for chorus battles)
-"""
 class Judge(db.Model):
+    """
+    Association table showing organizers for chorus battles
+    """
     __tablename__ = 'judges',
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
@@ -132,10 +132,10 @@ class Judge(db.Model):
         self.user_id = user_id
         self.chorusbattle_id = chorusbattle_id
 
-"""
-Association table showing chorus battlers for each entry
-"""
 class ChorusBattle_Entry(db.Model):
+    """
+    Association table showing chorus battlers for each entry
+    """
     __tablename__ = 'chorusbattle_entries'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
@@ -143,15 +143,15 @@ class ChorusBattle_Entry(db.Model):
     def __init__(self, user_id, entry_id):
         self.user_id = user_id
         self.entry_id = entry_id
-"""
-Association table showing users on a particular team
-"""
+
 class User_Team(db.Model):
-     __tablename__ = 'user_teams'
+    """
+    Association table showing users on a particular team
+    """
+    __tablename__ = 'user_teams'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
 
     def __init__(self, user_id, team_id):
         self.user_id = user_id
         self.team_id = team_id
-

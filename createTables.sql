@@ -64,7 +64,3 @@ CREATE TABLE user_teams (
 	team_id INTEGER REFERENCES teams(id),
 	PRIMARY KEY (user_id, team_id)
 );
-
-
-
-
