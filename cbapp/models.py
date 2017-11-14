@@ -115,7 +115,11 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
+<<<<<<< HEAD
     submission_date = db.Column(db.DateTime(timezone=True), default=func.now()) 
+=======
+    # submission_date = db.Column(db.TimeStamp(timezone=True)) 
+>>>>>>> be03bf42c7b303febca84901b8158957e0ad9b1c
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
     def __init__(self, id, submission_date, chorusbattle):
@@ -147,6 +151,16 @@ class Team(db.Model):
         self.id = id
         self.chorusbattle = chorusbattle
 
+<<<<<<< HEAD
+=======
+class Judge(db.Model):
+    """
+    Association table showing organizers for chorus battles
+    """
+    __tablename__ = 'judges',
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+>>>>>>> be03bf42c7b303febca84901b8158957e0ad9b1c
 
 # class Judge(db.Model):
 #     __tablename__ = 'judges',
@@ -180,4 +194,30 @@ class Team(db.Model):
 #         self.team_id = team_id
 
 
+<<<<<<< HEAD
 
+=======
+class ChorusBattle_Entry(db.Model):
+    """
+    Association table showing chorus battlers for each entry
+    """
+    __tablename__ = 'chorusbattle_entries'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
+
+    def __init__(self, user_id, entry_id):
+        self.user_id = user_id
+        self.entry_id = entry_id
+
+class User_Team(db.Model):
+    """
+    Association table showing users on a particular team
+    """
+    __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
+
+    def __init__(self, user_id, team_id):
+        self.user_id = user_id
+        self.team_id = team_id
+>>>>>>> be03bf42c7b303febca84901b8158957e0ad9b1c

@@ -81,3 +81,15 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "team.html")
+
+    def test_tournament_get_tournament_template(self):
+         """Checks if the chorusBattle route exists. The test passes if it does.""" 
+         with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.chorusBattle()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "tournament.html")
