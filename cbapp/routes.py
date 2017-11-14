@@ -96,10 +96,10 @@ def home():
         return redirect(url_for('login'))
     return render_template('home.html')
 
-@app.route('/chorusinfo/<cb>', methods=['GET'])
+@app.route('/chorusbattle/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
     """
-    The route '/chorusinfo/<cb> will direct the user to a page where the user
+    The route '/chorusbattle/<cb> will direct the user to a page where the user
     can find more information about the selected chorus battle, stored
     as the variable cb.
     """
