@@ -10,74 +10,81 @@ app.secret_key = 'development-key'
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+	return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if 'username' in session:
-        return redirect(url_for('home'))
+	if 'username' in session:
+		return redirect(url_for('home'))
 
-    form = LoginForm()
+	form = LoginForm()
 
-    if request.method == 'POST':
-        if form.validate() == False:
-            return render_template('login.html', form=form)
-        else:
-            username = form.username.data
-            password = form.password.data
+	if request.method == 'POST':
+		if form.validate() == False:
+			return render_template('login.html', form=form)
+		else:
+			username = form.username.data
+			password = form.password.data
 
-            user = User.query.filter_by(username=username).first()
-            if user is not None and user.check_password(password):
-                session['username'] = form.username.data
-                return redirect(url_for('home'))
-            else:
-                # no error is displayed when user logs in with wrong credentials yet
-                # this needs to be added
-                return redirect(url_for('login'))
-    elif request.method == 'GET':
-        return render_template('login.html', form=form)
+			user = User.query.filter_by(username=username).first()
+			if user is not None and user.check_password(password):
+				session['username'] = form.username.data
+				return redirect(url_for('home'))
+			else:
+				# no error is displayed when user logs in with wrong credentials yet
+				# this needs to be added
+				return redirect(url_for('login'))
+	elif request.method == 'GET':
+		return render_template('login.html', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if 'username' in session:
-        return redirect(url_for('home'))
+	if 'username' in session:
+		return redirect(url_for('home'))
 
-    form = SignupForm()
+	form = SignupForm()
 
-    if request.method == 'POST':
-        if form.validate() == False:
-            return render_template('signup.html', form=form)
-        else:
-            newuser = User(form.first_name.data, form.last_name.data, form.email.data, 
-                form.password.data, form.username.data, form.role.data)
-            db.session.add(newuser)
-            db.session.commit()
+	if request.method == 'POST':
+		if form.validate() == False:
+			return render_template('signup.html', form=form)
+		else:
+			newuser = User(form.first_name.data, form.last_name.data, form.email.data, 
+				form.password.data, form.username.data, form.role.data)
+			db.session.add(newuser)
+			db.session.commit()
 
-            session['username'] = newuser.username
-            return redirect(url_for('home'))
-    elif request.method == 'GET':
-        return render_template('signup.html', form=form)
+			session['username'] = newuser.username
+			return redirect(url_for('home'))
+	elif request.method == 'GET':
+		return render_template('signup.html', form=form)
 
 @app.route('/logout')
 def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+	session.pop('username', None)
+	return redirect(url_for('index'))
 
 @app.route('/home')
 def home():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-    return render_template('home.html')
+	if 'username' not in session:
+		return redirect(url_for('login'))
+	return render_template('home.html')
 
 @app.route('/chorusinfo/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
-    return render_template('chorusinfo.html', chorusTitle=cb)
+	return render_template('chorusinfo.html', chorusTitle=cb)
 
 @app.route('/chorusinfo/<cb>/entries', methods=['GET'])
 def chorusEntries(cb=None):
-	entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
-	return render_template('entries.html', entries=entries)
+	rounds = []
+	rounds.append([{'title':'Entry 1', 'owners':'Team 1', \
+		'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
+		Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
+		{'title':'Entry 2', 'owners':'Team 2', 'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
+		Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
+	rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
+	print(rounds)
+	return render_template('entries.html', rounds=rounds)
 
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
-    return render_template('team.html')
+	return render_template('team.html')
