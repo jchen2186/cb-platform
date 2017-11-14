@@ -6,20 +6,27 @@ db = SQLAlchemy()
 """
 Association table showing organizers for chorus battles)
 """
-organizers = db.Table(
-    'organizers',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'))
-)
+class Judge(db.Model):
+    __tablename__ = 'judges',
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
 
 """
 Association table showing chorus battlers for each entry
 """
-entry_chorusbattlers = db.Table(
-    'entry_chorusbattlers',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
-    db.Column('entry_id', db.Integer, db.ForeignKey('entries.id'))
-)
+class ChorusBattle_Entry(db.Model):
+    __tablename__ = 'chorusbattle_entries'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'))
+
+"""
+Association table showing users on a particular team
+"""
+class User_Team(db.Model):
+     __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
 
 class User(db.Model):
@@ -33,8 +40,8 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
-    chorusbattles = db.relationship('ChorusBattle', secondary=user_chorusbattles)
-    # role = db.Column(db.Integer, db.ForeignKey('userroles.id'))
+    chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
+    role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
     def __init__(self, firstname, lastname, email, password, username, role):
         self.firstname = firstname.title()
@@ -74,6 +81,9 @@ class ChorusBattle(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
     entries = db.relationship('Entry')
+    teams = db.relationship('Team')
+    # Refers to Organizers association table
+    organizers = db.relationship('Organizer', secondary=organizers)
 
     def __init__(self,title):
         self.name = name
@@ -92,7 +102,7 @@ class UserRole(db.Model):
 
 class Entry(db.Model):
     """
-    Chorus battle entry
+    Chorus battle Entry class
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
@@ -102,15 +112,19 @@ class Entry(db.Model):
 
 class Round(db.Model):
     """ 
-    Chorus Battle Rounds
+    Chorus Battle Round class
     """
     __tablename__ = 'rounds'
     id = db.Column(db.Integer, primary_key = True)
+    # NOTE: What are we supposed to store in rounds?
+    # chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
 
 class Team(db.Model):
     """
-    Information for a team of a chorus battle
+    Chorus Battle Team class
     """
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key = True)
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
