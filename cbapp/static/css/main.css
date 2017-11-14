@@ -7,6 +7,6 @@
 }
 
 #main-hero{
-	background-image: url("/static/img/mainSplash.png");
+	background-image: url("https://raw.githubusercontent.com/jchen2186/cbplatform/master/cbapp/static/img/mainSplash.png");
 	background-size: contain;
 }
