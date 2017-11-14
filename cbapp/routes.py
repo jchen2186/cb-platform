@@ -4,10 +4,12 @@ user to the templates.
 """
 
 from flask import render_template, request, session, redirect, url_for
+from cbapp import app
 from .forms import SignupForm, LoginForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 import os
+
 # connect app to the postgresql database (local to our machines)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
 db.init_app(app)
@@ -129,3 +131,6 @@ def team(name=None):
     """
     return render_template('team.html')
 
+@app.route('/chorusbattle/<cbname>', methods=['GET'])
+def chorusBattle(cbname=None):
+    return render_template("tournament.html", cbname=cbname)

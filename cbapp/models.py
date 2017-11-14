@@ -1,7 +1,32 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 from werkzeug import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
+
+"""
+Association table showing organizers for chorus battles)
+"""
+judges = db.Table('judges', 
+    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
+
+"""
+Association table showing chorus battlers for each entry
+"""
+chorusbattle_entries = db.Table('chorusbattle_entries', 
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+    db.Column('entry_id', db.Integer, db.ForeignKey('entries.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'entry_id'))
+
+"""
+Association table showing users on a particular team
+"""
+user_teams = db.Table('user_teams', 
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+    db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'team_id'))
 
 class User(db.Model):
     """
@@ -14,9 +39,11 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
-    # chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
-
+    chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users')
+    entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users')
+    teams = db.relationship('Team', secondary=user_teams, backref='users')
+    
     def __init__(self, firstname, lastname, email, password, username, role_id):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
@@ -88,7 +115,7 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
-    # submission_date = db.Column(db.TimeStamp(timezone=True)) 
+    submission_date = db.Column(db.DateTime(timezone=True), default=func.now()) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
     def __init__(self, id, submission_date, chorusbattle):
@@ -120,38 +147,29 @@ class Team(db.Model):
         self.id = id
         self.chorusbattle = chorusbattle
 
-class Judge(db.Model):
-    """
-    Association table showing organizers for chorus battles
-    """
-    __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+# class Judge(db.Model):
+#     __tablename__ = 'judges',
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+#     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
-    def __init__(self, user_id, chorusbattle_id):
-        self.user_id = user_id
-        self.chorusbattle_id = chorusbattle_id
+#     def __init__(self, user_id, chorusbattle_id):
+#         self.user_id = user_id
+#         self.chorusbattle_id = chorusbattle_id
 
-class ChorusBattle_Entry(db.Model):
-    """
-    Association table showing chorus battlers for each entry
-    """
-    __tablename__ = 'chorusbattle_entries'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
+# class ChorusBattle_Entry(db.Model):
+#     __tablename__ = 'chorusbattle_entries'
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+#     entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
 
-    def __init__(self, user_id, entry_id):
-        self.user_id = user_id
-        self.entry_id = entry_id
+#     def __init__(self, user_id, entry_id):
+#         self.user_id = user_id
+#         self.entry_id = entry_id
 
-class User_Team(db.Model):
-    """
-    Association table showing users on a particular team
-    """
-    __tablename__ = 'user_teams'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
+# class User_Team(db.Model):
+#      __tablename__ = 'user_teams'
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+#     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
 
-    def __init__(self, user_id, team_id):
-        self.user_id = user_id
-        self.team_id = team_id
+#     def __init__(self, user_id, team_id):
+#         self.user_id = user_id
+#         self.team_id = team_id
