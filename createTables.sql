@@ -27,9 +27,23 @@ CREATE TABLE chorusbattles (
 );
 
 CREATE TABLE entries (
+	id serial NOT NULL,
+	submission_date TIMESTAMP,
+	PRIMARY KEY (id)
+	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
+);
+
+CREATE TABLE rounds {
+	id serial NOT NULL
+	PRIMARY KEY (id)
+	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
+}
+
+CREATE TABLE teams (
 	id serial NOT NULL
 	PRIMARY KEY (id)
 	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
 );
+
 
 

@@ -3,32 +3,6 @@ from werkzeug import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-"""
-Association table showing organizers for chorus battles)
-"""
-class Judge(db.Model):
-    __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
-
-
-"""
-Association table showing chorus battlers for each entry
-"""
-class ChorusBattle_Entry(db.Model):
-    __tablename__ = 'chorusbattle_entries'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
-    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
-
-"""
-Association table showing users on a particular team
-"""
-class User_Team(db.Model):
-     __tablename__ = 'user_teams'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
-
-
 class User(db.Model):
     """
     Chorus battle user class
@@ -106,7 +80,7 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
-    submission_date = db.Column(db.Date) 
+    submission_date = db.Column(db.TimeStamp) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
 
@@ -116,8 +90,7 @@ class Round(db.Model):
     """
     __tablename__ = 'rounds'
     id = db.Column(db.Integer, primary_key = True)
-    # NOTE: What are we supposed to store in rounds?
-    # chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
 
 
 class Team(db.Model):
@@ -127,4 +100,29 @@ class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key = True)
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
+"""
+Association table showing organizers for chorus battles)
+"""
+class Judge(db.Model):
+    __tablename__ = 'judges',
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+
+
+"""
+Association table showing chorus battlers for each entry
+"""
+class ChorusBattle_Entry(db.Model):
+    __tablename__ = 'chorusbattle_entries'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
+
+"""
+Association table showing users on a particular team
+"""
+class User_Team(db.Model):
+     __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True),
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
