@@ -103,6 +103,11 @@ def chorusInfo(cb=None):
     """
     return render_template('chorusinfo.html', chorusTitle=cb)
 
+@app.route('/chorusinfo/<cb>/entries', methods=['GET'])
+def chorusEntries(cb=None):
+	entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
+	return render_template('entries.html', entries=entries)
+
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """
