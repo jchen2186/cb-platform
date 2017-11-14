@@ -15,22 +15,52 @@
 </section>
 <div class="tabs">
   <ul>
-    <li class="is-active"><a>Round 1</a></li>
-    <li><a>Round 2</a></li>
-    <li><a>Round 3</a></li>
+    <li class="round-tabs is-active"><a onclick="changeTab(event,1)">Round 1</a></li>
+    <li class="round-tabs"><a onclick="changeTab(event,2)">Round 2</a></li>
+    <li class="round-tabs"><a onclick="changeTab(event,3)">Round 3</a></li>
   </ul>
 </div>
-<section class="section">
-	{% for entry in entries %}
-		<article class="media">
-		<div class="media-content">
-			<div class="content">
-				<h2> {{ entry.title }} </h2>
-				<p> {{ entry.owners }} </p>
-				<p> {{ entry.description }} </p>
-			</div>
+{% for round in rounds %}
+<section class="section round">
+	{% for entry in round %}
+	<article class="media">
+	<div class="media-content">
+    <div class="columns">
+  		<div class="content column is-half">
+  			<h2> {{entry.title }} </h2>
+  			<p> {{ entry.owners }} </p>
+  			<p> {{ entry.description }} </p>
+      </div>
+      <iframe style="margin-top:85px" width="560" height="315" src="{{ entry.video }}" frameborder="0" allowfullscreen></iframe>
 		</div>
+	</div>
+  </article>
 	{% endfor %}
 </section>
+{% endfor %}
+<script>
+  let i;
+  let rounds = document.getElementsByClassName("round");
+  if (rounds.length > 1) {
+    for (i = 1; i < rounds.length; i++) {
+      rounds[i].style.display = "none";
+    }
+  }
 
+  function changeTab(evt, round) {
+    let roundTabs = document.getElementsByClassName("round-tabs");
+    rounds = document.getElementsByClassName("round");
+    for (i = 0; i < roundTabs.length; i++) {
+      roundTabs[i].classList.remove('is-active');
+    }
+    roundTabs[round-1].classList.add('is-active');
+    for (i = 0; i < rounds.length; i++) {
+      if (roundTabs[i].classList.contains('is-active')) {
+        rounds[i].style.display = "block";
+      } else {
+        rounds[i].style.display = "none";
+      }
+    }
+  }
+</script>
 {% endblock %}
