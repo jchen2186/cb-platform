@@ -128,3 +128,7 @@ def team(name=None):
     variable name.
     """
     return render_template('team.html')
+
+@app.route('/chorusbattle/<cbname>', methods=['GET'])
+def chorusBattle(cbname=None):
+    return render_template("tournament.html", cbname=cbname)
