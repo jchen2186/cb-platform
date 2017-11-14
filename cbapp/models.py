@@ -14,15 +14,16 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
-    # role = db.Column(db.Integer, db.ForeignKey('userroles.id'))
+    chorusbattles = db.relationship('ChorusBattle', secondary=organizers)
+    role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
 
-    def __init__(self, firstname, lastname, email, password, username, role):
+    def __init__(self, firstname, lastname, email, password, username, role_id):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
         self.email = email.lower()
         self.set_password(password) # encrypt password with salted hash
         self.username = username
-        self.role = role
+        self.role_id = role_id
   
     def set_password(self, password):
         """
@@ -46,59 +47,111 @@ class User(db.Model):
         return check_password_hash(self.password_hash,password)
 
 
-# class ChorusBattle(db.Model):
-#     """
-#     Chorus battle class
-#     """
-#     __tablename__ = 'chorusbattles'
-#     id = db.Column(db.Integer, primary_key = True)
-#     name = db.Column(db.String(150))
-#     organizers = db.relationship(
-#         'User', 
-#         backref='chorusbattle', 
-#         lazy='dynamic'
-#     )
-#     entries = db.relationship(
-#         'Entry', 
-#         backref='chorusbattle', 
-#         lazy='dynamic'
-#     )
+class ChorusBattle(db.Model):
+    """
+    Chorus battle class
+    """
+    __tablename__ = 'chorusbattles'
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(150))
+    description = db.Column(db.String(500))
+    entries = db.relationship('Entry')
+    teams = db.relationship('Team')
+    judges = db.relationship('Judge', secondary=judges)
 
-#     def __init__(self,title):
-#         self.name = name
+    def __init__(self, name, description = None):
+        self.name = name
+        self.description = description
 
-# class UserRole(db.Model):
-#     """
-#     User role class
-#     """
-#     __tablename__ = 'userroles'
-#     id = db.Column(db.Integer, primary_key = True)
-#     role_title = db.Column(db.String(100))
+    def changeName(self, newName):
+        self.name = newName
+        
+    def addDescription(self, description):
+        self.description = description
 
-#     def __init__(self, role_id, role_title):
-#         self.id = role_id
-#         self.role_title = role_title
 
-# class Entry(db.Model):
-#     """
-#     Chorus battle entry
-#     """
-#     __tablename__ = 'entries'
-#     id = db.Column(db.Integer, primary_key = True)
-#     submission_date = db.Column(db.DateTime) 
-#     owners = db.relationship(
-#         'User', 
-#         backref='entry', 
-#         lazy='dynamic'
-#     )
+class UserRole(db.Model):
+    """
+    User role class
+    """
+    __tablename__ = 'userroles'
+    id = db.Column(db.Integer, primary_key = True)
+    role_title = db.Column(db.String(100))
 
-# class Round(db.Model):
-#     """ Chorus Battle Rounds """
-#     __tablename__ = 'rounds'
-#     id = db.Column(db.Integer, primary_key = True)
+    def __init__(self, role_id, role_title):
+        self.id = role_id
+        self.role_title = role_title
 
-# class Team(db.Model):
-#     """ Information for a team of a chorus battle """
-#     __tablename__ = 'teams'
-#     id = db.Column(db.Integer, primary_key = True)
+class Entry(db.Model):
+    """
+    Chorus battle Entry class
+    """
+    __tablename__ = 'entries'
+    id = db.Column(db.Integer, primary_key = True)
+    submission_date = db.Column(db.TimeStamp(timezone=True)) 
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
+    def __init__(self, id, submission_date, chorusbattle):
+        self.id = id
+        self.submission_date = submission_date
+        self.chorusbattle = chorusbattle
+
+class Round(db.Model):
+    """ 
+    Chorus Battle Round class
+    """
+    __tablename__ = 'rounds'
+    id = db.Column(db.Integer, primary_key = True)
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
+    def __init__(self,id,chorusbattle):
+        self.id = id
+        self.chorusbattle = chorusbattle
+
+class Team(db.Model):
+    """
+    Chorus Battle Team class
+    """
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key = True)
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+
+    def __init__(self, id, chorusbattle):
+        self.id = id
+        self.chorusbattle = chorusbattle
+
+"""
+Association table showing organizers for chorus battles)
+"""
+class Judge(db.Model):
+    __tablename__ = 'judges',
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+
+    def __init__(self, user_id, chorusbattle_id):
+        self.user_id = user_id
+        self.chorusbattle_id = chorusbattle_id
+
+"""
+Association table showing chorus battlers for each entry
+"""
+class ChorusBattle_Entry(db.Model):
+    __tablename__ = 'chorusbattle_entries'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)
+
+    def __init__(self, user_id, entry_id):
+        self.user_id = user_id
+        self.entry_id = entry_id
+"""
+Association table showing users on a particular team
+"""
+class User_Team(db.Model):
+     __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), primary_key = True)
+
+    def __init__(self, user_id, team_id):
+        self.user_id = user_id
+        self.team_id = team_id
 

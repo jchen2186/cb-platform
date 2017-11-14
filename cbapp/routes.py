@@ -4,10 +4,9 @@ user to the templates.
 """
 
 from flask import render_template, request, session, redirect, url_for
-from cbapp import app
 from .forms import SignupForm, LoginForm
-from .models import db, User #, ChorusBattle, UserRole, Entry
-
+from .models import db, User, ChorusBattle, UserRole, Entry
+from cbapp import app
 # connect app to the postgresql database (local to our machines)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/cbapp'
 db.init_app(app)
@@ -105,6 +104,11 @@ def chorusInfo(cb=None):
 
 @app.route('/chorusinfo/<cb>/entries', methods=['GET'])
 def chorusEntries(cb=None):
+    """
+    The route '/chorusinfo/<cb>/entries' will direct the user to a page where
+    they can view all the entries for the selected chorus battle.
+    """
+    entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
     rounds = []
     rounds.append([{'title':'Entry 1', 'owners':'Team 1', \
         'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
@@ -123,3 +127,4 @@ def team(name=None):
     variable name.
     """
     return render_template('team.html')
+
