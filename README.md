@@ -2,7 +2,7 @@
 A website that brings together the chorus battle (CB) community on YouTube, Twitter, and other social media sites.
 
 ## How to Run Locally
-***Note that we are using Python3 rather than Python2.
+*** Note that we are using Python3 rather than Python2.
 
 1. Clone this repo
 ```
