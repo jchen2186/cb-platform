@@ -16,11 +16,14 @@
 {% for round in rounds %}
 <section class="section round">
 	{% for entry in round %}
+
 	<article class="media">
 	<div class="media-content">
     <div class="columns">
   		<div class="content column is-half">
   			<h2> {{entry.title }} </h2>
+          <a class="button is-info" href="/chorusbattle/{{chorusTitle}}/judge/{{ entry.title }}"><span>Judge</span>
+          </a>
   			<p> {{ entry.owners }} </p>
   			<p> {{ entry.description }} </p>
       </div>
