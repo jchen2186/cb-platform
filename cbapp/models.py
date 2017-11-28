@@ -157,8 +157,6 @@ class Team(db.Model):
 #         self.user_id = user_id
 #         self.chorusbattle_id = chorusbattle_id
 
-
-
 # class ChorusBattle_Entry(db.Model):
 #     __tablename__ = 'chorusbattle_entries'
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
@@ -168,8 +166,6 @@ class Team(db.Model):
 #         self.user_id = user_id
 #         self.entry_id = entry_id
 
-
-
 # class User_Team(db.Model):
 #      __tablename__ = 'user_teams'
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
@@ -178,5 +174,4 @@ class Team(db.Model):
 #     def __init__(self, user_id, team_id):
 #         self.user_id = user_id
 #         self.team_id = team_id
-
 

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="section-content">
-    <h2>Login</h2>
+  <div class="container">
+    <h2 class="is-size-2">Login</h2>
 
     <form method="POST" action="/login">
       {{ form.hidden_tag() }}
       
       <div class="form-group">
         {{ form.username.label }}
-
+          <br>
           {% if form.username.errors %}
             {% for error in form.username.errors %}
               <p class="error-message">{{ error }}</p>
@@ -20,7 +20,7 @@
       
       <div class="form-group">
         {{ form.password.label }}
-
+          <br>
           {% if form.password.errors %}
             {% for error in form.password.errors %}
               <p class="error-message">{{ error }}</p>
@@ -30,7 +30,8 @@
         {{ form.password }}
       </div>
       
-      {{ form.submit(class="btn-primary") }}
+      <br>
+      {{ form.submit(class="button is-link") }}
     </form>
   </div>
 {% endblock %}

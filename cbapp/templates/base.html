@@ -19,7 +19,7 @@
 				<div class="navbar-start">
 					<a class="navbar-item" href="/">Home</a>
 					<a class="navbar-item" href="">Community</a>
-					<a class="navbar-item" href="">Chorus Battles</a>
+					<a class="navbar-item" href="/chorusbattle">Chorus Battles</a>
 				</div>
 
 				<div class="navbar-end">
@@ -34,11 +34,14 @@
 						</form>
 					</div>
 				
-					{% if loggedIn %}
-					<div class ="navbar=item" id="user-icon">
-						<img src="">
-					</div>
+					{% if session['username'] %}
+					<!-- <div id="user-icon"> -->
+						<!-- <img src=""> -->
+						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
+
+					<!-- </div> -->
 					{% else %}
+					<a class="navbar-item" href="{{ url_for('signup') }}">Sign Up</a>
 					<a class="navbar-item" href="{{ url_for('login') }}">Log In</a>
 					{% endif %}
 				

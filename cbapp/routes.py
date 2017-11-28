@@ -4,11 +4,14 @@ user to the templates.
 """
 
 from flask import render_template, request, session, redirect, url_for
-from .forms import SignupForm, LoginForm
+from cbapp import app
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
+import os
+
 # connect app to the postgresql database (local to our machines)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/cbapp'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
 db.init_app(app)
 app.secret_key = 'development-key'
 
@@ -93,19 +96,19 @@ def home():
         return redirect(url_for('login'))
     return render_template('home.html')
 
-@app.route('/chorusinfo/<cb>', methods=['GET'])
+@app.route('/chorusbattle/<cb>', methods=['GET'])
 def chorusInfo(cb=None):
     """
-    The route '/chorusinfo/<cb> will direct the user to a page where the user
+    The route '/chorusbattle/<cb> will direct the user to a page where the user
     can find more information about the selected chorus battle, stored
     as the variable cb.
     """
     return render_template('chorusinfo.html', chorusTitle=cb)
 
-@app.route('/chorusinfo/<cb>/entries', methods=['GET'])
+@app.route('/chorusbattle/<cb>/entries', methods=['GET'])
 def chorusEntries(cb=None):
     """
-    The route '/chorusinfo/<cb>/entries' will direct the user to a page where
+    The route '/chorusbattle/<cb>/entries' will direct the user to a page where
     they can view all the entries for the selected chorus battle.
     """
     entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
@@ -128,7 +131,37 @@ def team(name=None):
     """
     return render_template('team.html')
 
+@app.route('/chorusbattle', methods=['GET'])
+def chorusBattleAll():
+    return render_template("chorusbattles.html")
+
 @app.route('/chorusbattle/<cbname>', methods=['GET'])
 def chorusBattle(cbname=None):
     return render_template("tournament.html", cbname=cbname)
 
+@app.route('/chorusbattle/create', methods=['GET', 'POST'])
+def createChorusBattle():
+    """
+    The route '/chorusbattle/create' will direct the user, who has 
+    to be a Judge, to the form where he/she will fill out information
+    relating to the chorus battle.
+    After submitting the form, the user will be notified of any errors,
+    if there are any. Otherwise, the chorus battle will be created.
+    """
+    form = CreateChorusBattleForm()
+
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('createchorusbattle.html', form=form)
+
+        newcb = ChorusBattle(form.name.data, form.description.data,
+            form.theme.data, form.rules.data, form.prizes.data,
+            form.first_deadline.data, form.num_of_rounds.data,
+            form.video_link.data, form.grace_period.data)
+        db.session.add(newcb)
+        db.session.commit()
+
+        return redirect(url_for('/chorusbattle/' + form.name.data))
+
+    elif request.method == 'GET':
+        return render_template('createchorusbattle.html', form=form)

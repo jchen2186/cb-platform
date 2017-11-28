@@ -5,3 +5,9 @@
 .team-logo{
 	border-radius:50%;
 }
+
+#main-hero{
+	background-image: url("/static/img/mainSplash.png");
+	background-size: fill;
+	background-repeat: none;
+}
