@@ -3,7 +3,7 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
-from flask import render_template, request, session, redirect, url_for
+from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm
 from .models import db, User, ChorusBattle, UserRole, Entry
@@ -36,19 +36,15 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST':
-        if not form.validate():
-            return render_template('login.html', form=form)
-
-        username = form.username.data
-        password = form.password.data
-
-        user = User.query.filter_by(username=username).first()
-        if user is not None and user.check_password(password):
-            session['username'] = form.username.data
-            return redirect(url_for('home'))
-
-        return redirect(url_for('login'))
-
+        if form.validate():
+            username = form.username.data
+            password = form.password.data
+            user = User.query.filter_by(username=username).first()
+            if user is not None and user.check_password(password):
+                session['username'] = form.username.data
+                return redirect(url_for('home'))
+            flash('Incorrect username or password.')
+            return render_template('login.html', form=form) 
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
