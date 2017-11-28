@@ -56,7 +56,7 @@ class CreateChorusBattleForm(FlaskForm):
     video_link = StringField('Link to the Chorus Battle Introduction Video')
     submit = SubmitField('Create Chorus Battle')
 
-class AddRoundForm(FlaskForm):
+class CreateRoundForm(FlaskForm):
     """WTForm for adding a round for a particular chorus battle."""
     round_number = IntegerField('Round Number', validators=[
         DataRequired('Please enter the round number.')])
@@ -65,3 +65,13 @@ class AddRoundForm(FlaskForm):
     deadline = DateTimeField('Deadline', validators=[
         DataRequired('Please enter the deadline (date and time) for this round.')])
     submit = SubmitField('Create New Round')
+
+class CreateEntryForm(FlaskForm):
+    """WTForm for adding an entry to a particular cohrus battle."""
+    team_name = StringField('Team Name', validators=[
+        DataRequired('Please enter your team name')])
+    description = TextAreaField('Description', validators=[
+        DataRequired('Please provide of a description of your entry.')])
+    video_link = StringField('Link to the Chorus Battle Video', validators=[
+        DataRequired('Please provide a link to your Chorus Battle Video')])
+    submit = SubmitField('Submit Entry')

@@ -6,11 +6,24 @@
 
     <form method="POST" action="/login/">
       {{ form.hidden_tag() }}
-      
+
       <div class="field">
         <div class="label">{{ form.username.label }}</div>
         <div class ="control">{{ form.username(class_="input") }}</div>
-          {% if form.username.errors %}
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class=flashes>
+            {% for message in messages %}
+              {{ message }}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <div class="form-group">
+        {{ form.username.label }}
+          <br>
+
+        {% if form.username.errors %}
             {% for error in form.username.errors %}
               <p class="is-danger">{{ error }}</p>
             {% endfor %}
