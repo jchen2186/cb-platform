@@ -37,8 +37,11 @@
 					{% if loggedIn %}
 					<div class ="navbar=item" id="user-icon">
 						<img src="">
+						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
+
 					</div>
 					{% else %}
+					<a class="navbar-item" href="{{ url_for('signup') }}">Sign Up</a>
 					<a class="navbar-item" href="{{ url_for('login') }}">Log In</a>
 					{% endif %}
 				
