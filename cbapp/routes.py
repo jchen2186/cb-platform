@@ -175,6 +175,11 @@ def createChorusBattle():
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
 
+@app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
+def judgeEntry(cb=None,entry=None):
+    if request.method == 'GET':
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
+
 @app.route('/create/round/', methods=['GET', 'POST'])
 def createRound():
     """
