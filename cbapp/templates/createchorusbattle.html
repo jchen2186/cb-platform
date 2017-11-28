@@ -49,15 +49,13 @@
       </div>
 
       <div class="field">
-        {{ form.video_link.label }}
-          <br>
+        <div class="label">{{ form.video_link.label }}</div>
+        <div claSs="control">{{ form.video_link(class_="input") }}</div>
           {% if form.video_link.errors %}
             {% for error in form.video_link.errors %}
-              <p class="error-message">{{ error }}</p>
+              <p class="is-danger">{{ error }}</p>
             {% endfor %}
           {% endif %}
-
-        {{ form.video_link }}
       </div>
 
       <br>
