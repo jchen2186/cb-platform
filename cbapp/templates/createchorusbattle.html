@@ -1,61 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
+<section class="section">
   <div class="container">
     <h2 class="title is-2">Create a New Chorus Battle</h2>
 
-    <form method="POST" action="/create/chorusbattle">
+    <form method="POST" action="/create/chorusbattle" class="field">
       {{ form.hidden_tag() }}
       
-      <div class="form-group">
-        {{ form.name.label }}
-          <br>
-          {% if form.name.errors %}
+      <div class="field"> <!-- name -->
+        <div class="label">{{ form.name.label }}</div>
+        <div class="control">{{ form.name(class_="input") }}</div>
+        {% if form.name.errors %}
             {% for error in form.name.errors %}
-              <p class="error-message">{{ error }}</p>
+              <p class="is-danger">{{ error }}</p>
             {% endfor %}
-          {% endif %}
-
-        {{ form.name }}
+        {% endif %}
       </div>
       
-      <div class="form-group">
-        {{ form.description.label }}
-          <br>
-          {% if form.description.errors %}
+      <div class="field">
+        <div class="label">{{ form.description.label }}</div>
+        <div class="control">{{ form.description(class_="textarea") }}</div>
+        {% if form.description.errors %}
             {% for error in form.description.errors %}
-              <p class="error-message">{{ error }}</p>
+              <p class="is-danger">{{ error }}</p>
             {% endfor %}
-          {% endif %}
-
-        {{ form.description }}
+        {% endif %}
       </div>
       
-      <div class="form-group">
-        {{ form.rules.label }}
-          <br>
-          {% if form.rules.errors %}
+      <div class="field">
+        <div class="label">{{ form.rules.label }}</div>
+        <div class="control">{{ form.rules(class_="textarea") }}</div>
+        {% if form.rules.errors %}
             {% for error in form.rules.errors %}
-              <p class="error-message">{{ error }}</p>
+              <p class="is-danger">{{ error }}</p>
             {% endfor %}
-          {% endif %}
-
-        {{ form.rules }}
+        {% endif %}
       </div>
 
-      <div class="form-group">
-        {{ form.prizes.label }}
-          <br>
+      <div class="field">
+        <div class="label">{{ form.prizes.label }}</div>
+        <div class="control">{{ form.prizes(class_="textarea") }}</div>
           {% if form.prizes.errors %}
             {% for error in form.prizes.errors %}
-              <p class="error-message">{{ error }}</p>
+              <p class="is-danger">{{ error }}</p>
             {% endfor %}
           {% endif %}
-
-        {{ form.prizes }}
       </div>
 
-      <div class="form-group">
+      <div class="field">
         {{ form.video_link.label }}
           <br>
           {% if form.video_link.errors %}
@@ -71,5 +64,5 @@
       {{ form.submit(class="button is-link") }}
     </form>
   </div>
-
+</section>
 {% endblock %}
