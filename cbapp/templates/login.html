@@ -3,7 +3,7 @@
   <div class="container">
     <h2 class="is-size-2">Login</h2>
 
-    <form method="POST" action="/login">
+    <form method="POST" action="/login/">
       {{ form.hidden_tag() }}
       {% with messages = get_flashed_messages() %}
         {% if messages %}
