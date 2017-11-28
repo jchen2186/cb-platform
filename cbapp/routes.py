@@ -132,12 +132,11 @@ def createEntry(cb=None, rd=None):
         if not form.validate():
             # we need to update the entries table on postgres
             return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+        newEntry = Entry(form.team_name.data, form.description.data,
+            form.video_link.data, cb, rd)
 
-        # newcb = ChorusBattle(form.name.data, form.description.data,
-        #     form.rules.data, form.prizes.data, form.video_link.data)
-
-        # db.session.add(newcb)
-        # db.session.commit()
+        db.session.add(newEntry)
+        db.session.commit()
 
         return redirect(url_for('chorusBattle', cbname=cb))
 
@@ -177,7 +176,6 @@ def createChorusBattle():
             # we need to update the chorus battle table on postgres
             print('not valid')
             return render_template('createchorusbattle.html', form=form)
-
         newcb = ChorusBattle(form.name.data, form.description.data,
             form.rules.data, form.prizes.data, form.video_link.data)
 
