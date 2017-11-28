@@ -106,33 +106,33 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "chorusbattles.html")
 
-    def test_chorusbattles_get_createchorusbattles_GET_template(self):
-        """Checks if route for creating chorus battles exists (GET METHOD). The test passes if it does."""
+    # def test_chorusbattles_get_createchorusbattles_GET_template(self):
+    #     """Checks if route for creating chorus battles exists (GET METHOD). The test passes if it does."""
 
-    def test_chorusbattles_get_createchorusbattles_POST_template(self):
-        """Checks if route for creating chorus battles exists (POST METHOD). The test passes if it does."""
+    # def test_chorusbattles_get_createchorusbattles_POST_template(self):
+    #     """Checks if route for creating chorus battles exists (POST METHOD). The test passes if it does."""
 
-    def test_user_saved(self):
-        """Checks if user added to system is saved into the database upon signing up. The test passes if it is."""
-        user = User()
-        user.username = 'sample_user'
-        user.set_password('sample_password')
+    # def test_user_saved(self):
+    #     """Checks if user added to system is saved into the database upon signing up. The test passes if it is."""
+    #     user = User()
+    #     user.username = 'sample_user'
+    #     user.set_password('sample_password')
 
-        db.session.add(user)
-        db.session.commit(user)
+    #     db.session.add(user)
+    #     db.session.commit(user)
 
-        queried_user = User.query.filter_by(username='sample_user').one
-        assert queried_user is not None
+    #     queried_user = User.query.filter_by(username='sample_user').one
+    #     assert queried_user is not None
 
 
-    def test_user_password(self):
-        """Checks if the password set by the user is successfully saved into database. The test passes if it is."""
-        user = User
-        user.username = 'sample_user'
-        user.set_password('sample_password')
+    # def test_user_password(self):
+    #     """Checks if the password set by the user is successfully saved into database. The test passes if it is."""
+    #     user = User
+    #     user.username = 'sample_user'
+    #     user.set_password('sample_password')
 
-        db.session.add(user)
-        db.session.commit()
+    #     db.session.add(user)
+    #     db.session.commit()
 
-        assert user.check_password('password')
+    #     assert user.check_password('password')
 
