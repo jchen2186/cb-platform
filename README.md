@@ -2,7 +2,7 @@
 A website that brings together the chorus battle (CB) community on YouTube, Twitter, and other social media sites.
 
 ## We are Live!
-cbplatform.herokuapp.com
+[cbplatform.herokuapp.com](cbplatform.herokuapp.com)
 
 ## How to Run Locally
 *** Note that we are using Python3 rather than Python2.
