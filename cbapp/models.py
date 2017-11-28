@@ -107,7 +107,10 @@ class ChorusBattle(db.Model):
 
     def changeName(self, newName):
         self.name = newName
-        
+    
+    def getID(self):
+        return self.id
+
     def addDescription(self, description):
         self.description = description
 
@@ -129,13 +132,19 @@ class Entry(db.Model):
     """
     __tablename__ = 'entries'
     id = db.Column(db.Integer, primary_key = True)
+    team_name = db.Column(db.String(500))
+    description = db.Column(db.String(500))
+    video_link= db.Column(db.String(500))
     submission_date = db.Column(db.DateTime(timezone=True), default=func.now()) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
-
-    def __init__(self, id, submission_date, chorusbattle):
-        self.id = id
-        self.submission_date = submission_date
-        self.chorusbattle = chorusbattle
+    round_number = db.Column(db.Integer, db.ForeignKey('rounds.id'))
+    def __init__(self, team_name, description, video_link, chorusname, round_number):
+        self.team_name = team_name
+        self.description = description
+        self.video_link = video_link
+        chorusid = ChorusBattle.query.filter_by(name=chorusname).first().getID()
+        self.chorusbattle = chorusid
+        self.round_number = round_number
 
 class Round(db.Model):
     """ 
@@ -146,10 +155,12 @@ class Round(db.Model):
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
     theme = db.Column(db.String(500))
     deadline = db.Column(db.DateTime(timezone=True))
+    round_number = db.Column(db.Integer)
 
-    def __init__(self, chorusbattle, deadline):
+    def __init__(self, chorusbattle, deadline, round_number):
         self.chorusbattle = chorusbattle
         self.deadline = deadline
+        self.round_number = round_number
 
 class Team(db.Model):
     """
