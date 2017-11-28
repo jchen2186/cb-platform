@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero is-primary">
+<div class="hero-body has-text-centered">
+  <div class="container">
+    <h1 class="title">
+      Judging for {{ chorusBattle }}
+    </h1>
+    <h2 class="subtitle">
+        Entry# {{entry.title}}
+    </h2>
+  </div>
+</div>
+</section>
+<br><br>
+<div class="container">
+<table class="table">
+  <thead>
+    <tr>
+      <th><abbr title="Criteria">Criteria</abbr></th>
+      <th><abbr title="Score">Score</abbr></th>
+      <th><abbr title="Comments">Comments</abbr></th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <tr>
+      <th>Vocals</th>
+      <td>
+      	<div class="field">
+		  <div class="control">
+		    <div class="select is-primary">
+		      <select>
+		        <option></option>
+		        <option>1</option>
+		        <option>2</option>
+		        <option>3</option>
+		        <option>4</option>
+		        <option>5</option>
+		        <option>6</option>
+		        <option>7</option>
+		        <option>8</option>
+		        <option>9</option>
+		        <option>10</option>
+		      </select>
+		    </div>
+		  </div>
+		</div>
+      </td>
+      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+    
+ </tbody>
+</table>
+</div>
+
+{% endblock %}

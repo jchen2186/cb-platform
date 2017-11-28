@@ -169,4 +169,4 @@ def createChorusBattle():
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
 def judgeEntry(cb=None,entry=None):
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, form=form)
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
