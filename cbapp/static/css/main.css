@@ -8,5 +8,6 @@
 
 #main-hero{
 	background-image: url("/static/img/mainSplash.png");
-	background-size: contain;
+	background-size: fill;
+	background-repeat: none;
 }
