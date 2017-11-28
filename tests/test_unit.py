@@ -114,7 +114,12 @@ class TestCBAppUnit(unittest.TestCase):
 
     def test_user_saved(self):
         """Checks if user added to system is saved into the database upon signing up. The test passes if it is."""
+        user = User()
+        user.username = 'sample_user'
+        user.set_password = 'sample_password'
 
+        db.session.add(user)
     def test_user_password(self):
         """Checks if the password set by the user is successfully saved into database. The test passes if it is."""
-    
+
+
