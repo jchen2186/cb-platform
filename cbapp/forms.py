@@ -22,15 +22,19 @@ class SignupForm(Form):
         Length(min=6, message='Passwords must have at least 6 characters.')])
 
     # change this later to specify the possible roles the user can be
-    role_choices = [(2, 'Unassigned'),
+    role_choices = [(0, 'Choose Role'),
+                    (2, 'Unassigned'),
                     (3, 'Judge'),
                     (4, 'Singer'),
                     (5, 'Artist'),
                     (6, 'Mixer'),
                     (7, 'Animator')]
 
-    role = SelectField('Role', choices=role_choices)
-
+    # role = StringField('Role', validators=[
+        # DataRequired()]) 
+    role = SelectField('Role', coerce=int, choices=role_choices, validators=[
+        DataRequired('Please choose a role.')])
+    print(role)
     submit = SubmitField('Sign up')
 
 class LoginForm(Form):
