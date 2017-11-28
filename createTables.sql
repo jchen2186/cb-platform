@@ -19,9 +19,13 @@ CREATE TABLE users (
 
 CREATE TABLE chorusbattles (
 	id serial NOT NULL, 
-	name VARCHAR(150) NOT NULL, 
-	organizers integer NOT NULL, 
-	entries integer NOT NULL,
+	name VARCHAR(150) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    rules VARCHAR(500),
+    prizes VARCHAR(500),
+    video_link VARCHAR(150)
+	-- organizers integer NOT NULL, 
+	-- entries integer NOT NULL,
 	PRIMARY KEY (id)
 );
 

@@ -135,7 +135,7 @@ def chorusBattleAll():
 def chorusBattle(cbname=None):
     return render_template("tournament.html", cbname=cbname)
 
-@app.route('/chorusbattle/create', methods=['GET', 'POST'])
+@app.route('/create/chorusbattle', methods=['GET', 'POST'])
 def createChorusBattle():
     """
     The route '/chorusbattle/create' will direct the user, who has 
@@ -148,12 +148,15 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
+            # currently does not work
+            # we need to update the chorus battle table on postgres
+            print('not valid')
             return render_template('createchorusbattle.html', form=form)
 
         newcb = ChorusBattle(form.name.data, form.description.data,
-            form.theme.data, form.rules.data, form.prizes.data,
-            form.first_deadline.data, form.num_of_rounds.data,
-            form.video_link.data, form.grace_period.data)
+            form.rules.data, form.prizes.data, form.video_link.data)
+
+        print(db.session)
         db.session.add(newcb)
         db.session.commit()
 
@@ -161,3 +164,20 @@ def createChorusBattle():
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
+
+# work in progress
+@app.route('/user/<username>', methods=['GET'])
+def getUserProfile(username=None):
+    """
+    The route '/user/<username>' directs the user to the profile page of
+    the user with the specified username.
+    """
+    exists = db.session.query(
+        db.session.query(User).filter_by(username=username).exists()).scalar()
+
+    if username is not None and exists:
+        userRow = User.query.filter_by(username=username)
+        # role = userRow.get_role()
+
+        return render_template("userprofile.html", username=username,
+            role=role)
