@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+  <div>
+    <h2 class="title is-2">Create a New Chorus Battle</h2>
+
+    <form method="POST" action="/createchorusbattle">
+      {{ form.hidden_tag() }}
+      
+      <div class="form-group">
+        {{ form.name.label }}
+          <br>
+          {% if form.name.errors %}
+            {% for error in form.username.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.name }}
+      </div>
+      
+      <div class="form-group">
+        {{ form.description.label }}
+          <br>
+          {% if form.description.errors %}
+            {% for error in form.description.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.description }}
+      </div>
+
+      <div class="form-group">
+        {{ form.theme.label }}
+          <br>
+          {% if form.theme.errors %}
+            {% for error in form.theme.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.theme }}
+      </div>
+      
+      <div class="form-group">
+        {{ form.rules.label }}
+          <br>
+          {% if form.rules.errors %}
+            {% for error in form.rules.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.rules }}
+      </div>
+
+      <div class="form-group">
+        {{ form.prizes.label }}
+          <br>
+          {% if form.prizes.errors %}
+            {% for error in form.prizes.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.prizes }}
+      </div>
+
+      <div class="form-group">
+        {{ form.firstDeadline.label }}
+          <br>
+          {% if form.firstDeadline.errors %}
+            {% for error in form.firstDeadline.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.firstDeadline }}
+      </div>
+
+      <div class="form-group">
+        {{ form.numOfRounds.label }}
+          <br>
+          {% if form.numOfRounds.errors %}
+            {% for error in form.numOfRounds.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.numOfRounds }}
+      </div>
+
+      <div class="form-group">
+        {{ form.videoLink.label }}
+          <br>
+          {% if form.videoLink.errors %}
+            {% for error in form.videoLink.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.videoLink }}
+      </div>
+
+      <div class="form-group">
+        {{ form.gracePeriod.label }}
+          <br>
+          {% if form.gracePeriod.errors %}
+            {% for error in form.gracePeriod.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.gracePeriod }}
+      </div>
+
+      <br>
+      {{ form.submit(class="button is-link") }}
+    </form>
+  </div>
+
+{% endblock %}
