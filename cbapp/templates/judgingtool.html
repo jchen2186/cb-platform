@@ -8,27 +8,54 @@
       Judging for {{ chorusBattle }}
     </h1>
     <h2 class="subtitle">
-        Entry# {{entry}}
+        Team 2&ensp;-&ensp;Entry {{entry}}
     </h2>
   </div>
 </div>
 </section>
-<br><br>
+<br>
+<div class ="hero-body">
 <div class="container">
-<table class="table">
-  <thead>
-    <tr>
-      <th><abbr title="Criteria">Criteria</abbr></th>
-      <th><abbr title="Score">Score</abbr></th>
-      <th><abbr title="Comments">Comments</abbr></th>
-    </tr>
-  </thead>
-  
-  <tbody>
-    <tr>
-      <th>Vocals</th>
-      <td>
-      	<div class="field">
+<div class="columns">
+	<div class="column is-half">
+		<table class="table">
+		<thead>
+		<tr>
+			<th><abbr title="Criteria">Criteria</abbr></th>
+			<th><abbr title="Score">Score</abbr></th>
+			<th><abbr title="Comments">Comments</abbr></th>
+		</tr>
+		</thead>
+
+		<tbody>
+		<tr>
+		<th>Vocals</th>
+		<td>
+		<div class="field">
+			<div class="control">
+			    <div class="select is-primary">
+			      <select>
+			        <option></option>
+			        <option>1</option>
+			        <option>2</option>
+			        <option>3</option>
+			        <option>4</option>
+			        <option>5</option>
+			        <option>6</option>
+			        <option>7</option>
+			        <option>8</option>
+			        <option>9</option>
+			        <option>10</option>
+			      </select>
+				</div>
+			</div>
+		</div>
+		</td>
+		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+		</tr>
+		<th>Instrumental</th>
+		<td>
+		<div class="field">
 		  <div class="control">
 		    <div class="select is-primary">
 		      <select>
@@ -47,12 +74,13 @@
 		    </div>
 		  </div>
 		</div>
-      </td>
-      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-    </tr>
-      <th>Instrumental</th>
-      <td>
-      	<div class="field">
+		</td>
+		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+		</tr>
+		<tr>
+		<th>Art</th>
+		<td>
+		<div class="field">
 		  <div class="control">
 		    <div class="select is-primary">
 		      <select>
@@ -71,13 +99,13 @@
 		    </div>
 		  </div>
 		</div>
-      </td>
-      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-    </tr>
-    <tr>
-      <th>Art</th>
-      <td>
-      	<div class="field">
+		</td>
+		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+		</tr>
+		<tr>
+		<th>Editing</th>
+		<td>
+		<div class="field">
 		  <div class="control">
 		    <div class="select is-primary">
 		      <select>
@@ -96,13 +124,13 @@
 		    </div>
 		  </div>
 		</div>
-      </td>
-      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-    </tr>
-    <tr>
-      <th>Editing</th>
-      <td>
-      	<div class="field">
+		</td>
+		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+		</tr>
+		<tr>
+		<th>Transitions</th>
+		<td>
+		<div class="field">
 		  <div class="control">
 		    <div class="select is-primary">
 		      <select>
@@ -121,36 +149,21 @@
 		    </div>
 		  </div>
 		</div>
-      </td>
-      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-    </tr>
-    <tr>
-      <th>Transitions</th>
-      <td>
-      	<div class="field">
-		  <div class="control">
-		    <div class="select is-primary">
-		      <select>
-		        <option></option>
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		        <option>6</option>
-		        <option>7</option>
-		        <option>8</option>
-		        <option>9</option>
-		        <option>10</option>
-		      </select>
-		    </div>
-		  </div>
-		</div>
-      </td>
-      <td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-    </tr>
- </tbody>
-</table>
+		</td>
+		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+		</tr>
+		</tbody>
+		</table>
+		<a class="button is-primary">Submit Score</a>
+	</div>
+	<div class="column">
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/G2lXOwRi7Tk" frameborder="0" allowfullscreen></iframe>
+	    <br><br><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.
+        </p>
+	</div>
 </div>
+</div>
+</div>
+	
 
 {% endblock %}
