@@ -18,6 +18,8 @@ app.secret_key = 'development-key'
 @app.route('/', methods=['GET'])
 def index():
     """The route '/' leads to the index page."""
+    if 'username' in session:
+        return redirect(url_for('home'))
     return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
