@@ -5,7 +5,7 @@ user to the templates.
 
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateRoundForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 import os
@@ -121,13 +121,28 @@ def chorusEntries(cb=None):
     print(rounds)
     return render_template('entries.html', chorusTitle=cb, rounds=rounds)
 
-@app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
-def createEntry(cb=None):
+@app.route('/chorusbattle/<cb>/entries/<rd>/create/', methods=['GET', 'POST'])
+def createEntry(cb=None, rd=None):
     """
     The route '/chorusbattle/<cb>/entries' will direct a participant to a page where
     they can create a new entry for the newest round in the selected chorus battle.
     """
-    return render_template('createentry.html', chorusTitle=cb)
+    form = CreateEntryForm()
+    if request.method == 'POST':
+        if not form.validate():
+            # we need to update the entries table on postgres
+            return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+
+        # newcb = ChorusBattle(form.name.data, form.description.data,
+        #     form.rules.data, form.prizes.data, form.video_link.data)
+
+        # db.session.add(newcb)
+        # db.session.commit()
+
+        return redirect(url_for('chorusBattle', cbname=cb))
+
+    elif request.method == 'GET':
+        return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """

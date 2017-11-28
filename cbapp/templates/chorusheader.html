@@ -30,8 +30,14 @@
               <span>Join this chorus battle</span>
           </a>
         </div>
+
         <div class="level-item">
-          <a class="button is-primary" href="/chorusbattle/{{chorusTitle}}/entries">
+          <a class="button is-primary" href=
+          {% if "entries" in request.path %}
+            "/chorusbattle/{{ chorusTitle }}"
+          {% else %}
+            "/chorusbattle/{{chorusTitle}}/entries">
+          {% endif %}
               <span>Entries</span>
           </a>
         </div>
