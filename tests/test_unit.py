@@ -116,10 +116,23 @@ class TestCBAppUnit(unittest.TestCase):
         """Checks if user added to system is saved into the database upon signing up. The test passes if it is."""
         user = User()
         user.username = 'sample_user'
-        user.set_password = 'sample_password'
+        user.set_password('sample_password')
 
         db.session.add(user)
+        db.session.commit(user)
+
+        queried_user = User.query.filter_by(username='sample_user').one
+        assert queried_user is not None
+
+
     def test_user_password(self):
         """Checks if the password set by the user is successfully saved into database. The test passes if it is."""
+        user = User
+        user.username = 'sample_user'
+        user.set_password('sample_password')
 
+        db.session.add(user)
+        db.session.commit()
+
+        assert user.check_password('password')
 
