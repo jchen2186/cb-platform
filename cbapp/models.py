@@ -91,36 +91,25 @@ class ChorusBattle(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
     description = db.Column(db.String(500))
-    theme = db.Column(db.String(150))
     rules = db.Column(db.String(500))
     prizes = db.Column(db.String(500))
-    num_of_rounds = db.Column(db.Integer)
     video_link = db.Column(db.String(150))
-    grace_period = db.Column(db.String(150))
     entries = db.relationship('Entry')
     teams = db.relationship('Team')
-    judges = db.relationship('Judge', secondary=judges)
+    # judges = db.relationship('Judge', secondary=judges)
 
-    def __init__(self, name, description, theme, rules, prizes, num_of_rounds,
-        video_link, grace_period):
+    def __init__(self, name, description, rules, prizes, video_link):
         self.name = name
         self.description = description
-        self.theme = theme
         self.rules = rules
         self.prizes = prizes
-        self.num_of_rounds = num_of_rounds
         self.video_link = video_link
-        self.grace_period = grace_period
 
     def changeName(self, newName):
         self.name = newName
         
     def addDescription(self, description):
         self.description = description
-
-    def addRound(self, deadline):
-        newRound = Round(self.id, deadline)
-
 
 class UserRole(db.Model):
     """
@@ -155,6 +144,7 @@ class Round(db.Model):
     __tablename__ = 'rounds'
     id = db.Column(db.Integer, primary_key = True)
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    theme = db.Column(db.String(500))
     deadline = db.Column(db.DateTime(timezone=True))
 
     def __init__(self, chorusbattle, deadline):

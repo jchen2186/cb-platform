@@ -4,7 +4,7 @@
   <div class="container">
     <h2 class="title is-2">Create a New Chorus Battle</h2>
 
-    <form method="POST" action="/chorusbattle/create">
+    <form method="POST" action="/create/chorusbattle">
       {{ form.hidden_tag() }}
       
       <div class="form-group">
@@ -29,18 +29,6 @@
           {% endif %}
 
         {{ form.description }}
-      </div>
-
-      <div class="form-group">
-        {{ form.theme.label }}
-          <br>
-          {% if form.theme.errors %}
-            {% for error in form.theme.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.theme }}
       </div>
       
       <div class="form-group">
@@ -68,30 +56,6 @@
       </div>
 
       <div class="form-group">
-        {{ form.first_deadline.label }}
-          <br>
-          {% if form.first_deadline.errors %}
-            {% for error in form.first_deadline.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.first_deadline }}
-      </div>
-
-      <div class="form-group">
-        {{ form.num_of_rounds.label }}
-          <br>
-          {% if form.num_of_rounds.errors %}
-            {% for error in form.num_of_rounds.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.num_of_rounds }}
-      </div>
-
-      <div class="form-group">
         {{ form.video_link.label }}
           <br>
           {% if form.video_link.errors %}
@@ -101,18 +65,6 @@
           {% endif %}
 
         {{ form.video_link }}
-      </div>
-
-      <div class="form-group">
-        {{ form.grace_period.label }}
-          <br>
-          {% if form.grace_period.errors %}
-            {% for error in form.grace_period.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.grace_period }}
       </div>
 
       <br>
