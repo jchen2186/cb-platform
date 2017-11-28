@@ -41,7 +41,7 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
 
-class CreateChorusBattle(Form):
+class CreateChorusBattleForm(Form):
     """WTForm for creating a chorus battle."""
     name = StringField('Name of Chorus Battle', validators=[
         DataRequired('Please enter a name for your chorus battle.')])
@@ -55,13 +55,13 @@ class CreateChorusBattle(Form):
         DataRequired('Please provide a list of rules that participants must follow or know about.')])
     prizes = TextAreaField('Prizes', validators=[
         DataRequired('Please provide a list of prizes that participants can win from the chorus battle, if there are any.')])
-    firstDeadline = DateTimeField('Deadline (date and time)', validators=[
+    first_deadline = DateTimeField('Deadline (date and time)', validators=[
         DataRequired('Please provide a deadline (date and time) for the first round.')])
-    numOfRounds = IntegerField('Number of Rounds', validators=[
+    num_of_rounds = IntegerField('Number of Rounds', validators=[
         DataRequired('Please provide the number of rounds you would like to have for this chorus battle.')])
 
     # maybe later: add optional datetimefields for the future rounds
     
-    videoLink = StringField('Link to the Chorus Battle Introduction Video')
-    gracePeriod = StringField('Grace Period')
+    video_link = StringField('Link to the Chorus Battle Introduction Video')
+    grace_period = StringField('Grace Period')
     submit = SubmitField('Create Chorus Battle')

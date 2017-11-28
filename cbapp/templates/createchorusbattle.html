@@ -1,16 +1,17 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <div>
+  <div class="container">
     <h2 class="title is-2">Create a New Chorus Battle</h2>
 
-    <form method="POST" action="/createchorusbattle">
+    <form method="POST" action="/chorusbattle/create">
       {{ form.hidden_tag() }}
       
       <div class="form-group">
         {{ form.name.label }}
           <br>
           {% if form.name.errors %}
-            {% for error in form.username.errors %}
+            {% for error in form.name.errors %}
               <p class="error-message">{{ error }}</p>
             {% endfor %}
           {% endif %}
@@ -67,51 +68,51 @@
       </div>
 
       <div class="form-group">
-        {{ form.firstDeadline.label }}
+        {{ form.first_deadline.label }}
           <br>
-          {% if form.firstDeadline.errors %}
-            {% for error in form.firstDeadline.errors %}
+          {% if form.first_deadline.errors %}
+            {% for error in form.first_deadline.errors %}
               <p class="error-message">{{ error }}</p>
             {% endfor %}
           {% endif %}
 
-        {{ form.firstDeadline }}
+        {{ form.first_deadline }}
       </div>
 
       <div class="form-group">
-        {{ form.numOfRounds.label }}
+        {{ form.num_of_rounds.label }}
           <br>
-          {% if form.numOfRounds.errors %}
-            {% for error in form.numOfRounds.errors %}
+          {% if form.num_of_rounds.errors %}
+            {% for error in form.num_of_rounds.errors %}
               <p class="error-message">{{ error }}</p>
             {% endfor %}
           {% endif %}
 
-        {{ form.numOfRounds }}
+        {{ form.num_of_rounds }}
       </div>
 
       <div class="form-group">
-        {{ form.videoLink.label }}
+        {{ form.video_link.label }}
           <br>
-          {% if form.videoLink.errors %}
-            {% for error in form.videoLink.errors %}
+          {% if form.video_link.errors %}
+            {% for error in form.video_link.errors %}
               <p class="error-message">{{ error }}</p>
             {% endfor %}
           {% endif %}
 
-        {{ form.videoLink }}
+        {{ form.video_link }}
       </div>
 
       <div class="form-group">
-        {{ form.gracePeriod.label }}
+        {{ form.grace_period.label }}
           <br>
-          {% if form.gracePeriod.errors %}
-            {% for error in form.gracePeriod.errors %}
+          {% if form.grace_period.errors %}
+            {% for error in form.grace_period.errors %}
               <p class="error-message">{{ error }}</p>
             {% endfor %}
           {% endif %}
 
-        {{ form.gracePeriod }}
+        {{ form.grace_period }}
       </div>
 
       <br>

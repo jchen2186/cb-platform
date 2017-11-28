@@ -5,7 +5,7 @@ user to the templates.
 
 from flask import render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 import os
@@ -138,3 +138,30 @@ def chorusBattleAll():
 @app.route('/chorusbattle/<cbname>', methods=['GET'])
 def chorusBattle(cbname=None):
     return render_template("tournament.html", cbname=cbname)
+
+@app.route('/chorusbattle/create', methods=['GET', 'POST'])
+def createChorusBattle():
+    """
+    The route '/chorusbattle/create' will direct the user, who has 
+    to be a Judge, to the form where he/she will fill out information
+    relating to the chorus battle.
+    After submitting the form, the user will be notified of any errors,
+    if there are any. Otherwise, the chorus battle will be created.
+    """
+    form = CreateChorusBattleForm()
+
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('createchorusbattle.html', form=form)
+
+        newcb = ChorusBattle(form.name.data, form.description.data,
+            form.theme.data, form.rules.data, form.prizes.data,
+            form.first_deadline.data, form.num_of_rounds.data,
+            form.video_link.data, form.grace_period.data)
+        db.session.add(newcb)
+        db.session.commit()
+
+        return redirect(url_for('/chorusbattle/' + form.name.data))
+
+    elif request.method == 'GET':
+        return render_template('createchorusbattle.html', form=form)
