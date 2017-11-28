@@ -13,8 +13,9 @@ import cbapp
 class TestCBAppUnit(unittest.TestCase):
     """Class of unit tests that checks if the templates exist."""
 
+    """
     def test_login_gets_login_template(self):
-        """Checks if the login route exists. The test passes if it does."""
+        #Checks if the login route exists. The test passes if it does.
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -29,6 +30,7 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             #makes sure we are rendering the correct template on the login route
             self.assertEqual(file_name, "login.html")
+    """
 
     def test_index_get_index_template(self):
         """Checks if the index route exists. The test passes if it does."""
@@ -43,8 +45,36 @@ class TestCBAppUnit(unittest.TestCase):
 
             # Check if the template rendered is index.html
             call_args = render_template.call_args
-            filename = call_args[0][0]
-            self.assertEqual(filename, "index.html")
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "index.html")
+
+    """
+    def test_signup_get_singup_template(self):
+        #Checks if the signup route exists. The test passes if it does.
+        with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.signup()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "signup.html")
+    """
+
+    """
+    def test_home_get_home_template(self):
+         #Checks if the home route exists. The test passes if it does.
+         with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.home()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "home.html")
+    """
 
     def test_cbinfo_get_cbinfo_template(self):
         """Checks if the chorusinfo route exists. The test passes if it does."""
@@ -59,7 +89,7 @@ class TestCBAppUnit(unittest.TestCase):
             self.assertEqual(file_name, "chorusinfo.html")
 
     def test_cbinfo_get_entries_template(self):
-        """Checks if the chorusinfo route exists. The test passes if it does."""
+        """Checks if the chorusinfo entries route exists. The test passes if it does."""
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -82,18 +112,6 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "team.html")
 
-    def test_tournament_get_tournament_template(self):
-         """Checks if the tournament route exists. The test passes if it does.""" 
-         with patch.multiple("cbapp.routes",
-                            request=DEFAULT,
-                            render_template=DEFAULT) as mock_functions:
-            cbapp.routes.chorusBattle()
-            render_template = mock_functions["render_template"]
-            self.assertTrue(render_template.called)
-            call_args = render_template.call_args
-            file_name = call_args[0][0]
-            self.assertEqual(file_name, "tournament.html")
-
     def test_chorusbattles_get_chorusbattles_template(self):
          """Checks if the chorusBattle route exists. The test passes if it does.""" 
          with patch.multiple("cbapp.routes",
@@ -106,33 +124,42 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "chorusbattles.html")
 
-    # def test_chorusbattles_get_createchorusbattles_GET_template(self):
-    #     """Checks if route for creating chorus battles exists (GET METHOD). The test passes if it does."""
+    def test_tournament_get_tournament_template(self):
+         """Checks if the tournament route exists. The test passes if it does.""" 
+         with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.chorusBattle()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "tournament.html")
 
-    # def test_chorusbattles_get_createchorusbattles_POST_template(self):
-    #     """Checks if route for creating chorus battles exists (POST METHOD). The test passes if it does."""
+    """
+    def test_createcb_get_createcb_template(self):
+        #Checks if the createcb route exists. The test passes if it does. 
+        with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.createChorusBattle()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "createchorusbattle.html")
+    """
 
-    # def test_user_saved(self):
-    #     """Checks if user added to system is saved into the database upon signing up. The test passes if it is."""
-    #     user = User()
-    #     user.username = 'sample_user'
-    #     user.set_password('sample_password')
-
-    #     db.session.add(user)
-    #     db.session.commit(user)
-
-    #     queried_user = User.query.filter_by(username='sample_user').one
-    #     assert queried_user is not None
-
-
-    # def test_user_password(self):
-    #     """Checks if the password set by the user is successfully saved into database. The test passes if it is."""
-    #     user = User
-    #     user.username = 'sample_user'
-    #     user.set_password('sample_password')
-
-    #     db.session.add(user)
-    #     db.session.commit()
-
-    #     assert user.check_password('password')
-
+    """
+    def test_userprofile_get_userprofile_template(self):
+        #Checks if the user profile route exists. The test passes if it does.
+        with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.getUserProfile()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "userprofile.html")
+    """

@@ -73,6 +73,15 @@ class User(db.Model):
         """
         return check_password_hash(self.password_hash,password)
 
+    def get_role(self):
+        """
+        Gets the user's role (in words).
+        """
+        role = self.role_id
+
+        roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
+        return roles[role - 1]
+
 
 class ChorusBattle(db.Model):
     """
@@ -82,20 +91,25 @@ class ChorusBattle(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(150))
     description = db.Column(db.String(500))
+    rules = db.Column(db.String(500))
+    prizes = db.Column(db.String(500))
+    video_link = db.Column(db.String(150))
     entries = db.relationship('Entry')
     teams = db.relationship('Team')
     # judges = db.relationship('Judge', secondary=judges)
 
-    def __init__(self, name, description = None):
+    def __init__(self, name, description, rules, prizes, video_link):
         self.name = name
         self.description = description
+        self.rules = rules
+        self.prizes = prizes
+        self.video_link = video_link
 
     def changeName(self, newName):
         self.name = newName
         
     def addDescription(self, description):
         self.description = description
-
 
 class UserRole(db.Model):
     """
@@ -130,10 +144,12 @@ class Round(db.Model):
     __tablename__ = 'rounds'
     id = db.Column(db.Integer, primary_key = True)
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    theme = db.Column(db.String(500))
+    deadline = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self,id,chorusbattle):
-        self.id = id
+    def __init__(self, chorusbattle, deadline):
         self.chorusbattle = chorusbattle
+        self.deadline = deadline
 
 class Team(db.Model):
     """
@@ -147,17 +163,16 @@ class Team(db.Model):
         self.id = id
         self.chorusbattle = chorusbattle
 
+class Judge(db.Model):
+    __tablename__ = 'judges',
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
-# class Judge(db.Model):
-#     __tablename__ = 'judges',
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-#     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+    def __init__(self, user_id, chorusbattle_id):
+        self.user_id = user_id
+        self.chorusbattle_id = chorusbattle_id
 
-#     def __init__(self, user_id, chorusbattle_id):
-#         self.user_id = user_id
-#         self.chorusbattle_id = chorusbattle_id
-
-# class ChorusBattle_Entry(db.Model):
+# class Chorus_Battle_Entry(db.Model):
 #     __tablename__ = 'chorusbattle_entries'
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
 #     entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), primary_key = True)

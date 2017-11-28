@@ -3,9 +3,9 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
-from flask import render_template, request, session, redirect, url_for
+from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateRoundForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 import os
@@ -18,9 +18,11 @@ app.secret_key = 'development-key'
 @app.route('/', methods=['GET'])
 def index():
     """The route '/' leads to the index page."""
+    if 'username' in session:
+        return redirect(url_for('home'))
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     """
     The route '/login' leads to the login form if the user is not already
@@ -36,23 +38,19 @@ def login():
     form = LoginForm()
 
     if request.method == 'POST':
-        if not form.validate():
-            return render_template('login.html', form=form)
-
-        username = form.username.data
-        password = form.password.data
-
-        user = User.query.filter_by(username=username).first()
-        if user is not None and user.check_password(password):
-            session['username'] = form.username.data
-            return redirect(url_for('home'))
-
-        return redirect(url_for('login'))
-
+        if form.validate():
+            username = form.username.data
+            password = form.password.data
+            user = User.query.filter_by(username=username).first()
+            if user is not None and user.check_password(password):
+                session['username'] = form.username.data
+                return redirect(url_for('home'))
+            flash('Incorrect username or password.')
+            return render_template('login.html', form=form) 
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup/', methods=['GET', 'POST'])
 def signup():
     """
     The route '/signup' leads to the signup form if the user is not already
@@ -75,18 +73,19 @@ def signup():
         db.session.commit()
 
         session['username'] = newuser.username
+        session['role'] = newuser.role
         return redirect(url_for('home'))
 
     elif request.method == 'GET':
         return render_template('signup.html', form=form)
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     """The route '/logout' will remove the user from the current session."""
     session.pop('username', None)
     return redirect(url_for('index'))
 
-@app.route('/home')
+@app.route('/home/')
 def home():
     """
     The route '/home' will redirect the user to the dashboard if the
@@ -96,7 +95,7 @@ def home():
         return redirect(url_for('login'))
     return render_template('home.html')
 
-@app.route('/chorusbattle/<cb>', methods=['GET'])
+@app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
     """
     The route '/chorusbattle/<cb> will direct the user to a page where the user
@@ -105,7 +104,7 @@ def chorusInfo(cb=None):
     """
     return render_template('chorusinfo.html', chorusTitle=cb)
 
-@app.route('/chorusbattle/<cb>/entries', methods=['GET'])
+@app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
     """
     The route '/chorusbattle/<cb>/entries' will direct the user to a page where
@@ -122,6 +121,13 @@ def chorusEntries(cb=None):
     print(rounds)
     return render_template('entries.html', chorusTitle=cb, rounds=rounds)
 
+@app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
+def createEntry(cb=None):
+    """
+    The route '/chorusbattle/<cb>/entries' will direct a participant to a page where
+    they can create a new entry for the newest round in the selected chorus battle.
+    """
+    return render_template('createentry.html', chorusTitle=cb)
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """
@@ -131,18 +137,18 @@ def team(name=None):
     """
     return render_template('team.html')
 
-@app.route('/chorusbattle', methods=['GET'])
+@app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
     return render_template("chorusbattles.html")
 
-@app.route('/chorusbattle/<cbname>', methods=['GET'])
+@app.route('/chorusbattle/<cbname>/', methods=['GET'])
 def chorusBattle(cbname=None):
     return render_template("tournament.html", cbname=cbname)
 
-@app.route('/chorusbattle/create', methods=['GET', 'POST'])
+@app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
     """
-    The route '/chorusbattle/create' will direct the user, who has 
+    The route '/create/chorusbattle' will direct the user, who has 
     to be a Judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
@@ -152,16 +158,18 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
+            # currently does not work
+            # we need to update the chorus battle table on postgres
+            print('not valid')
             return render_template('createchorusbattle.html', form=form)
 
         newcb = ChorusBattle(form.name.data, form.description.data,
-            form.theme.data, form.rules.data, form.prizes.data,
-            form.first_deadline.data, form.num_of_rounds.data,
-            form.video_link.data, form.grace_period.data)
+            form.rules.data, form.prizes.data, form.video_link.data)
+
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('/chorusbattle/' + form.name.data))
+        return redirect(url_for('chorusBattle', cbname=form.name.data))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
@@ -170,3 +178,47 @@ def createChorusBattle():
 def judgeEntry(cb=None,entry=None):
     if request.method == 'GET':
         return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
+
+@app.route('/create/round/', methods=['GET', 'POST'])
+def createRound():
+    """
+    The route '/create/round' will direct the user, who has to be a Judge,
+    to the form where he/she will fill out information in order to add a round
+    to the chorus battle he/she is hosting.
+    After submitting the form, the user will be notified of any errors, if
+    there are any. Otherwise, the round will be created.
+    """
+    form = CreateRoundForm()
+
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('createround.html', form=form)
+
+        newRound = Round(form.round_number.data, form.theme.data, form.deadline.data)
+        db.session.add(newRound)
+        db.session.commit()
+
+        # somehow redirect the user back to the chorus battle info page for
+        # this particular chorus battle
+        return redirect(url_for('/chorusbattle/'))
+
+    elif request.method == 'GET':
+        return render_template('createround.html', form=form)
+
+
+# work in progress
+@app.route('/user/<username>/', methods=['GET'])
+def getUserProfile(username=None):
+    """
+    The route '/user/<username>' directs the user to the profile page of
+    the user with the specified username.
+    """
+    exists = db.session.query(
+        db.session.query(User).filter_by(username=username).exists()).scalar()
+
+    if username is not None and exists:
+        userRow = User.query.filter_by(username=username)
+        # role = userRow.get_role()
+
+        return render_template("userprofile.html", username=username,
+            role=role)

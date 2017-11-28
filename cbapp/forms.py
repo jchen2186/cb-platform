@@ -2,11 +2,11 @@
 This module contains the structure of all of the forms used on the app.
 """
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField
 from wtforms.validators import DataRequired, Email, Length
 
-class SignupForm(Form):
+class SignupForm(FlaskForm):
     """WTForm for sign up page."""
     first_name = StringField('First name', validators=[
         DataRequired('Please enter your first name.')])
@@ -35,33 +35,43 @@ class SignupForm(Form):
 
     submit = SubmitField('Sign up')
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     """WTForm for login page."""
     username = StringField('Username', validators=[DataRequired('Please enter your username.')])
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
 
-class CreateChorusBattleForm(Form):
+class CreateChorusBattleForm(FlaskForm):
     """WTForm for creating a chorus battle."""
     name = StringField('Name of Chorus Battle', validators=[
         DataRequired('Please enter a name for your chorus battle.')])
     description = TextAreaField('Description', validators=[
         DataRequired('Please provide a brief description of your chorus battle.')])
-    theme = StringField('Theme')
-
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
     rules = TextAreaField('List of Rules', validators=[
         DataRequired('Please provide a list of rules that participants must follow or know about.')])
     prizes = TextAreaField('Prizes', validators=[
         DataRequired('Please provide a list of prizes that participants can win from the chorus battle, if there are any.')])
-    first_deadline = DateTimeField('Deadline (date and time)', validators=[
-        DataRequired('Please provide a deadline (date and time) for the first round.')])
-    num_of_rounds = IntegerField('Number of Rounds', validators=[
-        DataRequired('Please provide the number of rounds you would like to have for this chorus battle.')])
-
-    # maybe later: add optional datetimefields for the future rounds
-    
     video_link = StringField('Link to the Chorus Battle Introduction Video')
-    grace_period = StringField('Grace Period')
     submit = SubmitField('Create Chorus Battle')
+
+class CreateRoundForm(FlaskForm):
+    """WTForm for adding a round for a particular chorus battle."""
+    round_number = IntegerField('Round Number', validators=[
+        DataRequired('Please enter the round number.')])
+    theme = TextAreaField('Theme', validators=[
+        DataRequired('Please enter the theme for this particular round.')])
+    deadline = DateTimeField('Deadline', validators=[
+        DataRequired('Please enter the deadline (date and time) for this round.')])
+    submit = SubmitField('Create New Round')
+
+class CreateEntryForm(FlaskForm):
+    """WTForm for adding an entry to a particular cohrus battle."""
+    team_name = StringField('Team Name', validators=[
+        DataRequired('Please enter your team name')])
+    description = TextAreaField('Description', validators=[
+        DataRequired('Please provide of a description of your entry.')])
+    video_link = StringField('Link to the Chorus Battle Video', validators=[
+        DataRequired('Please provide a link to your Chorus Battle Video')])
+    submit = SubmitField('Submit Entry')

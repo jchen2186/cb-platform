@@ -1,3 +1,7 @@
+.navbar-brand .navbar-item:hover {
+	color: lightgray;
+}
+
 .team-header .hero-foot{
 	padding:10px;
 }
