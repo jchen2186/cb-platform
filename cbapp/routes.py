@@ -161,7 +161,7 @@ def createChorusBattle():
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('/chorusbattle/' + form.name.data))
+        return redirect(url_for('chorusBattle', cbname=form.name.data))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
