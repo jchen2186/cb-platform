@@ -128,7 +128,21 @@ def createEntry(cb=None, rd=None):
     they can create a new entry for the newest round in the selected chorus battle.
     """
     form = CreateEntryForm()
-    return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+    if request.method == 'POST':
+        if not form.validate():
+            # we need to update the entries table on postgres
+            return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+
+        # newcb = ChorusBattle(form.name.data, form.description.data,
+        #     form.rules.data, form.prizes.data, form.video_link.data)
+
+        # db.session.add(newcb)
+        # db.session.commit()
+
+        return redirect(url_for('chorusBattle', cbname=cb))
+
+    elif request.method == 'GET':
+        return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """
