@@ -5,7 +5,7 @@ user to the templates.
 
 from flask import render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateRoundForm
 from .models import db, User, ChorusBattle, UserRole, Entry
 from cbapp import app
 import os
@@ -142,7 +142,7 @@ def chorusBattle(cbname=None):
 @app.route('/create/chorusbattle', methods=['GET', 'POST'])
 def createChorusBattle():
     """
-    The route '/chorusbattle/create' will direct the user, who has 
+    The route '/create/chorusbattle' will direct the user, who has 
     to be a Judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
@@ -160,7 +160,6 @@ def createChorusBattle():
         newcb = ChorusBattle(form.name.data, form.description.data,
             form.rules.data, form.prizes.data, form.video_link.data)
 
-        print(db.session)
         db.session.add(newcb)
         db.session.commit()
 
@@ -168,6 +167,33 @@ def createChorusBattle():
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
+
+@app.route('/create/round', methods=['GET', 'POST'])
+def createRound():
+    """
+    The route '/create/round' will direct the user, who has to be a Judge,
+    to the form where he/she will fill out information in order to add a round
+    to the chorus battle he/she is hosting.
+    After submitting the form, the user will be notified of any errors, if
+    there are any. Otherwise, the round will be created.
+    """
+    form = CreateRoundForm()
+
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('createround.html', form=form)
+
+        newRound = Round(form.round_number.data, form.theme.data, form.deadline.data)
+        db.session.add(newRound)
+        db.session.commit()
+
+        # somehow redirect the user back to the chorus battle info page for
+        # this particular chorus battle
+        return redirect(url_for('/chorusbattle/'))
+
+    elif request.method == 'GET':
+        return render_template('createround.html', form=form)
+
 
 # work in progress
 @app.route('/user/<username>', methods=['GET'])
