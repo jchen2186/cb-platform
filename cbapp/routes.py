@@ -102,7 +102,12 @@ def chorusInfo(cb=None):
     can find more information about the selected chorus battle, stored
     as the variable cb.
     """
-    return render_template('chorusinfo.html', chorusTitle=cb)
+    row = ChorusBattle.query.filter_by(name=cb).first()
+
+    if row:
+        return render_template('chorusinfo.html', chorusTitle=cb,
+            description=row.get_description(), rules=row.get_rules(),
+            prizes=row.get_prizes(), video=row.get_video_link())
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -213,12 +218,8 @@ def getUserProfile(username=None):
     The route '/user/<username>' directs the user to the profile page of
     the user with the specified username.
     """
-    exists = db.session.query(
-        db.session.query(User).filter_by(username=username).exists()).scalar()
+    row = User.query.filter_by(username=username).first()
 
-    if username is not None and exists:
-        userRow = User.query.filter_by(username=username)
-        # role = userRow.get_role()
+    if row:
+        return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
 
-        return render_template("userprofile.html", username=username,
-            role=role)
