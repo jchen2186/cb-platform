@@ -6,7 +6,7 @@ user to the templates.
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm
-from .models import db, User, ChorusBattle, UserRole, Entry
+from .models import db, User, ChorusBattle, UserRole, Entry, Round
 from cbapp import app
 import os
 
