@@ -113,26 +113,8 @@ class ChorusBattle(db.Model):
     def change_name(self, newName):
         self.name = newName
     
-    def getID(self):
-        return self.id
-
     def addDescription(self, description):
         self.description = description
-
-    def get_name(self):
-        return self.name
-
-    def get_description(self):
-        return self.description
-
-    def get_rules(self):
-        return self.rules
-
-    def get_prizes(self):
-        return self.prizes
-
-    def get_video_link(self):
-        return self.video_link
         
 class UserRole(db.Model):
     """

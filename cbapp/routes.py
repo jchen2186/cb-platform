@@ -105,9 +105,7 @@ def chorusInfo(cb=None):
     row = ChorusBattle.query.filter_by(name=cb).first()
 
     if row:
-        return render_template('chorusinfo.html', chorusTitle=cb,
-            description=row.get_description(), rules=row.get_rules(),
-            prizes=row.get_prizes(), video=row.get_video_link())
+        return render_template('chorusinfo.html', cb=row)
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -158,7 +156,16 @@ def team(name=None):
 
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
-    return render_template("chorusbattles.html")
+    chorusBattles = ChorusBattle.query.all()
+    info = []
+
+    for cb in chorusBattles:
+        info.append({'name': cb.name,
+                     'description': cb.description,
+                     'link': '/chorusbattle/' + cb.name})
+
+
+    return render_template("chorusbattles.html", info=info)
 
 @app.route('/chorusbattle/<cbname>/', methods=['GET'])
 def chorusBattle(cbname=None):

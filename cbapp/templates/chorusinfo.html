@@ -11,26 +11,16 @@
 					<div class="content">
 						<h3>About</h3>
 						<p>
-						{{ description }}
+						{{ cb.description }}
 						</p>
 						<h3>Rules</h3>
 						<p>
-							{{ rules }}
-							<!-- {% for i in rules%}
-							{% endfor %}
-							<ul>
-								<li></li>
-								<li></li>
-							</ul> -->
+							{{ cb.rules }}
 						</p>
 						<h3>Prizes</h3>
 							<p>
-								{{ prizes }}
+								{{ cb.prizes }}
 							</p>
-							<!-- <ul>
-								<li></li>
-								<li></li>
-							</ul> -->
 					</div> <!-- content -->
 				</div> <!-- box -->
 			</div> <!-- column -->
@@ -39,9 +29,11 @@
 					<div class="container is-fluid">
 						<div class="tile is-ancestor">
 							<div class="tile is-parent is-vertical">
-							<div class="tile is-child">
-								<iframe width="560" height="315" src={{ video }} frameborder="0" allowfullscreen></iframe>
-							</div>
+							{% if cb.video_link != '' %}
+								<div class="tile is-child">
+									<iframe width="560" height="315" src="{{ cb.video_link }}" frameborder="0" allowfullscreen></iframe>
+								</div>
+							{% endif %}
 
 							<div class="tile is-child notification is-info">
 								<h3 class="title">Judges</h3>
