@@ -7,7 +7,7 @@ from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round
-from cbapp import app
+import urllib.parse
 import os
 
 # connect app to the postgresql database (local to our machines)
@@ -122,7 +122,7 @@ def chorusEntries(cb=None):
         Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
     rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
     print(rounds)
-    return render_template('entries.html', chorusTitle=cb, rounds=rounds)
+    return render_template('entries.html', cb=cb, rounds=rounds)
 
 @app.route('/chorusbattle/<cb>/entries/<rd>/create/', methods=['GET', 'POST'])
 def createEntry(cb=None, rd=None):
@@ -141,10 +141,11 @@ def createEntry(cb=None, rd=None):
         db.session.add(newEntry)
         db.session.commit()
 
-        return redirect(url_for('chorusBattle', cbname=cb))
+        return redirect(url_for('chorusBattle', cb=cb))
 
     elif request.method == 'GET':
-        return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+        return render_template('createentry.html', cb=cb, rd=rd, form=form)
+
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """
@@ -162,14 +163,10 @@ def chorusBattleAll():
     for cb in chorusBattles:
         info.append({'name': cb.name,
                      'description': cb.description,
-                     'link': '/chorusbattle/' + cb.name})
+                     'link': urllib.parse.quote('/chorusbattle/' + cb.name)})
 
 
     return render_template("chorusbattles.html", info=info)
-
-@app.route('/chorusbattle/<cbname>/', methods=['GET'])
-def chorusBattle(cbname=None):
-    return render_template("tournament.html", cbname=cbname)
 
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
@@ -184,9 +181,6 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
-            # currently does not work
-            # we need to update the chorus battle table on postgres
-            print('not valid')
             return render_template('createchorusbattle.html', form=form)
         newcb = ChorusBattle(form.name.data, form.description.data,
             form.rules.data, form.prizes.data, form.video_link.data)
@@ -194,7 +188,7 @@ def createChorusBattle():
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('chorusBattle', cbname=form.name.data))
+        return redirect(url_for('chorusInfo', cb=form.name.data))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
