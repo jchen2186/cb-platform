@@ -10,6 +10,9 @@
       <h2 class="subtitle">
         [random song lyrics go here]
       </h2>
+      {% if session['user_icon'] %}
+        <img src="data:image/png;charset=utf-8;base64, {{ propic }}"/>
+      {% endif %}
     </div>
   </div>
 </section>
