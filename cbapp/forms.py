@@ -3,7 +3,7 @@ This module contains the structure of all of the forms used on the app.
 """
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField, FileField, ValidationError
 from wtforms.validators import DataRequired, Email, Length
 from .models import User
 
@@ -52,7 +52,7 @@ class SignupForm(FlaskForm):
     role = SelectField('Role', coerce=int, choices=role_choices, validators=[
         DataRequired('Please choose a role.')])
     print(role)
-
+    propic = FileField('Profile Picture (Optional)')
     submit = SubmitField('Sign up')
 
 class LoginForm(FlaskForm):
