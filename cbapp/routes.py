@@ -1,4 +1,5 @@
 """
+routes.py
 This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
@@ -9,9 +10,13 @@ from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryFor
 from .models import db, User, ChorusBattle, UserRole, Entry, Round
 import urllib.parse
 import os
+from base64 import b64encode
+
+# pylint: disable=C0103
 
 # connect app to the postgresql database (local to our machines)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                       'postgresql://localhost/cbapp')
 db.init_app(app)
 app.secret_key = 'development-key'
 
@@ -44,10 +49,12 @@ def login():
             user = User.query.filter_by(username=username).first()
             if user is not None and user.check_password(password):
                 session['username'] = form.username.data
+                user = User.query.filter_by(username=username).first()
+                session['role'] = user.get_role()
                 session['first_name'] = User.query.filter_by(username=username).first().firstname
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
-            return render_template('login.html', form=form) 
+            return render_template('login.html', form=form)
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
@@ -67,16 +74,20 @@ def signup():
     if request.method == 'POST':
         if not form.validate():
             return render_template('signup.html', form=form)
+        propic = None
+        if form.propic.data:
+            propic = request.files.getlist('propic')[0].read()
 
         newuser = User(form.first_name.data, form.last_name.data, form.email.data,
-                       form.password.data, form.username.data, form.role.data)
+                       form.password.data, form.username.data, form.role.data, propic)
         db.session.add(newuser)
         db.session.commit()
-
+        print(newuser)
         session['username'] = newuser.username
         session['role'] = newuser.role_id
-        session['first_name'] = newuser.first_name
+        session['first_name'] = newuser.firstname
         return redirect(url_for('home'))
+        # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
 
     elif request.method == 'GET':
         return render_template('signup.html', form=form)
@@ -93,9 +104,10 @@ def home():
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
     form in order to log in."""
+    print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('home.html')
+    return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
@@ -107,7 +119,7 @@ def chorusInfo(cb=None):
     row = ChorusBattle.query.filter_by(id=cb).first()
 
     if row:
-        return render_template('chorusinfo.html', cb=row)
+        return render_template('chorusinfo.html', cb=row, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -115,16 +127,21 @@ def chorusEntries(cb=None):
     The route '/chorusbattle/<cb>/entries' will direct the user to a page where
     they can view all the entries for the selected chorus battle.
     """
-    entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
+    entries = [{'title':'Title', 'owners':'Owners here',
+                'description':'Here will describe the entries'}]
     rounds = []
-    rounds.append([{'title':'Blooming Light', 'owners':'Team Excite', \
-        'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
-        Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
-        {'title':'Turn of the dawn', 'owners':'Team Raspberry', 'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
-        Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
-    rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
+    rounds.append([{'title':'Blooming Light', 'owners':'Team Excite',
+                    'description':'Lorem ipsum',
+                    'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
+                   {'title':'Turn of the dawn', 'owners':'Team Raspberry',
+                    'description':'Lorem ipsum',
+                    'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
+    rounds.append([{'title':'Entry 1', 'owners':'Team 2',
+                    'description':'Here will describe the entries for round 2. \
+                     There will be fewer teams here due to elimination.',
+                    'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
     print(rounds)
-    return render_template('entries.html', cb=cb, rounds=rounds)
+    return render_template('entries.html', cb=cb, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/<rd>/create/', methods=['GET', 'POST'])
 def createEntry(cb=None, rd=None):
@@ -136,9 +153,9 @@ def createEntry(cb=None, rd=None):
     if request.method == 'POST':
         if not form.validate():
             # we need to update the entries table on postgres
-            return render_template('createentry.html', cb=cb, rd=rd, form=form)
+            return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
         newEntry = Entry(form.team_name.data, form.description.data,
-            form.video_link.data, cb, rd)
+                         form.video_link.data, cb, rd)
 
         db.session.add(newEntry)
         db.session.commit()
@@ -146,7 +163,7 @@ def createEntry(cb=None, rd=None):
         return redirect(url_for('chorusBattle', cb=cb))
 
     elif request.method == 'GET':
-        return render_template('createentry.html', cb=cb, rd=rd, form=form)
+        return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
@@ -155,10 +172,14 @@ def team(name=None):
     information about the selected chorus battle team, stored as the
     variable name.
     """
-    return render_template('team.html')
+    return render_template('team.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
+    """
+    The route /chorusbattle/ directs the user to a page that displays
+    all chorus battles.
+    """
     chorusBattles = ChorusBattle.query.all()
     info = []
 
@@ -168,12 +189,12 @@ def chorusBattleAll():
                      'link': urllib.parse.quote('/chorusbattle/' + str(cb.id))})
 
 
-    return render_template("chorusbattles.html", info=info)
+    return render_template("chorusbattles.html", info=info, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
     """
-    The route '/create/chorusbattle' will direct the user, who has 
+    The route '/create/chorusbattle' will direct the user, who has
     to be a Judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
@@ -183,10 +204,12 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('createchorusbattle.html', form=form)
+
+            return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))    
         creator_id = User.query.filter_by(username=session['username']).first().id
         newcb = ChorusBattle(form.name.data, form.description.data,
-            form.rules.data, form.prizes.data, form.video_link.data, form.start_date.data, form.no_of_rounds.data, creator_id)
+                             form.rules.data, form.prizes.data, form.video_link.data, 
+                             form.start_date.data, form.no_of_rounds.data, creator_id)
 
         db.session.add(newcb)
         db.session.commit()
@@ -194,12 +217,16 @@ def createChorusBattle():
         return redirect(url_for('chorusInfo', cb=newcb.id))
 
     elif request.method == 'GET':
-        return render_template('createchorusbattle.html', form=form)
+        return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
-def judgeEntry(cb=None,entry=None):
+def judgeEntry(cb=None, entry=None):
+    """
+    The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
+    where he/she can grade an entry using a rubric.
+    """
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/create/round/', methods=['GET', 'POST'])
 def createRound():
@@ -214,7 +241,7 @@ def createRound():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('createround.html', form=form)
+            return render_template('createround.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
         newRound = Round(form.round_number.data, form.theme.data, form.deadline.data)
         db.session.add(newRound)
@@ -225,7 +252,7 @@ def createRound():
         return redirect(url_for('/chorusbattle/'))
 
     elif request.method == 'GET':
-        return render_template('createround.html', form=form)
+        return render_template('createround.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 
 # work in progress
@@ -236,9 +263,10 @@ def getUserProfile(username=None):
     the user with the specified username.
     """
     row = User.query.filter_by(username=username).first()
-
     if row:
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
+        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+    # return render_template("userprofile.html")
 
 @app.route('/help/faq/', methods=['GET'])
 def faq():
@@ -247,4 +275,14 @@ def faq():
     page. This page contains the user documentation which will assist the
     end users who are using the app.
     """
-    return render_template("faq.html")
+    return render_template("faq.html", icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+def getUserIcon(username):
+    """ 
+    This function grabs the user_icon from db based on queried username.
+    """
+    user_icon = None
+    user_icon = User.query.filter_by(username=username).first().user_icon
+    if user_icon:
+        user_icon = b64encode(user_icon).decode('utf-8')
+    return user_icon

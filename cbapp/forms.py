@@ -3,19 +3,20 @@ This module contains the structure of all of the forms used on the app.
 """
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError
 from wtforms.validators import DataRequired, Email, Length
 from .models import User
 
-def validate_username(form,field):
+def validate_username(field):
     """
     Checks whether username is unique. If is not
     unique, it will raise a validation error.
     """
     if not User.is_username_unique(field.data):
         raise ValidationError('Username is taken. Please try another username.')
-    
-def validate_email(form, field):
+
+def validate_email(field):
     """
     Checks whether email is unique. If it is not
     unique, it will raise a validation error.
@@ -41,6 +42,7 @@ class SignupForm(FlaskForm):
         Length(min=6, message='Passwords must have at least 6 characters.')])
 
     role_choices = [(0, 'Choose Role'),
+                    (1, 'Administrator'),
                     (2, 'Unassigned'),
                     (3, 'Judge'),
                     (4, 'Singer'),
@@ -51,7 +53,7 @@ class SignupForm(FlaskForm):
     role = SelectField('Role', coerce=int, choices=role_choices, validators=[
         DataRequired('Please choose a role.')])
     print(role)
-
+    propic = FileField('Profile Picture (Optional)')
     submit = SubmitField('Sign up')
 
 class LoginForm(FlaskForm):
@@ -69,9 +71,9 @@ class CreateChorusBattleForm(FlaskForm):
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
     rules = TextAreaField('List of Rules', validators=[
-        DataRequired('Please provide a list of rules that participants must follow or know about.')])
+        DataRequired('Please provide a list of rules.')])
     prizes = TextAreaField('Prizes', validators=[
-        DataRequired('Please provide a list of prizes that participants can win from the chorus battle, if there are any.')])
+        DataRequired('Please provide a list of prizes that participants can win.')])
     video_link = StringField('Link to the Chorus Battle Introduction Video')
     no_of_rounds = StringField('Number of Rounds', validators=[
         DataRequired('Please enter the number of rounds.')])

@@ -5,6 +5,8 @@ our app works as intended.
 
 #note: comment out garbage in __init__ py to run pytest without other errors
 
+# pylint: disable=C0103
+
 import unittest
 from unittest.mock import patch, DEFAULT, Mock
 # from bs4 import BeautifulSoup
@@ -13,9 +15,8 @@ import cbapp
 class TestCBAppUnit(unittest.TestCase):
     """Class of unit tests that checks if the templates exist."""
 
-    """
     def test_login_gets_login_template(self):
-        #Checks if the login route exists. The test passes if it does.
+        """Checks if the login route exists. The test passes if it does."""
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -30,7 +31,6 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             #makes sure we are rendering the correct template on the login route
             self.assertEqual(file_name, "login.html")
-    """
 
     def test_index_get_index_template(self):
         """Checks if the index route exists. The test passes if it does."""
@@ -48,9 +48,8 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "index.html")
 
-    """
     def test_signup_get_singup_template(self):
-        #Checks if the signup route exists. The test passes if it does.
+        """Checks if the signup route exists. The test passes if it does."""
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -60,12 +59,10 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "signup.html")
-    """
 
-    """
     def test_home_get_home_template(self):
-         #Checks if the home route exists. The test passes if it does.
-         with patch.multiple("cbapp.routes",
+        """Checks if the home route exists. The test passes if it does."""
+        with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
             cbapp.routes.home()
@@ -74,7 +71,6 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "home.html")
-    """
 
     def test_cbinfo_get_cbinfo_template(self):
         """Checks if the chorusinfo route exists. The test passes if it does."""
@@ -113,8 +109,8 @@ class TestCBAppUnit(unittest.TestCase):
             self.assertEqual(file_name, "team.html")
 
     def test_chorusbattles_get_chorusbattles_template(self):
-         """Checks if the chorusBattle route exists. The test passes if it does.""" 
-         with patch.multiple("cbapp.routes",
+        """Checks if the chorusBattle route exists. The test passes if it does."""
+        with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
             cbapp.routes.chorusBattleAll()
@@ -124,21 +120,20 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "chorusbattles.html")
 
-    def test_tournament_get_tournament_template(self):
-         """Checks if the tournament route exists. The test passes if it does.""" 
-         with patch.multiple("cbapp.routes",
-                            request=DEFAULT,
-                            render_template=DEFAULT) as mock_functions:
-            cbapp.routes.chorusBattle()
-            render_template = mock_functions["render_template"]
-            self.assertTrue(render_template.called)
-            call_args = render_template.call_args
-            file_name = call_args[0][0]
-            self.assertEqual(file_name, "tournament.html")
+    # def test_tournament_get_tournament_template(self):
+    #     """Checks if the tournament route exists. The test passes if it does."""
+    #     with patch.multiple("cbapp.routes",
+    #                         request=DEFAULT,
+    #                         render_template=DEFAULT) as mock_functions:
+    #         cbapp.routes.chorusBattle()
+    #         render_template = mock_functions["render_template"]
+    #         self.assertTrue(render_template.called)
+    #         call_args = render_template.call_args
+    #         file_name = call_args[0][0]
+    #         self.assertEqual(file_name, "tournament.html")
 
-    """
     def test_createcb_get_createcb_template(self):
-        #Checks if the createcb route exists. The test passes if it does. 
+        """Checks if the createcb route exists. The test passes if it does."""
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -148,11 +143,9 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "createchorusbattle.html")
-    """
 
-    """
     def test_userprofile_get_userprofile_template(self):
-        #Checks if the user profile route exists. The test passes if it does.
+        """Checks if the user profile route exists. The test passes if it does."""
         with patch.multiple("cbapp.routes",
                             request=DEFAULT,
                             render_template=DEFAULT) as mock_functions:
@@ -162,4 +155,15 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "userprofile.html")
-    """
+
+    def test_faq_get_faq_template(self):
+        """Checks if the faq route exists. The test passes if it does."""
+        with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.faq()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "faq.html")

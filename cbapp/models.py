@@ -1,3 +1,8 @@
+"""
+models.py
+Contains classes for the objects that connect to our Postgres database.
+"""
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from werkzeug import generate_password_hash, check_password_hash
@@ -41,18 +46,19 @@ class User(db.Model):
     password_hash = db.Column(db.String(100)) #: Password for the user, stored as a hashed value.
     username = db.Column(db.String(100), unique=True) #: Unique username for the user.
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id')) #: User role for the user.
-    user_icon = db.Column(db.LargeBinary()) #: Icon for the user.
+    user_icon = db.Column(db.LargeBinary) #: Icon for the user.
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
     
-    def __init__(self, firstname, lastname, email, password, username, role_id):
+    def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
         self.email = email.lower()
         self.set_password(password) # encrypt password with salted hash
         self.username = username
         self.role_id = role_id
+        self.user_icon = user_icon
   
     def set_password(self, password):
         """
@@ -89,6 +95,9 @@ class User(db.Model):
 
         roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
         return roles[role - 1]
+
+    def get_icon(self):
+        return self.user_icon
 
     @staticmethod
     def is_username_unique(username):
@@ -234,7 +243,7 @@ class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the team.
     team_name=db.Column(db.String(100)) #: Name of the team.
-    team_logo = db.Column(db.LargeBinary()) #: Image for the team logo.
+    team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) 
     """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
     """

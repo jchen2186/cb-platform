@@ -51,7 +51,7 @@
       roundTabs[i].classList.remove('is-active');
     }
     roundTabs[round-1].classList.add('is-active');
-    document.getElementById("createEntry").href = "/chorusbattle/{{ chorusTitle }}/entries/"+parseInt(round)+"/create/";
+    document.getElementById("createEntry").href = "/chorusbattle/{{ cb }}/entries/"+parseInt(round)+"/create/";
     for (i = 0; i < rounds.length; i++) {
       if (roundTabs[i].classList.contains('is-active')) {
         rounds[i].style.display = "block";
