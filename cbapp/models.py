@@ -1,3 +1,8 @@
+"""
+models.py
+Contains classes for the objects that connect to our Postgres database.
+"""
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from werkzeug import generate_password_hash, check_password_hash
