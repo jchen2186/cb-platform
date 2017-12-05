@@ -9,6 +9,7 @@ from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryFor
 from .models import db, User, ChorusBattle, UserRole, Entry, Round
 import urllib.parse
 import os
+from base64 import b64encode
 
 # connect app to the postgresql database (local to our machines)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
@@ -44,6 +45,9 @@ def login():
             user = User.query.filter_by(username=username).first()
             if user is not None and user.check_password(password):
                 session['username'] = form.username.data
+                user = User.query.filter_by(username=username).first()
+                session['role'] = user.get_role()
+                session['user_icon'] = user.get_icon()
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
             return render_template('login.html', form=form) 
@@ -66,15 +70,20 @@ def signup():
     if request.method == 'POST':
         if not form.validate():
             return render_template('signup.html', form=form)
+        propic = None
+        if form.propic.data:
+            propic = request.files.getlist('propic')[0].read()
 
         newuser = User(form.first_name.data, form.last_name.data, form.email.data,
-                       form.password.data, form.username.data, form.role.data)
+                       form.password.data, form.username.data, form.role.data, propic)
         db.session.add(newuser)
         db.session.commit()
-
+        print(newuser)
         session['username'] = newuser.username
-        session['role'] = newuser.role
+        session['role'] = newuser.role_id
+        session['user_icon'] = b64encode(propic).decode('utf-8')
         return redirect(url_for('home'))
+        # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
 
     elif request.method == 'GET':
         return render_template('signup.html', form=form)
@@ -91,6 +100,7 @@ def home():
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
     form in order to log in."""
+    print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
     return render_template('home.html')
