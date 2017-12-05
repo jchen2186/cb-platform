@@ -270,12 +270,11 @@ def getUserProfile(username=None):
     The route '/user/<username>' directs the user to the profile page of
     the user with the specified username.
     """
-    # row = User.query.filter_by(username=username).first()
-    # if row:
-    #     return render_template("userprofile.html",
-    #                            username=row.get_username(), role=row.get_role())
+    row = User.query.filter_by(username=username).first()
+    if row:
+        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=(b64encode(row.get_icon()).decode('utf-8')) if row.get_icon() else None)
 
-    return render_template("userprofile.html")
+    # return render_template("userprofile.html")
 
 @app.route('/help/faq/', methods=['GET'])
 def faq():

@@ -22,7 +22,7 @@
     <div class="columns">
   		<div class="content column is-half">
   			<h2> {{entry.title }} </h2>
-          <a class="button is-info" href="/chorusbattle/{{chorusTitle}}/judge/{{ entry.title }}"><span>Judge</span>
+          <a class="button is-info" href="/chorusbattle/{{ cb }}/judge/{{ entry.title }}"><span>Judge</span>
           </a>
   			<p> {{ entry.owners }} </p>
   			<p> {{ entry.description }} </p>
@@ -41,7 +41,7 @@
     for (i = 1; i < rounds.length; i++) {
       rounds[i].style.display = "none";
     }
-    document.getElementById("createEntry").href = "/chorusbattle/{{ chorusTitle }}/entries/1/create/";
+    document.getElementById("createEntry").href = "/chorusbattle/{{ cb }}/entries/1/create/";
   }
 
   function changeTab(evt, round) {
@@ -51,7 +51,7 @@
       roundTabs[i].classList.remove('is-active');
     }
     roundTabs[round-1].classList.add('is-active');
-    document.getElementById("createEntry").href = "/chorusbattle/{{ chorusTitle }}/entries/"+parseInt(round)+"/create/";
+    document.getElementById("createEntry").href = "/chorusbattle/{{ cb }}/entries/"+parseInt(round)+"/create/";
     for (i = 0; i < rounds.length; i++) {
       if (roundTabs[i].classList.contains('is-active')) {
         rounds[i].style.display = "block";
