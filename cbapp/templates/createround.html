@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="title is-2">Create a New Round</h2>
+
+    <form method="POST" action="/create/round">
+      {{ form.hidden_tag() }}
+      
+      <div class="form-group">
+        {{ form.round_number.label }}
+          <br>
+          {% if form.round_number.errors %}
+            {% for error in form.round_number.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.round_number }}
+      </div>
+      
+      <div class="form-group">
+        {{ form.theme.label }}
+          <br>
+          {% if form.theme.errors %}
+            {% for error in form.theme.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.theme }}
+      </div>
+      
+      <div class="form-group">
+        {{ form.deadline.label }}
+          <br>
+          {% if form.deadline.errors %}
+            {% for error in form.deadline.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+
+        {{ form.deadline }}
+      </div>
+
+      <br>
+      {{ form.submit(class="button is-link") }}
+    </form>
+  </div>
+
+{% endblock %}
