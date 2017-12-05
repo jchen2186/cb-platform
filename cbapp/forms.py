@@ -5,6 +5,31 @@ This module contains the structure of all of the forms used on the app.
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField
 from wtforms.validators import DataRequired, Email, Length
+from models import User
+
+def is_username_unique(form,field):
+    """
+    Checks whether username is unique
+
+    Args:
+      username (str): username to be checked
+
+    Returns:
+      bool: True if username is unique and False if it is not 
+    """
+    return User.is_username_unique(field.data)
+    
+def is_email_unique(form, field):
+    """
+    Checks whether email is unique
+
+    Args:
+      username (str): email to be checked
+
+    Returns:
+      bool: True if email is unique and False if it is not 
+    """
+    return User.is_email_unique(field.data)
 
 class SignupForm(FlaskForm):
     """WTForm for sign up page."""
