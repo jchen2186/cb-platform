@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="content">
+  <div class="container">
+    <br>
+
+    <div class="columns">
+      <div class="column is-4">
+        <aside class="menu">
+
+          <p class="menu-label">Chorus Battle Basics</p>
+          <ul class="menu-list">
+            <li><a href="#what-is-cb">What is a Chorus Battle?</a></li>
+            <li><a href="#learning-more">Learning More</a></li>
+          </ul>
+
+          <p class="menu-label">Joining Connect! Chorus Battle</p>
+          <ul class="menu-list">
+            <li><a href="#connect">Connect! Chorus Battle</a></li>
+            <li><a href="#creating-account">Creating an Account</a></li>
+            <li><a href="#participating">Participating</a></li>
+          </ul>
+
+          <p class="menu-label">General Users</p>
+          <ul class="menu-list">
+            <li><a href="#editing-profile">Editing Profile</a></li>
+            <li><a href="#private-public">Making Info Private/Public</a></li>
+            <li><a href="#user-role">Changing User Role</a></li>
+            <li><a href="#beta-testing-period">Beta Testing Period</a></li>
+            <li><a href="#beta-tester">Becoming a Beta Tester</a></li>
+          </ul>
+
+          <p class="menu-label">Judges</p>
+          <ul class="menu-list">
+            <li><a href="#creating-cb">Creating a Chorus Battle</a></li>
+            <li><a href="#creating-round">Creating a Round</a></li>
+            <li><a href="#embedding-videos">Embedding Videos</a></li>
+            <li><a href="#editing-cb">Editing Chorus Battle Info</a></li>
+            <li><a href="#participating-judge">Participating as a Judge</a></li>
+          </ul>
+
+          <p class="menu-label">Participants</p>
+          <ul class="menu-list">
+            <li><a href="#making-team">Making a Team</a></li>
+            <li><a href="#joining-team">Joining a Team</a></li>
+            <li><a href="#joining-cb">Joining a Chorus Battle</a></li>
+            <li><a href="#submit-entry">Submitting a Video Entry</a></li>
+            <li><a href="#trouble-joining-cb">Trouble Joining a Chorus Battle</a></li>
+          </ul>
+
+        </aside>
+      </div>
+
+      <div class="column is-8">
+        <h1><strong>Frequently Asked Questions</strong></h1>
+        <h2>Chorus Battle Basics</h2>
+        <hr>
+
+        <a name="what-is-cb"></a>
+        <h3>What is a chorus battle?</h3>
+        <p>
+          A chorus battle is an online, multi-round competition where a community of singers, musicians, editors, artists, and more come together to create covers of music. People form teams and work together to create original music videos for the songs they cover. Along with the videos, teams also write short responses relating to the themes proposed by the judges of the chorus battles.
+        </p>
+
+        <a name="learning-more"></a>
+        <h3>Where can I learn more about chorus battles?</h3>
+        <p>
+          There is a large community of chorus battlers on YouTube, Twitter, and wikipages, but they are scattered throughout the Internet. There isn't a single place to keep track of all of the ongoing and archived chorus battles... until now! Although we are still in the development process, we are hoping to unite as many chorus battle participants and hosts as possible in the near future on this very website!
+        </p>
+
+        <h2>Joining Connect! Chorus Battle</h2>
+        <hr>
+
+        <a name="connect"></a>
+        <h3>What is Connect! Chorus Battle?</h3>
+        <p>
+          Connect! Chorus Battle is an online platform that unites the chorus battle communities that are dispersed throughout the internet. It aims to organize chorus battles so that people can easily find upcoming, ongoing, and archived battles. In doing so, our platform simplifies the process of finding and joining chorus battles for prospective participants, especially newcomers in the community. It will also provide hosts and judges with a place to advertise their chorus battles and tools to help them fairly grade video entries.
+        </p>
+
+        <a name="creating-account"></a>
+        <h3>How do I create an account on Connect! Chorus Battle?</h3>
+        <p>
+          Create an account <a href="/signup">here</a>. Provide your information here and choose your desired role: judge, singer, artist, mixer, animator. If you are unsure, choose unassigned. 
+        </p>
+
+        <a name="participating"></a>
+        <h3>Do I have to participate in chorus battles in order to join?</h3>
+        <p>
+          Not at all! People who enjoy listening to and following chorus battles can join Connect! Chorus Battle as well in order to stay up-to-date with the ongoings of the community. Although it would be great if all users are active participants, there is no strict requirement that forces users into joining a chorus battle.
+        </p>
+
+        <h2>General Users</h2>
+        <hr>
+
+        <a name="editing-profile"></a>
+        <h3>How can I edit my profile?</h3>
+        <p>
+          This will be an additional feature to be implemented in the future. You will be able to edit your profile by going to your <a href="">personal profile page</a>. There will be a link on the top right of the page that leads you to a form where you can edit each section of your profile.
+        </p>
+
+        <a name="private-public"></a>
+        <h3>How do I make information on my profile page public/private?</h3>
+        <p>
+          This will be an additional feature to be implemented in the future. You will be able to edit the contents on your profile and toggle the privacy settings for each piece of information.
+        </p>
+
+        <a name="user-role"></a>
+        <h3>When I registered, I chose "unassigned" as my role. Can I change my role now that I know what I want to do?</h3>
+        <p>
+          This will be an additional feature to be implemented in the future. You will be able to edit your user role by going to your <a href="">settings</a>.
+        </p>
+
+        <a name="beta-testing-period"></a>
+        <h3>Will there be a beta testing period?</h3>
+        <p>
+          This is still to be determined, but we definitely hope to have a beta testing period after we complete most of the features for the platform.
+        </p>
+
+        <a name="beta-tester"></a>
+        <h3>Can I become a beta tester?</h3>
+        <p>
+          As mentioned previously, whether or not there will be a beta testing period is still to be determined. However, if we do decide on having one, we will post a link on the bottom of the landing page of the site with further information on how to apply to become a beta tester.
+        </p>
+
+        <h2>Chorus Battle Hosts: Judges</h2>
+        <hr>
+
+        <a name="creating-cb"></a>
+        <h3>How do I create a new chorus battle page?</h3>
+        <p>
+          Create a page for a new chorus battle <a href="/create/chorusbattle/">here</a>. Provide the necessary information here. If applicable, the link to the introduction video should be an embedded link to YouTube.
+        </p>
+
+        <a name="creating-round"></a>
+        <h3>How do I add rounds to my chorus battle?</h3>
+        <p>
+          First, navigate to your chorus battle information page. There is a button on the top left that allows you to add a new round for the chorus battle. After clicking on the button, you will be directed to a form where you can provide the necessary information for the new round.
+        </p>
+
+        <a name="embedding-videos"></a>
+        <h3>Why are my videos not showing up on the information pages?</h3>
+        <p>
+          Make sure that the links you are submitting are YouTube embedded video links and not the direct links to the videos.
+        </p>
+
+        <ol>
+          <li>Embedded links can be found by going to the YouTube video on a desktop web browser.</li>
+          <li>
+            Next, click on Share under the video.<br>
+            <img src="{{ url_for('static', filename='img/embed1.png') }}" class="embed-img" alt="embed1"><br>
+          </li>
+          <li>
+            Then click on Embed under the box that pops up.<br>
+            <img src="{{ url_for('static', filename='img/embed2.png') }}" class="embed-img" alt="embed2"><br>
+          </li>
+          <li>
+            Finally, copy and paste the link between the double quotes for src.<br>
+            <img src="{{ url_for('static', filename='img/embed3.png') }}" class="embed-img" alt="embed3"><br>
+          </li>
+        </ol>
+
+
+        <a name="editing-cb"></a>
+        <h3>I made a mistake when creating my chorus battle. Can I delete or modify the details?</h3>
+        <p>
+          This will be an additional feature to be implemented in the future. You will be able to edit the information for your chorus battle by going to the page with the information about the chorus battle. On the top right corner, there will be a button that will direct you to a form that allows you to delete or modify details regarding the chorus battle.
+        </p>
+
+        <a name="participating-judge"></a>
+        <h3>Can I join a chorus battle even though I am a judge?</h3>
+        <p>
+          Of course! You just need to join a team and enter a chorus battle competition prior to the start of the first round deadline.
+        </p>
+
+        <h2>Chorus Battle Participants: Singers, Artists, Mixers</h2>
+        <hr>
+
+        <a name="making-team"></a>
+        <h3>How do I make a team?</h3>
+        <p>
+          You can make a team for a certain chorus battle by going <a href="">here</a>.
+        </p>
+
+        <a name="joining-team"></a>
+        <h3>How do I join a team?</h3>
+        <p>
+          You can join a team for a certain chorus battle by going <a href="">here</a>.
+        </p>
+
+        <a name="joining-cb"></a>
+        <h3>How do I join a chorus battle as a team?</h3>
+        <p>
+          Navigate to the information page for the chorus battle you would like to join. There is a button on the top left that will navigate you to a form where you can register your team for the chorus battle. Note that you can only join a chorus battle before the deadline for joining, which is specified by the judges.
+        </p>
+
+        <a name="submit-entry"></a>
+        <h3>How do I make an entry submission for a chorus battle?</h3>
+        <p>
+          Navigate to the information page for the chorus battle you are participating in. Then click on the Entries button, which leads you to a page with a list of entries that were already submitted. On that page, there is another button that allows you to submit your own video entry. Provide the necessary information needed prior to submitting your video.
+        </p>
+        <p>
+          If you encounter any trouble with your video not displaying on the page, follow the directions <a href="#embedding-videos">here</a>.
+        </p>
+
+        <a name="trouble-joining-cb"></a>
+        <h3>Why can't I join some chorus battles?</h3>
+        <p>
+          The deadline for joining the chorus battle, specified by the judges, may have passed.
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock%}
