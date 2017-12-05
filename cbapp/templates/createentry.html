@@ -2,13 +2,13 @@
 
 {% block content %}
 <section class="section">
-  <a class="button is-primary" href="/chorusbattle/{{ chorusTitle }}/entries/">Go Back</a>
+  <a class="button is-primary" href="/chorusbattle/{{ cb }}/entries/">Go Back</a>
 <section>
 <section class="section">
   <div class="container">
-    <h2 class="title is-2">Create a New Entry for {{ chorusTitle }} - Round {{ rd }}</h2>
+    <h2 class="title is-2">Create a New Entry for {{ cb }} - Round {{ rd }}</h2>
 
-    <form method="POST" action="/chorusbattle/{{ chorusTitle }}/entries/{{ rd }}/create/">
+    <form method="POST" action="/chorusbattle/{{ cb }}/entries/{{ rd }}/create/">
       {{ form.hidden_tag() }}
       
       <div class="field">

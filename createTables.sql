@@ -25,9 +25,13 @@ CREATE TABLE chorusbattles (
     rules VARCHAR(500),
     prizes VARCHAR(500),
     video_link VARCHAR(150),
+    start_date TIMESTAMP WITHOUT TIME ZONE,
+    no_of_rounds INTEGER NOT NULL,
+    creator_id INTEGER NOT NULL,
 	-- organizers integer NOT NULL, 
 	-- entries integer NOT NULL,
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+    CONSTRAINT creator_user_id FOREIGN KEY(creator_id) REFERENCES users(id)
 );
 
 CREATE TABLE entries (

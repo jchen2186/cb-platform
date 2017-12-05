@@ -131,17 +131,22 @@ class ChorusBattle(db.Model):
     rules = db.Column(db.String(500)) #: User-inputted rules for the chorus battle.
     prizes = db.Column(db.String(500)) #: Prizes for the chorus battle.
     video_link = db.Column(db.String(150)) #: Allows for a link to a video about the chorus battle.
+    no_of_rounds = db.Column(db.Integer)
+    start_date = db.Column(db.DateTime(timezone=False), default=func.now())
+    creator_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
     # judges = db.relationship('Judge', secondary=judges)
 
-    def __init__(self, name, description, rules, prizes, video_link):
+    def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
         self.description = description
         self.rules = rules
         self.prizes = prizes
         self.video_link = video_link
+
+        self.creator_id = creator_id
 
     def change_name(self, newName):
         """
