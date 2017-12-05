@@ -1,10 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="section">
-  <div class="container">
-    <h2 class="title is-2">Create a New Chorus Battle</h2>
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Create a New Chorus Battle
+      </h1>
+    </div>
+  </div>
+</section>
 
+<section class="hero-body">
+  <div class="container">
     <form method="POST" action="/create/chorusbattle/" class="field">
       {{ form.hidden_tag() }}
         
@@ -58,6 +66,25 @@
           {% endif %}
       </div>
 
+      <div class="field">
+        <div class="label">{{ form.start_date.label }}</div>
+        <div class="control">{{ form.start_date(class_="input") }}</div>
+          {% if form.start_date.errors %}
+            {% for error in form.start_date.errors %}
+              <p class="is-danger">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+
+      <div class="field">
+        <div class="label">{{ form.no_of_rounds.label }}</div>
+        <div class="control">{{ form.no_of_rounds(class_="input") }}</div>
+          {% if form.no_of_rounds.errors %}
+            {% for error in form.no_of_rounds.errors %}
+              <p class="is-danger">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
       <br>
       {{ form.submit(class="button is-link") }}
     </form>
