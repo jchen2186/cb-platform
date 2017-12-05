@@ -1,4 +1,5 @@
 """
+routes.py
 This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
@@ -12,7 +13,8 @@ import os
 from base64 import b64encode
 
 # connect app to the postgresql database (local to our machines)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                       'postgresql://localhost/cbapp')
 db.init_app(app)
 app.secret_key = 'development-key'
 
@@ -51,7 +53,7 @@ def login():
                 session['first_name'] = User.query.filter_by(username=username).first().firstname
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
-            return render_template('login.html', form=form) 
+            return render_template('login.html', form=form)
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
@@ -125,14 +127,19 @@ def chorusEntries(cb=None):
     The route '/chorusbattle/<cb>/entries' will direct the user to a page where
     they can view all the entries for the selected chorus battle.
     """
-    entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
+    entries = [{'title':'Title', 'owners':'Owners here',
+                'description':'Here will describe the entries'}]
     rounds = []
-    rounds.append([{'title':'Blooming Light', 'owners':'Team Excite', \
-        'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
-        Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
-        {'title':'Turn of the dawn', 'owners':'Team Raspberry', 'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
-        Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
-    rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
+    rounds.append([{'title':'Blooming Light', 'owners':'Team Excite',
+                    'description':'Lorem ipsum',
+                    'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
+                   {'title':'Turn of the dawn', 'owners':'Team Raspberry',
+                    'description':'Lorem ipsum',
+                    'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
+    rounds.append([{'title':'Entry 1', 'owners':'Team 2',
+                    'description':'Here will describe the entries for round 2. \
+                     There will be fewer teams here due to elimination.',
+                    'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
     print(rounds)
     return render_template('entries.html', cb=cb, rounds=rounds)
 
@@ -148,7 +155,7 @@ def createEntry(cb=None, rd=None):
             # we need to update the entries table on postgres
             return render_template('createentry.html', cb=cb, rd=rd, form=form)
         newEntry = Entry(form.team_name.data, form.description.data,
-            form.video_link.data, cb, rd)
+                         form.video_link.data, cb, rd)
 
         db.session.add(newEntry)
         db.session.commit()
@@ -183,7 +190,7 @@ def chorusBattleAll():
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
     """
-    The route '/create/chorusbattle' will direct the user, who has 
+    The route '/create/chorusbattle' will direct the user, who has
     to be a Judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
@@ -195,7 +202,8 @@ def createChorusBattle():
         if not form.validate():
             return render_template('createchorusbattle.html', form=form)
         newcb = ChorusBattle(form.name.data, form.description.data,
-            form.rules.data, form.prizes.data, form.video_link.data)
+                             form.rules.data, form.prizes.data,
+                             form.video_link.data)
 
         db.session.add(newcb)
         db.session.commit()
@@ -206,7 +214,11 @@ def createChorusBattle():
         return render_template('createchorusbattle.html', form=form)
 
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
-def judgeEntry(cb=None,entry=None):
+def judgeEntry(cb=None, entry=None):
+    """
+    The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
+    where he/she can grade an entry using a rubric.
+    """
     if request.method == 'GET':
         return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
 
@@ -246,7 +258,8 @@ def getUserProfile(username=None):
     """
     # row = User.query.filter_by(username=username).first()
     # if row:
-    #     return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
+    #     return render_template("userprofile.html",
+    #                            username=row.get_username(), role=row.get_role())
 
     return render_template("userprofile.html")
 
