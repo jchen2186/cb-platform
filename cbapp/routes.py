@@ -279,7 +279,8 @@ def getUserIcon(username):
     """ 
     This function grabs the user_icon from db based on queried username.
     """
-    user_icon = None
+    if not username:
+        return username
     user_icon = User.query.filter_by(username=username).first().user_icon
     if user_icon:
         user_icon = b64encode(user_icon).decode('utf-8')
