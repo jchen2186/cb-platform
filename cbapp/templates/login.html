@@ -2,8 +2,10 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="is-size-2">Login</h2>
-
+    <h2 class="is-size-2 has-text-centered">Login</h2><br>
+    <div class="columns">
+      <div class="column is-one-third"></div>
+      <div class="column is-one-third">
     <form method="POST" action="/login/">
       {{ form.hidden_tag() }}
 
@@ -38,8 +40,12 @@
       </div>
       
       <br>
-      {{ form.submit(class="button is-link") }}
+      <div class="has-text-centered">
+        {{ form.submit(class="button is-link") }}
+      </div>
     </form>
+  </div>
+  </div>
   </div>
 </section>
 {% endblock %}
