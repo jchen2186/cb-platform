@@ -232,10 +232,11 @@ def getUserProfile(username=None):
     The route '/user/<username>' directs the user to the profile page of
     the user with the specified username.
     """
-    row = User.query.filter_by(username=username).first()
+    # row = User.query.filter_by(username=username).first()
+    # if row:
+    #     return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
 
-    if row:
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
+    return render_template("userprofile.html")
 
 @app.route('/help/faq/', methods=['GET'])
 def faq():
