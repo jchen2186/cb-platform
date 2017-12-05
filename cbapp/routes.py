@@ -104,7 +104,7 @@ def chorusInfo(cb=None):
     can find more information about the selected chorus battle, stored
     as the variable cb.
     """
-    row = ChorusBattle.query.filter_by(name=cb).first()
+    row = ChorusBattle.query.filter_by(id=cb).first()
 
     if row:
         return render_template('chorusinfo.html', cb=row)
@@ -165,7 +165,7 @@ def chorusBattleAll():
     for cb in chorusBattles:
         info.append({'name': cb.name,
                      'description': cb.description,
-                     'link': urllib.parse.quote('/chorusbattle/' + cb.name)})
+                     'link': urllib.parse.quote('/chorusbattle/' + str(cb.id))})
 
 
     return render_template("chorusbattles.html", info=info)
@@ -190,7 +190,7 @@ def createChorusBattle():
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('chorusInfo', cb=form.name.data))
+        return redirect(url_for('chorusInfo', cb_id=newcb.id,cb=form.name.data))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)

@@ -202,7 +202,6 @@ class Entry(db.Model):
         self.team_name = team_name
         self.description = description
         self.video_link = video_link
-        chorusid = ChorusBattle.query.filter_by(name=chorusname).first().getID()
         self.chorusbattle = chorusid
         self.round_number = round_number
 

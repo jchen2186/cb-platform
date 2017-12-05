@@ -73,6 +73,7 @@ class CreateChorusBattleForm(FlaskForm):
     prizes = TextAreaField('Prizes', validators=[
         DataRequired('Please provide a list of prizes that participants can win from the chorus battle, if there are any.')])
     video_link = StringField('Link to the Chorus Battle Introduction Video')
+    start_date = DateTimeField('Start Date/Time', validators=[DataRequired('Please enter a start date and time.')])
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
