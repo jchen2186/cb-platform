@@ -49,6 +49,7 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#J"><strong>J</strong></a>
  | <a href="#L"><strong>L</strong></a>
@@ -72,7 +73,11 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#module-cbapp.forms">cbapp.forms (module)</a>
+</li>
       <li><a href="dbModels.html#module-cbapp.models">cbapp.models (module)</a>, <a href="dbModels.html#module-cbapp.models">[1]</a>
+</li>
+      <li><a href="routes.html#module-cbapp.routes">cbapp.routes (module)</a>
 </li>
       <li><a href="dbModels.html#cbapp.models.ChorusBattle.change_name">change_name() (cbapp.models.ChorusBattle method)</a>
 </li>
@@ -86,15 +91,31 @@
         <li><a href="dbModels.html#cbapp.models.Team.chorusbattle">(cbapp.models.Team attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.ChorusBattle">ChorusBattle (class in cbapp.models)</a>
 </li>
       <li><a href="dbModels.html#cbapp.models.chorusbattle_entries">chorusbattle_entries (in module cbapp.models)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.Judge.chorusbattle_id">chorusbattle_id (cbapp.models.Judge attribute)</a>
 </li>
       <li><a href="dbModels.html#cbapp.models.User.chorusbattles">chorusbattles (cbapp.models.User attribute)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.chorusEntries">chorusEntries() (in module cbapp.routes)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.chorusInfo">chorusInfo() (in module cbapp.routes)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.createChorusBattle">createChorusBattle() (in module cbapp.routes)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm">CreateChorusBattleForm (class in cbapp.forms)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.createEntry">createEntry() (in module cbapp.routes)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.CreateEntryForm">CreateEntryForm (class in cbapp.forms)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.createRound">createRound() (in module cbapp.routes)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.CreateRoundForm">CreateRoundForm (class in cbapp.forms)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -102,13 +123,19 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.Round.deadline">deadline (cbapp.models.Round attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.ChorusBattle.description">description (cbapp.models.ChorusBattle attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateRoundForm.deadline">deadline (cbapp.forms.CreateRoundForm attribute)</a>
 
       <ul>
+        <li><a href="dbModels.html#cbapp.models.Round.deadline">(cbapp.models.Round attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.description">description (cbapp.forms.CreateChorusBattleForm attribute)</a>
+
+      <ul>
+        <li><a href="forms.html#cbapp.forms.CreateEntryForm.description">(cbapp.forms.CreateEntryForm attribute)</a>
+</li>
+        <li><a href="dbModels.html#cbapp.models.ChorusBattle.description">(cbapp.models.ChorusBattle attribute)</a>
+</li>
         <li><a href="dbModels.html#cbapp.models.Entry.description">(cbapp.models.Entry attribute)</a>
 </li>
       </ul></li>
@@ -118,16 +145,20 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.User.email">email (cbapp.models.User attribute)</a>
+      <li><a href="forms.html#cbapp.forms.SignupForm.email">email (cbapp.forms.SignupForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.User.email">(cbapp.models.User attribute)</a>
 </li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.ChorusBattle.entries">entries (cbapp.models.ChorusBattle attribute)</a>
 
       <ul>
         <li><a href="dbModels.html#cbapp.models.User.entries">(cbapp.models.User attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.Entry">Entry (class in cbapp.models)</a>
 </li>
   </ul></td>
@@ -135,6 +166,10 @@
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#cbapp.forms.SignupForm.first_name">first_name (cbapp.forms.SignupForm attribute)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.User.firstname">firstname (cbapp.models.User attribute)</a>
 </li>
@@ -149,6 +184,16 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.User.get_username">get_username() (cbapp.models.User method)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.getUserProfile">getUserProfile() (in module cbapp.routes)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="routes.html#cbapp.routes.home">home() (in module cbapp.routes)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -171,6 +216,10 @@
 </li>
       </ul></li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="routes.html#cbapp.routes.index">index() (in module cbapp.routes)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="J">J</h2>
@@ -188,7 +237,17 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#cbapp.forms.SignupForm.last_name">last_name (cbapp.forms.SignupForm attribute)</a>
+</li>
       <li><a href="dbModels.html#cbapp.models.User.lastname">lastname (cbapp.models.User attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="routes.html#cbapp.routes.login">login() (in module cbapp.routes)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.LoginForm">LoginForm (class in cbapp.forms)</a>
+</li>
+      <li><a href="routes.html#cbapp.routes.logout">logout() (in module cbapp.routes)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -196,26 +255,44 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.ChorusBattle.name">name (cbapp.models.ChorusBattle attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.name">name (cbapp.forms.CreateChorusBattleForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.ChorusBattle.name">(cbapp.models.ChorusBattle attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.User.password_hash">password_hash (cbapp.models.User attribute)</a>
+      <li><a href="forms.html#cbapp.forms.LoginForm.password">password (cbapp.forms.LoginForm attribute)</a>
+
+      <ul>
+        <li><a href="forms.html#cbapp.forms.SignupForm.password">(cbapp.forms.SignupForm attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.ChorusBattle.prizes">prizes (cbapp.models.ChorusBattle attribute)</a>
+      <li><a href="dbModels.html#cbapp.models.User.password_hash">password_hash (cbapp.models.User attribute)</a>
 </li>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.prizes">prizes (cbapp.forms.CreateChorusBattleForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.ChorusBattle.prizes">(cbapp.models.ChorusBattle attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#cbapp.forms.SignupForm.role">role (cbapp.forms.SignupForm attribute)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.SignupForm.role_choices">role_choices (cbapp.forms.SignupForm attribute)</a>
+</li>
       <li><a href="dbModels.html#cbapp.models.User.role_id">role_id (cbapp.models.User attribute)</a>
 </li>
       <li><a href="dbModels.html#cbapp.models.UserRole.role_title">role_title (cbapp.models.UserRole attribute)</a>
@@ -224,16 +301,22 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.Entry.round_number">round_number (cbapp.models.Entry attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateRoundForm.round_number">round_number (cbapp.forms.CreateRoundForm attribute)</a>
 
       <ul>
+        <li><a href="dbModels.html#cbapp.models.Entry.round_number">(cbapp.models.Entry attribute)</a>
+</li>
         <li><a href="dbModels.html#cbapp.models.Round.round_number">(cbapp.models.Round attribute)</a>
 </li>
       </ul></li>
       <li><a href="dbModels.html#cbapp.models.ChorusBattle.rounds">rounds (cbapp.models.ChorusBattle attribute)</a>
 </li>
-      <li><a href="dbModels.html#cbapp.models.ChorusBattle.rules">rules (cbapp.models.ChorusBattle attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.rules">rules (cbapp.forms.CreateChorusBattleForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.ChorusBattle.rules">(cbapp.models.ChorusBattle attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -242,10 +325,26 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.User.set_password">set_password() (cbapp.models.User method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="routes.html#cbapp.routes.signup">signup() (in module cbapp.routes)</a>
+</li>
+      <li><a href="forms.html#cbapp.forms.SignupForm">SignupForm (class in cbapp.forms)</a>
+</li>
       <li><a href="dbModels.html#cbapp.models.Entry.submission_date">submission_date (cbapp.models.Entry attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.submit">submit (cbapp.forms.CreateChorusBattleForm attribute)</a>
+
+      <ul>
+        <li><a href="forms.html#cbapp.forms.CreateEntryForm.submit">(cbapp.forms.CreateEntryForm attribute)</a>
+</li>
+        <li><a href="forms.html#cbapp.forms.CreateRoundForm.submit">(cbapp.forms.CreateRoundForm attribute)</a>
+</li>
+        <li><a href="forms.html#cbapp.forms.LoginForm.submit">(cbapp.forms.LoginForm attribute)</a>
+</li>
+        <li><a href="forms.html#cbapp.forms.SignupForm.submit">(cbapp.forms.SignupForm attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -254,22 +353,32 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.Team">Team (class in cbapp.models)</a>
 </li>
+      <li><a href="routes.html#cbapp.routes.team">team() (in module cbapp.routes)</a>
+</li>
       <li><a href="dbModels.html#cbapp.models.Entry.team_id">team_id (cbapp.models.Entry attribute)</a>
 </li>
       <li><a href="dbModels.html#cbapp.models.Team.team_logo">team_logo (cbapp.models.Team attribute)</a>
 </li>
+      <li><a href="forms.html#cbapp.forms.CreateEntryForm.team_name">team_name (cbapp.forms.CreateEntryForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.Team.team_name">(cbapp.models.Team attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.Team.team_name">team_name (cbapp.models.Team attribute)</a>
-</li>
       <li><a href="dbModels.html#cbapp.models.ChorusBattle.teams">teams (cbapp.models.ChorusBattle attribute)</a>
 
       <ul>
         <li><a href="dbModels.html#cbapp.models.User.teams">(cbapp.models.User attribute)</a>
 </li>
       </ul></li>
-      <li><a href="dbModels.html#cbapp.models.Round.theme">theme (cbapp.models.Round attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateRoundForm.theme">theme (cbapp.forms.CreateRoundForm attribute)</a>
+
+      <ul>
+        <li><a href="dbModels.html#cbapp.models.Round.theme">(cbapp.models.Round attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -282,12 +391,18 @@
 </li>
       <li><a href="dbModels.html#cbapp.models.Judge.user_id">user_id (cbapp.models.Judge attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dbModels.html#cbapp.models.user_teams">user_teams (in module cbapp.models)</a>
 </li>
-      <li><a href="dbModels.html#cbapp.models.User.username">username (cbapp.models.User attribute)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="forms.html#cbapp.forms.LoginForm.username">username (cbapp.forms.LoginForm attribute)</a>
+
+      <ul>
+        <li><a href="forms.html#cbapp.forms.SignupForm.username">(cbapp.forms.SignupForm attribute)</a>
 </li>
+        <li><a href="dbModels.html#cbapp.models.User.username">(cbapp.models.User attribute)</a>
+</li>
+      </ul></li>
       <li><a href="dbModels.html#cbapp.models.UserRole">UserRole (class in cbapp.models)</a>
 </li>
   </ul></td>
@@ -296,9 +411,13 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dbModels.html#cbapp.models.ChorusBattle.video_link">video_link (cbapp.models.ChorusBattle attribute)</a>
+      <li><a href="forms.html#cbapp.forms.CreateChorusBattleForm.video_link">video_link (cbapp.forms.CreateChorusBattleForm attribute)</a>
 
       <ul>
+        <li><a href="forms.html#cbapp.forms.CreateEntryForm.video_link">(cbapp.forms.CreateEntryForm attribute)</a>
+</li>
+        <li><a href="dbModels.html#cbapp.models.ChorusBattle.video_link">(cbapp.models.ChorusBattle attribute)</a>
+</li>
         <li><a href="dbModels.html#cbapp.models.Entry.video_link">(cbapp.models.Entry attribute)</a>
 </li>
       </ul></li>
@@ -325,6 +444,8 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dbModels.html">Database Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routes.html">Routes</a></li>
 </ul>
 
 <div class="relations">

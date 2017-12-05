@@ -1,0 +1,265 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Forms &#8212; Connect! Chorus Battle 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Routes" href="routes.html" />
+    <link rel="prev" title="Database Models" href="dbModels.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-cbapp.forms">
+<span id="forms"></span><h1>Forms<a class="headerlink" href="#module-cbapp.forms" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the structure of all of the forms used on the app.</p>
+<dl class="class">
+<dt id="cbapp.forms.CreateChorusBattleForm">
+<em class="property">class </em><code class="descclassname">cbapp.forms.</code><code class="descname">CreateChorusBattleForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>WTForm for creating a chorus battle.</p>
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.description">
+<code class="descname">description</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Description',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.name">
+<code class="descname">name</code><em class="property"> = &lt;UnboundField(StringField, ('Name of Chorus Battle',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.prizes">
+<code class="descname">prizes</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Prizes',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.prizes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.rules">
+<code class="descname">rules</code><em class="property"> = &lt;UnboundField(TextAreaField, ('List of Rules',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.rules" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.submit">
+<code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Create Chorus Battle',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateChorusBattleForm.video_link">
+<code class="descname">video_link</code><em class="property"> = &lt;UnboundField(StringField, ('Link to the Chorus Battle Introduction Video',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateChorusBattleForm.video_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.forms.CreateEntryForm">
+<em class="property">class </em><code class="descclassname">cbapp.forms.</code><code class="descname">CreateEntryForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.forms.CreateEntryForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>WTForm for adding an entry to a particular cohrus battle.</p>
+<dl class="attribute">
+<dt id="cbapp.forms.CreateEntryForm.description">
+<code class="descname">description</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Description',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateEntryForm.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateEntryForm.submit">
+<code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Submit Entry',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateEntryForm.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateEntryForm.team_name">
+<code class="descname">team_name</code><em class="property"> = &lt;UnboundField(StringField, ('Team Name',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateEntryForm.team_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateEntryForm.video_link">
+<code class="descname">video_link</code><em class="property"> = &lt;UnboundField(StringField, ('Link to the Chorus Battle Video',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateEntryForm.video_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.forms.CreateRoundForm">
+<em class="property">class </em><code class="descclassname">cbapp.forms.</code><code class="descname">CreateRoundForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.forms.CreateRoundForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>WTForm for adding a round for a particular chorus battle.</p>
+<dl class="attribute">
+<dt id="cbapp.forms.CreateRoundForm.deadline">
+<code class="descname">deadline</code><em class="property"> = &lt;UnboundField(DateTimeField, ('Deadline',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateRoundForm.deadline" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateRoundForm.round_number">
+<code class="descname">round_number</code><em class="property"> = &lt;UnboundField(IntegerField, ('Round Number',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateRoundForm.round_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateRoundForm.submit">
+<code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Create New Round',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateRoundForm.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.CreateRoundForm.theme">
+<code class="descname">theme</code><em class="property"> = &lt;UnboundField(TextAreaField, ('Theme',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.CreateRoundForm.theme" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.forms.LoginForm">
+<em class="property">class </em><code class="descclassname">cbapp.forms.</code><code class="descname">LoginForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.forms.LoginForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>WTForm for login page.</p>
+<dl class="attribute">
+<dt id="cbapp.forms.LoginForm.password">
+<code class="descname">password</code><em class="property"> = &lt;UnboundField(PasswordField, ('Password',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.LoginForm.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.LoginForm.submit">
+<code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Sign in',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.LoginForm.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.LoginForm.username">
+<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Username',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.LoginForm.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.forms.SignupForm">
+<em class="property">class </em><code class="descclassname">cbapp.forms.</code><code class="descname">SignupForm</code><span class="sig-paren">(</span><em>formdata=&lt;object object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.forms.SignupForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>WTForm for sign up page.</p>
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.email">
+<code class="descname">email</code><em class="property"> = &lt;UnboundField(StringField, ('Email',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;, &lt;wtforms.validators.Email object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.first_name">
+<code class="descname">first_name</code><em class="property"> = &lt;UnboundField(StringField, ('First name',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.first_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.last_name">
+<code class="descname">last_name</code><em class="property"> = &lt;UnboundField(StringField, ('Last name',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.last_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.password">
+<code class="descname">password</code><em class="property"> = &lt;UnboundField(PasswordField, ('Password',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;, &lt;wtforms.validators.Length object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.role">
+<code class="descname">role</code><em class="property"> = &lt;UnboundField(SelectField, ('Role',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;], 'choices': [(0, 'Choose Role'), (1, 'Administrator'), (2, 'Unassigned'), (3, 'Judge'), (4, 'Singer'), (5, 'Artist'), (6, 'Mixer'), (7, 'Animator')], 'coerce': &lt;class 'int'&gt;})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.role" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.role_choices">
+<code class="descname">role_choices</code><em class="property"> = [(0, 'Choose Role'), (1, 'Administrator'), (2, 'Unassigned'), (3, 'Judge'), (4, 'Singer'), (5, 'Artist'), (6, 'Mixer'), (7, 'Animator')]</em><a class="headerlink" href="#cbapp.forms.SignupForm.role_choices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.submit">
+<code class="descname">submit</code><em class="property"> = &lt;UnboundField(SubmitField, ('Sign up',), {})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.submit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cbapp.forms.SignupForm.username">
+<code class="descname">username</code><em class="property"> = &lt;UnboundField(StringField, ('Username',), {'validators': [&lt;wtforms.validators.DataRequired object&gt;]})&gt;</em><a class="headerlink" href="#cbapp.forms.SignupForm.username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Connect! Chorus Battle</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dbModels.html">Database Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Forms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="routes.html">Routes</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="dbModels.html" title="previous chapter">Database Models</a></li>
+      <li>Next: <a href="routes.html" title="next chapter">Routes</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, magica.py.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/forms.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

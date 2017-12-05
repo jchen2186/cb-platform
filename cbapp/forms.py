@@ -22,6 +22,7 @@ class SignupForm(FlaskForm):
         Length(min=6, message='Passwords must have at least 6 characters.')])
 
     role_choices = [(0, 'Choose Role'),
+                    (1, 'Administrator'),
                     (2, 'Unassigned'),
                     (3, 'Judge'),
                     (4, 'Singer'),

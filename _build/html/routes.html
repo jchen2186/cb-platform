@@ -1,0 +1,206 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Routes &#8212; Connect! Chorus Battle 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Forms" href="forms.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-cbapp.routes">
+<span id="routes"></span><h1>Routes<a class="headerlink" href="#module-cbapp.routes" title="Permalink to this headline">¶</a></h1>
+<p>This module contains the routes that allows flask to help navigate the
+user to the templates.</p>
+<dl class="function">
+<dt id="cbapp.routes.chorusEntries">
+<code class="descclassname">cbapp.routes.</code><code class="descname">chorusEntries</code><span class="sig-paren">(</span><em>cb=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.chorusEntries" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/chorusbattle/&lt;cb&gt;/entries’ will direct the user to a page where
+they can view all the entries for the selected chorus battle.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.chorusInfo">
+<code class="descclassname">cbapp.routes.</code><code class="descname">chorusInfo</code><span class="sig-paren">(</span><em>cb=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.chorusInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/chorusbattle/&lt;cb&gt; will direct the user to a page where the user
+can find more information about the selected chorus battle, stored
+as the variable cb.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.createChorusBattle">
+<code class="descclassname">cbapp.routes.</code><code class="descname">createChorusBattle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.createChorusBattle" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/create/chorusbattle’ will direct the user, who has 
+to be a Judge, to the form where he/she will fill out information
+relating to the chorus battle.
+After submitting the form, the user will be notified of any errors,
+if there are any. Otherwise, the chorus battle will be created.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.createEntry">
+<code class="descclassname">cbapp.routes.</code><code class="descname">createEntry</code><span class="sig-paren">(</span><em>cb=None</em>, <em>rd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.createEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/chorusbattle/&lt;cb&gt;/entries’ will direct a participant to a page where
+they can create a new entry for the newest round in the selected chorus battle.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.createRound">
+<code class="descclassname">cbapp.routes.</code><code class="descname">createRound</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.createRound" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/create/round’ will direct the user, who has to be a Judge,
+to the form where he/she will fill out information in order to add a round
+to the chorus battle he/she is hosting.
+After submitting the form, the user will be notified of any errors, if
+there are any. Otherwise, the round will be created.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.getUserProfile">
+<code class="descclassname">cbapp.routes.</code><code class="descname">getUserProfile</code><span class="sig-paren">(</span><em>username=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.getUserProfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/user/&lt;username&gt;’ directs the user to the profile page of
+the user with the specified username.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.home">
+<code class="descclassname">cbapp.routes.</code><code class="descname">home</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.home" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/home’ will redirect the user to the dashboard if the
+user is logged in. Otherwise, it will redirect the user to the login
+form in order to log in.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.index">
+<code class="descclassname">cbapp.routes.</code><code class="descname">index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/’ leads to the index page.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.login">
+<code class="descclassname">cbapp.routes.</code><code class="descname">login</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/login’ leads to the login form if the user is not already
+logged in. When the user submits the form, this function will verify
+whether or not the login credentials are valid and handle the cases
+accordingly.
+If the user is logged in, he/she gets redirected to the
+route ‘/home’ and will not see the login form.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.logout">
+<code class="descclassname">cbapp.routes.</code><code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/logout’ will remove the user from the current session.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.signup">
+<code class="descclassname">cbapp.routes.</code><code class="descname">signup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.signup" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/signup’ leads to the signup form if the user is not already
+logged in. When the user submits the form, this function will verify that
+the form is filled out properly. It will then add the user to the database
+and sessions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cbapp.routes.team">
+<code class="descclassname">cbapp.routes.</code><code class="descname">team</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.routes.team" title="Permalink to this definition">¶</a></dt>
+<dd><p>The route ‘/team/&lt;name&gt;’ will direct the user to a page containing
+information about the selected chorus battle team, stored as the
+variable name.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Connect! Chorus Battle</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dbModels.html">Database Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="forms.html">Forms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Routes</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="forms.html" title="previous chapter">Forms</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, magica.py.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/routes.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
