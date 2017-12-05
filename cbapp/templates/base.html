@@ -33,10 +33,13 @@
 							</div>
 						</form>
 					</div>
-				
+					
 					{% if session['username'] %}
 					<!-- <div id="user-icon"> -->
 						<!-- <img src=""> -->
+						{% if user_icon %}
+          					<img class="image is-48x48" id="user_icon" src="data:image/png;charset=utf-8;base64, {{ user_icon }}"/>
+        				{% endif %}
 						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
 
 					<!-- </div> -->
