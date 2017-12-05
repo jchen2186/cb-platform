@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="section">
+  <a class="button is-primary" href="/chorusbattle/{{ chorusTitle }}/entries/">Go Back</a>
+<section>
+<section class="section">
+  <div class="container">
+    <h2 class="title is-2">Create a New Entry for {{ chorusTitle }} - Round {{ rd }}</h2>
+
+    <form method="POST" action="/chorusbattle/{{ chorusTitle }}/entries/{{ rd }}/create/">
+      {{ form.hidden_tag() }}
+      
+      <div class="field">
+        <div class="label">{{ form.team_name.label }}</div>
+        <div class="control">{{ form.team_name(class_="input") }}</div>
+          {% if form.team_name.errors %}
+            {% for error in form.team_name.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+      
+      <div class="field">
+        <div class="label">{{ form.description.label }}</div>
+        <div class="control">{{ form.description(class_="textarea") }}</div>
+          {% if form.description.errors %}
+            {% for error in form.description.errors %}
+              <p class="error-message">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+      
+      <div class="field">
+        <div class="label">{{ form.video_link.label }}</div>
+        <div class="control">{{ form.video_link(class_="input") }}</div>
+          {% if form.video_link.errors %}
+            {% for error in form.video_link.errors %}
+              <p class="is-danger">{{ error }}</p>
+            {% endfor %}
+          {% endif %}
+      </div>
+
+      <br>
+      {{ form.submit(class="button is-link") }}
+    </form>
+  </div>
+</section>
+{% endblock %}

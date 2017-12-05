@@ -12,6 +12,17 @@
 
 #main-hero{
 	background-image: url("/static/img/mainSplash.png");
-	background-size: fill;
+	background-size: contain;
+	background-position: center;
 	background-repeat: none;
+}
+
+ul.menu-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+img.embed-img {
+    border: 2px solid grey;
 }
