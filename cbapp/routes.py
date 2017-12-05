@@ -5,9 +5,9 @@ user to the templates.
 
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateRoundForm
-from .models import db, User, ChorusBattle, UserRole, Entry
-from cbapp import app
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm
+from .models import db, User, ChorusBattle, UserRole, Entry, Round
+import urllib.parse
 import os
 
 # connect app to the postgresql database (local to our machines)
@@ -102,7 +102,10 @@ def chorusInfo(cb=None):
     can find more information about the selected chorus battle, stored
     as the variable cb.
     """
-    return render_template('chorusinfo.html', chorusTitle=cb)
+    row = ChorusBattle.query.filter_by(name=cb).first()
+
+    if row:
+        return render_template('chorusinfo.html', cb=row)
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -112,22 +115,37 @@ def chorusEntries(cb=None):
     """
     entries = [{'title':'Title', 'owners':'Owners here', 'description':'Here will describe the entries'}]
     rounds = []
-    rounds.append([{'title':'Entry 1', 'owners':'Team 1', \
+    rounds.append([{'title':'Blooming Light', 'owners':'Team Excite', \
         'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
         Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/NxGvsfOEP20'},
-        {'title':'Entry 2', 'owners':'Team 2', 'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
+        {'title':'Turn of the dawn', 'owners':'Team Raspberry', 'description':'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex. \
         Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
     rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
     print(rounds)
-    return render_template('entries.html', chorusTitle=cb, rounds=rounds)
+    return render_template('entries.html', cb=cb, rounds=rounds)
 
-@app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
-def createEntry(cb=None):
+@app.route('/chorusbattle/<cb>/entries/<rd>/create/', methods=['GET', 'POST'])
+def createEntry(cb=None, rd=None):
     """
     The route '/chorusbattle/<cb>/entries' will direct a participant to a page where
     they can create a new entry for the newest round in the selected chorus battle.
     """
-    return render_template('createentry.html', chorusTitle=cb)
+    form = CreateEntryForm()
+    if request.method == 'POST':
+        if not form.validate():
+            # we need to update the entries table on postgres
+            return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+        newEntry = Entry(form.team_name.data, form.description.data,
+            form.video_link.data, cb, rd)
+
+        db.session.add(newEntry)
+        db.session.commit()
+
+        return redirect(url_for('chorusBattle', cb=cb))
+
+    elif request.method == 'GET':
+        return render_template('createentry.html', cb=cb, rd=rd, form=form)
+
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
     """
@@ -139,11 +157,16 @@ def team(name=None):
 
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
-    return render_template("chorusbattles.html")
+    chorusBattles = ChorusBattle.query.all()
+    info = []
 
-@app.route('/chorusbattle/<cbname>/', methods=['GET'])
-def chorusBattle(cbname=None):
-    return render_template("tournament.html", cbname=cbname)
+    for cb in chorusBattles:
+        info.append({'name': cb.name,
+                     'description': cb.description,
+                     'link': urllib.parse.quote('/chorusbattle/' + cb.name)})
+
+
+    return render_template("chorusbattles.html", info=info)
 
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
@@ -158,18 +181,14 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
-            # currently does not work
-            # we need to update the chorus battle table on postgres
-            print('not valid')
             return render_template('createchorusbattle.html', form=form)
-
         newcb = ChorusBattle(form.name.data, form.description.data,
             form.rules.data, form.prizes.data, form.video_link.data)
 
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('chorusBattle', cbname=form.name.data))
+        return redirect(url_for('chorusInfo', cb=form.name.data))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
@@ -213,12 +232,8 @@ def getUserProfile(username=None):
     The route '/user/<username>' directs the user to the profile page of
     the user with the specified username.
     """
-    exists = db.session.query(
-        db.session.query(User).filter_by(username=username).exists()).scalar()
+    row = User.query.filter_by(username=username).first()
 
-    if username is not None and exists:
-        userRow = User.query.filter_by(username=username)
-        # role = userRow.get_role()
+    if row:
+        return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
 
-        return render_template("userprofile.html", username=username,
-            role=role)

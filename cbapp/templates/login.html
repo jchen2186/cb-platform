@@ -10,18 +10,15 @@
       <div class="field">
         <div class="label">{{ form.username.label }}</div>
         <div class ="control">{{ form.username(class_="input") }}</div>
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <div class=flashes>
-            {% for message in messages %}
-              {{ message }}
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-      <div class="form-group">
-        {{ form.username.label }}
-          <br>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class=flashes>
+              {% for message in messages %}
+                {{ message }}
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
 
         {% if form.username.errors %}
             {% for error in form.username.errors %}

@@ -2,7 +2,7 @@
   <div class="hero-body">
     <div class="container has-text-centered">
       <h1 class="title is-1">
-        <a href="/chorusbattle/{{chorusTitle}}">{{chorusTitle}}</a> 
+        <a href="/chorusbattle/{{ cb.name }}">{{ cb.name }}</a> 
         <!-- currently reads from whatever goes after chorusInfo/ in the URL-->
       </h1>
       <h2 class="subtitle">
@@ -30,8 +30,14 @@
               <span>Join this chorus battle</span>
           </a>
         </div>
+
         <div class="level-item">
-          <a class="button is-primary" href="/chorusbattle/{{chorusTitle}}/entries">
+          <a class="button is-primary" href=
+          {% if "entries" in request.path %}
+            "/chorusbattle/{{ cb.name }}"
+          {% else %}
+            "/chorusbattle/{{ cb.name }}/entries">
+          {% endif %}
               <span>Entries</span>
           </a>
         </div>
