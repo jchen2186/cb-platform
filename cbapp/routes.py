@@ -12,6 +12,8 @@ import urllib.parse
 import os
 from base64 import b64encode
 
+# pylint: disable=C0103
+
 # connect app to the postgresql database (local to our machines)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
                                                        'postgresql://localhost/cbapp')
@@ -20,7 +22,7 @@ app.secret_key = 'development-key'
 
 @app.context_processor
 def inject_user_icon():
-    """ 
+    """
     This function is a context processor that injects the user_icon variable into all templates
     """
     user_icon = User.query.filter_by(username=session['username']).first().user_icon
@@ -184,6 +186,10 @@ def team(name=None):
 
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
+    """
+    The route /chorusbattle/ directs the user to a page that displays
+    all chorus battles.
+    """
     chorusBattles = ChorusBattle.query.all()
     info = []
 
