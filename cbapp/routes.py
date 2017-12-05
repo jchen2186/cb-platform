@@ -134,7 +134,7 @@ def createEntry(cb=None, rd=None):
     if request.method == 'POST':
         if not form.validate():
             # we need to update the entries table on postgres
-            return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+            return render_template('createentry.html', cb=cb, rd=rd, form=form)
         newEntry = Entry(form.team_name.data, form.description.data,
             form.video_link.data, cb, rd)
 
@@ -237,3 +237,11 @@ def getUserProfile(username=None):
     if row:
         return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
 
+@app.route('/help/faq/', methods=['GET'])
+def faq():
+    """
+    The route '/help/faq/' directs the user to the Frequently Asked Questions
+    page. This page contains the user documentation which will assist the
+    end users who are using the app.
+    """
+    return render_template("faq.html")
