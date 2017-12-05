@@ -48,6 +48,7 @@ def login():
                 user = User.query.filter_by(username=username).first()
                 session['role'] = user.get_role()
                 session['user_icon'] = user.get_icon()
+                session['first_name'] = User.query.filter_by(username=username).first().firstname
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
             return render_template('login.html', form=form) 
@@ -82,6 +83,7 @@ def signup():
         session['username'] = newuser.username
         session['role'] = newuser.role_id
         session['user_icon'] = b64encode(propic).decode('utf-8')
+        session['first_name'] = newuser.first_name
         return redirect(url_for('home'))
         # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
 
@@ -144,7 +146,7 @@ def createEntry(cb=None, rd=None):
     if request.method == 'POST':
         if not form.validate():
             # we need to update the entries table on postgres
-            return render_template('createentry.html', chorusTitle=cb, rd=rd, form=form)
+            return render_template('createentry.html', cb=cb, rd=rd, form=form)
         newEntry = Entry(form.team_name.data, form.description.data,
             form.video_link.data, cb, rd)
 
@@ -242,8 +244,17 @@ def getUserProfile(username=None):
     The route '/user/<username>' directs the user to the profile page of
     the user with the specified username.
     """
-    row = User.query.filter_by(username=username).first()
+    # row = User.query.filter_by(username=username).first()
+    # if row:
+    #     return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
 
-    if row:
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role())
+    return render_template("userprofile.html")
 
+@app.route('/help/faq/', methods=['GET'])
+def faq():
+    """
+    The route '/help/faq/' directs the user to the Frequently Asked Questions
+    page. This page contains the user documentation which will assist the
+    end users who are using the app.
+    """
+    return render_template("faq.html")

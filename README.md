@@ -1,4 +1,4 @@
-# Web Platform for Chorus Battles
+# Connect! Chorus Battle
 A website that brings together the chorus battle (CB) community on YouTube, Twitter, and other social media sites.
 
 ## We are Live!

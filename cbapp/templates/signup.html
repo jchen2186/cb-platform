@@ -3,11 +3,13 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <h2 class="is-size-2">Create an account</h2>
+    <h2 class="is-size-2 has-text-centered">Create an account</h2><br>
 
     <form enctype="multipart/form-data" method="POST" action="/signup/">
       {{ form.hidden_tag() }}
-
+      <div class="columns">
+      <div class="column is-one-third"></div>
+      <div class="column is-one-third">
       <div class="field is-horizontal">
         <div class="field-body">
           <div class="field">
@@ -94,7 +96,11 @@
         </div>
       </div>
       <br>
+      <div class="has-text-centered">
       {{ form.submit(class="button is-link") }}
+      </div>
+    </div>
+    </div>
     </form>
   </div>
 </section>
