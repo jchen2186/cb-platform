@@ -3,7 +3,7 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
-from flask import flash, render_template, request, session, redirect, url_for
+from flask import flash, render_template, request, session, redirect, url_for, g
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round
@@ -15,16 +15,6 @@ from base64 import b64encode
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
 db.init_app(app)
 app.secret_key = 'development-key'
-
-@app.context_processor
-def inject_user_icon():
-    """ 
-    This function is a context processor that injects the user_icon variable into all templates
-    """
-    user_icon = User.query.filter_by(username=session['username']).first().user_icon
-    if user_icon:
-        user_icon = b64encode(user_icon).decode('utf-8')
-    return dict(user_icon=user_icon)
 
 @app.route('/', methods=['GET'])
 def index():
@@ -113,7 +103,7 @@ def home():
     print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('home.html')
+    return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
@@ -125,7 +115,7 @@ def chorusInfo(cb=None):
     row = ChorusBattle.query.filter_by(name=cb).first()
 
     if row:
-        return render_template('chorusinfo.html', cb=row)
+        return render_template('chorusinfo.html', cb=row, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -142,7 +132,7 @@ def chorusEntries(cb=None):
         Cras facilisis nibh sed turpis vehicula, quis varius arcu consectetur. Quisque a nunc velit. Nulla dapibus mauris vel mauris mattis, aliquam interdum odio egestas. Suspendisse ullamcorper, metus eget mattis sollicitudin, ex erat condimentum leo, ut blandit magna sem bibendum dolor. Morbi quis semper nulla. Ut enim turpis, mollis ut eleifend eu, auctor vel urna. Quisque euismod est quis feugiat iaculis. Etiam in orci ante. Sed in elit volutpat, porta nulla euismod, molestie justo. Curabitur pulvinar, mauris et tincidunt ullamcorper, nulla eros congue risus, id vestibulum risus lacus interdum libero. Maecenas sodales sed arcu et suscipit. Nam sed sem id metus sollicitudin efficitur.', 'video':'https://www.youtube.com/embed/dQw4w9WgXcQ'}])
     rounds.append([{'title':'Entry 1', 'owners':'Team 2', 'description':'Here will describe the entries for round 2. There will be fewer teams here due to elimination. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.', 'video':'https://www.youtube.com/embed/G2lXOwRi7Tk'}])
     print(rounds)
-    return render_template('entries.html', cb=cb, rounds=rounds)
+    return render_template('entries.html', cb=cb, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/<rd>/create/', methods=['GET', 'POST'])
 def createEntry(cb=None, rd=None):
@@ -154,7 +144,7 @@ def createEntry(cb=None, rd=None):
     if request.method == 'POST':
         if not form.validate():
             # we need to update the entries table on postgres
-            return render_template('createentry.html', cb=cb, rd=rd, form=form)
+            return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
         newEntry = Entry(form.team_name.data, form.description.data,
             form.video_link.data, cb, rd)
 
@@ -164,7 +154,7 @@ def createEntry(cb=None, rd=None):
         return redirect(url_for('chorusBattle', cb=cb))
 
     elif request.method == 'GET':
-        return render_template('createentry.html', cb=cb, rd=rd, form=form)
+        return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/team/<name>', methods=['GET'])
 def team(name=None):
@@ -173,7 +163,7 @@ def team(name=None):
     information about the selected chorus battle team, stored as the
     variable name.
     """
-    return render_template('team.html')
+    return render_template('team.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
@@ -186,7 +176,7 @@ def chorusBattleAll():
                      'link': urllib.parse.quote('/chorusbattle/' + cb.name)})
 
 
-    return render_template("chorusbattles.html", info=info)
+    return render_template("chorusbattles.html", info=info, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
@@ -201,7 +191,7 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('createchorusbattle.html', form=form)
+            return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
         newcb = ChorusBattle(form.name.data, form.description.data,
             form.rules.data, form.prizes.data, form.video_link.data)
 
@@ -211,12 +201,12 @@ def createChorusBattle():
         return redirect(url_for('chorusInfo', cb=form.name.data))
 
     elif request.method == 'GET':
-        return render_template('createchorusbattle.html', form=form)
+        return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
 def judgeEntry(cb=None,entry=None):
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry)
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/create/round/', methods=['GET', 'POST'])
 def createRound():
@@ -231,7 +221,7 @@ def createRound():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('createround.html', form=form)
+            return render_template('createround.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
         newRound = Round(form.round_number.data, form.theme.data, form.deadline.data)
         db.session.add(newRound)
@@ -242,7 +232,7 @@ def createRound():
         return redirect(url_for('/chorusbattle/'))
 
     elif request.method == 'GET':
-        return render_template('createround.html', form=form)
+        return render_template('createround.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 
 # work in progress
@@ -254,7 +244,7 @@ def getUserProfile(username=None):
     """
     row = User.query.filter_by(username=username).first()
     if row:
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=(b64encode(row.get_icon()).decode('utf-8')) if row.get_icon() else None)
+        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
 
     # return render_template("userprofile.html")
 
@@ -265,4 +255,14 @@ def faq():
     page. This page contains the user documentation which will assist the
     end users who are using the app.
     """
-    return render_template("faq.html")
+    return render_template("faq.html", icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+def getUserIcon(username):
+    """ 
+    This function grabs the user_icon from db based on queried username.
+    """
+    user_icon = None
+    user_icon = User.query.filter_by(username=username).first().user_icon
+    if user_icon:
+        user_icon = b64encode(user_icon).decode('utf-8')
+    return user_icon
