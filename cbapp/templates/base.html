@@ -17,9 +17,9 @@
 			</div>
 			<div class="navbar-menu">
 				<div class="navbar-start">
-					<a class="navbar-item" href="/home">Home</a>
+					<a class="navbar-item" href="/home/">Home</a>
 					<a class="navbar-item" href="">Community</a>
-					<a class="navbar-item" href="/chorusbattle">Chorus Battles</a>
+					<a class="navbar-item" href="/chorusbattle/">Chorus Battles</a>
 				</div>
 
 				<div class="navbar-end">
@@ -33,10 +33,13 @@
 							</div>
 						</form>
 					</div>
-				
+					
 					{% if session['username'] %}
 					<!-- <div id="user-icon"> -->
 						<!-- <img src=""> -->
+						{% if user_icon %}
+          					<img class="image is-48x48" id="user_icon" src="data:image/png;charset=utf-8;base64, {{ user_icon }}"/>
+        				{% endif %}
 						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
 
 					<!-- </div> -->
@@ -51,5 +54,32 @@
 	</nav>
 {% block content %}
 {% endblock %}
+
+	<section class="hero is-dark">
+		<div class="hero-body container has-text-centered">
+			<div class="columns">
+				<div class="column">
+					<ul>
+						<lh>Github</lh>
+						<li> <a href="http://github.com/jchen2186/cbplatform" <i class="fa fa-github" aria-hidden="true"></i> Repo </a> </li>
+					</ul>
+				</div>
+				<div class="column">
+					<ul>
+						<lh>Connect</lh>
+						<li> <a href="#" <i class="fa fa-twitter" aria-hidden="true"></i> Twitter </a> </li> 
+						<li> <a href="#" <i class="fa fa-facebook-official" aria-hidden="true"></i> FaceBook </a> </li>
+						<li> <a href="#" <i class="fa fa-envelope" aria-hidden="true"></i> Email </a> </li>
+					</ul>
+				</div>
+				<div class="column">
+					<p>Any Questions?</p>
+					<a href="/help/faq">FAQ</a>
+				</div>
+			</div>
+		</div>
+		<p> <i class="fa fa-copyright" aria-hidden="true"></i>Copyright JAVJJ 2017</p>
+	</section>
+
 </body>
 </html>

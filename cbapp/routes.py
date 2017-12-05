@@ -18,6 +18,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
 db.init_app(app)
 app.secret_key = 'development-key'
 
+@app.context_processor
+def inject_user_icon():
+    """ 
+    This function is a context processor that injects the user_icon variable into all templates
+    """
+    user_icon = User.query.filter_by(username=session['username']).first().user_icon
+    if user_icon:
+        user_icon = b64encode(user_icon).decode('utf-8')
+    return dict(user_icon=user_icon)
+
 @app.route('/', methods=['GET'])
 def index():
     """The route '/' leads to the index page."""
@@ -49,7 +59,6 @@ def login():
                 session['username'] = form.username.data
                 user = User.query.filter_by(username=username).first()
                 session['role'] = user.get_role()
-                session['user_icon'] = user.get_icon()
                 session['first_name'] = User.query.filter_by(username=username).first().firstname
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
@@ -84,8 +93,7 @@ def signup():
         print(newuser)
         session['username'] = newuser.username
         session['role'] = newuser.role_id
-        session['user_icon'] = b64encode(propic).decode('utf-8')
-        session['first_name'] = newuser.first_name
+        session['first_name'] = newuser.firstname
         return redirect(url_for('home'))
         # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
 
