@@ -4,33 +4,33 @@ from werkzeug import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-"""
-Association table showing organizers for chorus battles)
-"""
 judges = db.Table('judges', 
     db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False),
     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
     db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
+"""
+Association table showing organizers for chorus battles)
+"""
 
-"""
-Association table showing chorus battlers for each entry
-"""
 chorusbattle_entries = db.Table('chorusbattle_entries', 
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
     db.Column('entry_id', db.Integer, db.ForeignKey('entries.id'), nullable=False),
     db.PrimaryKeyConstraint('user_id', 'entry_id'))
+"""
+Association table showing chorus battlers for each entry
+"""
 
-"""
-Association table showing users on a particular team
-"""
 user_teams = db.Table('user_teams', 
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
     db.PrimaryKeyConstraint('user_id', 'team_id'))
+"""
+Association table showing users on a particular team
+"""
 
 class User(db.Model):
     """
-    Chorus battle user class
+    Chorus battle user class. This table stores the users in the system, and the user's information.
     """
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key = True)
@@ -40,6 +40,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(100))
     username = db.Column(db.String(100), unique=True)
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id'))
+    user_icon = db.Column(db.LargeBinary())
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users')
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users')
     teams = db.relationship('Team', secondary=user_teams, backref='users')
@@ -130,17 +131,18 @@ class UserRole(db.Model):
 
 class Entry(db.Model):
     """
-    Chorus battle Entry class
+    Model to store the entries of chorus
     """
     __tablename__ = 'entries'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the round.
 
-    team_name = db.Column(db.String(500))
-    description = db.Column(db.String(500))
-    video_link= db.Column(db.String(500))
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id')) #: id of the team that made the entry.
+    description = db.Column(db.String(500)) #: User-inputted description of the entry.
+    video_link= db.Column(db.String(500)) #: Link to the video entry, preferably YouTube so we can embed it.
     submission_date = db.Column(db.DateTime(timezone=True), default=func.now()) 
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
     round_number = db.Column(db.Integer, db.ForeignKey('rounds.id'))
+
     def __init__(self, team_name, description, video_link, chorusname, round_number):
         self.team_name = team_name
         self.description = description
@@ -151,14 +153,14 @@ class Entry(db.Model):
 
 class Round(db.Model):
     """ 
-    Chorus Battle Round class
+    Model to store the rounds of a chorus battle. It contains information about the round.
     """
     __tablename__ = 'rounds'
-    id = db.Column(db.Integer, primary_key = True)
-    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
-    theme = db.Column(db.String(500))
-    deadline = db.Column(db.DateTime(timezone=True))
-    round_number = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the round. 
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the round belongs to.
+    theme = db.Column(db.String(500)) #: User-inputted theme for the round of the chorus battle.
+    deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
+    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle. Why is this needed?
 
     def __init__(self, chorusbattle, deadline, round_number):
         self.chorusbattle = chorusbattle
@@ -167,17 +169,24 @@ class Round(db.Model):
 
 class Team(db.Model):
     """
-    Chorus Battle Team class
+    Model to store the team members and team name.
     """
     __tablename__ = 'teams'
-    id = db.Column(db.Integer, primary_key = True)
-    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'))
+    id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the team.
+    team_name=db.Column(db.String(100)) #: Name of the team.
+    team_logo = db.Column(db.LargeBinary()) #: Image for the team logo.
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) 
+    """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
+    """
 
     def __init__(self, id, chorusbattle):
         self.id = id
         self.chorusbattle = chorusbattle
 
 class Judge(db.Model):
+    """
+    Model to store user_id of judges to the respective chorus battle. Uses association table judges.
+    """
     __tablename__ = 'judges',
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
