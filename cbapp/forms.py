@@ -8,7 +8,7 @@ from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, Valid
 from wtforms.validators import DataRequired, Email, Length
 from .models import User
 
-def validate_username(field):
+def validate_username(form, field):
     """
     Checks whether username is unique. If is not
     unique, it will raise a validation error.
@@ -16,7 +16,7 @@ def validate_username(field):
     if not User.is_username_unique(field.data):
         raise ValidationError('Username is taken. Please try another username.')
 
-def validate_email(field):
+def validate_email(form, field):
     """
     Checks whether email is unique. If it is not
     unique, it will raise a validation error.
