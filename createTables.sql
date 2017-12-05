@@ -23,7 +23,7 @@ CREATE TABLE chorusbattles (
     description VARCHAR(500) NOT NULL,
     rules VARCHAR(500),
     prizes VARCHAR(500),
-    video_link VARCHAR(150)
+    video_link VARCHAR(150),
 	-- organizers integer NOT NULL, 
 	-- entries integer NOT NULL,
 	PRIMARY KEY (id)
