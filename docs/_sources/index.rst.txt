@@ -11,6 +11,8 @@ Welcome to Connect! Chorus Battle's documentation!
    :caption: Contents:
 
    dbModels
+   forms
+   routes
 
 
 
