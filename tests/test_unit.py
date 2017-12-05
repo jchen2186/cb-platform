@@ -150,7 +150,6 @@ class TestCBAppUnit(unittest.TestCase):
             self.assertEqual(file_name, "createchorusbattle.html")
     """
 
-    """
     def test_userprofile_get_userprofile_template(self):
         #Checks if the user profile route exists. The test passes if it does.
         with patch.multiple("cbapp.routes",
@@ -162,4 +161,3 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "userprofile.html")
-    """
