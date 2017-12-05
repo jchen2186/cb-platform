@@ -145,7 +145,8 @@ class ChorusBattle(db.Model):
         self.rules = rules
         self.prizes = prizes
         self.video_link = video_link
-
+        self.start_date = start_date
+        self.no_of_rounds = no_of_rounds
         self.creator_id = creator_id
 
     def change_name(self, newName):

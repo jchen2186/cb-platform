@@ -186,12 +186,12 @@ def createChorusBattle():
             return render_template('createchorusbattle.html', form=form)
         creator_id = User.query.filter_by(username=session['username']).first().id
         newcb = ChorusBattle(form.name.data, form.description.data,
-            form.rules.data, form.prizes.data, form.video_link.data, creator_id)
+            form.rules.data, form.prizes.data, form.video_link.data, form.start_date.data, form.no_of_rounds.data, creator_id)
 
         db.session.add(newcb)
         db.session.commit()
 
-        return redirect(url_for('chorusInfo', cb_id=newcb.id,cb=form.name.data))
+        return redirect(url_for('chorusInfo', cb=newcb.id))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form)
