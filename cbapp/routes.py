@@ -73,7 +73,7 @@ def signup():
         db.session.commit()
 
         session['username'] = newuser.username
-        session['role'] = newuser.role
+        session['role'] = newuser.role_id
         return redirect(url_for('home'))
 
     elif request.method == 'GET':
