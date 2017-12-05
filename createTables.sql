@@ -12,6 +12,7 @@ CREATE TABLE users (
     password_hash VARCHAR(100) NOT NULL,
     username VARCHAR(100) UNIQUE NOT NULL,
     role_id INTEGER NOT NULL,
+    user_icon BYTEA,
     PRIMARY KEY (id),
     CONSTRAINT users_role_id FOREIGN KEY(role_id) REFERENCES userroles(id)
 );
@@ -68,3 +69,12 @@ CREATE TABLE user_teams (
 	team_id INTEGER REFERENCES teams(id),
 	PRIMARY KEY (user_id, team_id)
 );
+
+INSERT INTO userroles(id, role_title) 
+	VALUES  (1, 'Administrator'),
+			(2, 'Unassigned'),
+			(3, 'Judge'),
+			(4, 'Singer'),
+			(5, 'Artist'),
+			(6, 'Mixer'),
+			(7, 'Animator');
