@@ -5,7 +5,7 @@
   <div class="container">
     <h2 class="is-size-2 has-text-centered">Create an account</h2><br>
 
-    <form method="POST" action="/signup/">
+    <form enctype="multipart/form-data" method="POST" action="/signup/">
       {{ form.hidden_tag() }}
       <div class="columns">
       <div class="column is-one-third"></div>
@@ -79,6 +79,22 @@
         {% endif %}
       </div>
 
+      <div class="field">
+        <div class="label">{{ form.propic.label }}</div>
+        <div class="file is-medium is-boxed has-name is-primary">
+          <label class="file-label">
+            {{ form.propic(class_="file-input") }}
+            <span class="file-cta">
+              <span class="file-label">
+                Profile Picture...
+              </span>
+            </span>
+            <span class="file-name">
+              {{ form.propic.name }}
+            </span>
+          </label>
+        </div>
+      </div>
       <br>
       <div class="has-text-centered">
       {{ form.submit(class="button is-link") }}
