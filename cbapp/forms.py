@@ -3,33 +3,25 @@ This module contains the structure of all of the forms used on the app.
 """
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TextAreaField, DateTimeField, IntegerField, ValidationError
 from wtforms.validators import DataRequired, Email, Length
-from models import User
+from .models import User
 
-def is_username_unique(form,field):
+def validate_username(form,field):
     """
-    Checks whether username is unique
-
-    Args:
-      username (str): username to be checked
-
-    Returns:
-      bool: True if username is unique and False if it is not 
+    Checks whether username is unique. If is not
+    unique, it will raise a validation error.
     """
-    return User.is_username_unique(field.data)
+    if not User.is_username_unique(field.data):
+        raise ValidationError('Username is taken. Please try another username.')
     
-def is_email_unique(form, field):
+def validate_email(form, field):
     """
-    Checks whether email is unique
-
-    Args:
-      username (str): email to be checked
-
-    Returns:
-      bool: True if email is unique and False if it is not 
+    Checks whether email is unique. If it is not
+    unique, it will raise a validation error.
     """
-    return User.is_email_unique(field.data)
+    if not User.is_email_unique(field.data):
+        raise ValidationError('There already exists an account with this email.')
 
 class SignupForm(FlaskForm):
     """WTForm for sign up page."""
@@ -39,9 +31,11 @@ class SignupForm(FlaskForm):
         DataRequired('Please enter your last name.')])
     email = StringField('Email', validators=[
         DataRequired('Please enter your email.'),
-        Email('Please enter a valid email.')])
+        Email('Please enter a valid email.'),
+        validate_email])
     username = StringField('Username', validators=[
-        DataRequired('Please enter a username.')])
+        DataRequired('Please enter a username.'),
+        validate_username])
     password = PasswordField('Password', validators=[
         DataRequired('Please enter a password.'),
         Length(min=6, message='Passwords must have at least 6 characters.')])
