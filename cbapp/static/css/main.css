@@ -2,15 +2,19 @@
 	color: lightgray;
 }
 
-.team-header .hero-foot{
+.team-header .hero-foot {
 	padding:10px;
 }
 
-.team-logo{
+.team-logo {
 	border-radius:50%;
 }
 
-#main-hero{
+#user_icon {
+	margin: auto 0;
+}
+
+#main-hero {
 	background-image: url("/static/img/mainSplash.png");
 	background-size: contain;
 	background-position: center;
