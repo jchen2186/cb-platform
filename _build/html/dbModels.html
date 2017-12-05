@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Database Models &#8212; Connect! Chorus Battle 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Connect! Chorus Battle’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-cbapp.models">
+<span id="database-models"></span><h1>Database Models<a class="headerlink" href="#module-cbapp.models" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="cbapp.models.ChorusBattle">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">ChorusBattle</code><span class="sig-paren">(</span><em>name</em>, <em>description</em>, <em>rules</em>, <em>prizes</em>, <em>video_link</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.ChorusBattle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chorus battle class</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.models.Entry">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">Entry</code><span class="sig-paren">(</span><em>id</em>, <em>submission_date</em>, <em>chorusbattle</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.Entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chorus battle Entry class</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.models.Round">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">Round</code><span class="sig-paren">(</span><em>chorusbattle</em>, <em>deadline</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.Round" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chorus Battle Round class</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.models.Team">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">Team</code><span class="sig-paren">(</span><em>id</em>, <em>chorusbattle</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.Team" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chorus Battle Team class</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.models.User">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">User</code><span class="sig-paren">(</span><em>firstname</em>, <em>lastname</em>, <em>email</em>, <em>password</em>, <em>username</em>, <em>role_id</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chorus battle user class</p>
+<dl class="method">
+<dt id="cbapp.models.User.check_password">
+<code class="descname">check_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.User.check_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if password matches hashed password</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>password (str): password to be checked</dd>
+<dt>Returns:</dt>
+<dd>bool: True if password matches hashed password and false if not</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbapp.models.User.get_role">
+<code class="descname">get_role</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.User.get_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the user’s role (in words).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cbapp.models.User.set_password">
+<code class="descname">set_password</code><span class="sig-paren">(</span><em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.User.set_password" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets password by converting plain text password to hashed password</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd>password (str): new password to replace current password</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cbapp.models.UserRole">
+<em class="property">class </em><code class="descclassname">cbapp.models.</code><code class="descname">UserRole</code><span class="sig-paren">(</span><em>role_id</em>, <em>role_title</em><span class="sig-paren">)</span><a class="headerlink" href="#cbapp.models.UserRole" title="Permalink to this definition">¶</a></dt>
+<dd><p>User role class</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="cbapp.models.chorusbattle_entries">
+<code class="descclassname">cbapp.models.</code><code class="descname">chorusbattle_entries</code><em class="property"> = Table('chorusbattle_entries', MetaData(bind=None), Column('user_id', Integer(), ForeignKey('users.id'), table=&lt;chorusbattle_entries&gt;, primary_key=True, nullable=False), Column('entry_id', Integer(), ForeignKey('entries.id'), table=&lt;chorusbattle_entries&gt;, primary_key=True, nullable=False), schema=None)</em><a class="headerlink" href="#cbapp.models.chorusbattle_entries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Association table showing users on a particular team</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="cbapp.models.db">
+<code class="descclassname">cbapp.models.</code><code class="descname">db</code><em class="property"> = &lt;SQLAlchemy engine=None&gt;</em><a class="headerlink" href="#cbapp.models.db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Association table showing organizers for chorus battles)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="cbapp.models.judges">
+<code class="descclassname">cbapp.models.</code><code class="descname">judges</code><em class="property"> = Table('judges', MetaData(bind=None), Column('user_id', Integer(), ForeignKey('users.id'), table=&lt;judges&gt;, primary_key=True, nullable=False), Column('chorusbattle_id', Integer(), ForeignKey('chorusbattles.id'), table=&lt;judges&gt;, primary_key=True, nullable=False), schema=None)</em><a class="headerlink" href="#cbapp.models.judges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Association table showing chorus battlers for each entry</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Connect! Chorus Battle’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, magica.py.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/dbModels.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
