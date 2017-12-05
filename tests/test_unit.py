@@ -31,7 +31,6 @@ class TestCBAppUnit(unittest.TestCase):
             #makes sure we are rendering the correct template on the login route
             self.assertEqual(file_name, "login.html")
     """
-
     def test_index_get_index_template(self):
         """Checks if the index route exists. The test passes if it does."""
         # Create mock functions
@@ -163,3 +162,15 @@ class TestCBAppUnit(unittest.TestCase):
             file_name = call_args[0][0]
             self.assertEqual(file_name, "userprofile.html")
     """
+
+    def test_faq_get_faq_template(self):
+        #Checks if the faq route exists. The test passes if it does.
+        with patch.multiple("cbapp.routes",
+                            request=DEFAULT,
+                            render_template=DEFAULT) as mock_functions:
+            cbapp.routes.faq()
+            render_template = mock_functions["render_template"]
+            self.assertTrue(render_template.called)
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "faq.html")
