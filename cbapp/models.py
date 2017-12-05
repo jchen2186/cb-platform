@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from werkzeug import generate_password_hash, check_password_hash
-from flask import session 
+from flask import session
 
 db = SQLAlchemy()
 
@@ -101,7 +101,7 @@ class User(db.Model):
         Returns:
           bool: True if username is unique and False if it is not 
         """
-        if session.query(User.id).filter(User.username==username).count() > 0:
+        if db.session.query(User.id).filter(User.username==username).count() > 0:
             return False
         return True
 
@@ -111,12 +111,12 @@ class User(db.Model):
         Checks whether email is unique
 
         Args:
-          username (str): email to be checked
+          email (str): email to be checked
 
         Returns:
           bool: True if email is unique and False if it is not 
         """
-        if session.query(User.id).filter(User.email==email).count() > 0:
+        if db.session.query(User.id).filter(User.email==email).count() > 0:
             return False
         return True
 
