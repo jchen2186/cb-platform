@@ -44,6 +44,7 @@ def login():
             user = User.query.filter_by(username=username).first()
             if user is not None and user.check_password(password):
                 session['username'] = form.username.data
+                session['first_name'] = User.query.filter_by(username=username).first().firstname
                 return redirect(url_for('home'))
             flash('Incorrect username or password.')
             return render_template('login.html', form=form) 
@@ -73,7 +74,8 @@ def signup():
         db.session.commit()
 
         session['username'] = newuser.username
-        session['role'] = newuser.role
+        session['role'] = newuser.role_id
+        session['first_name'] = newuser.first_name
         return redirect(url_for('home'))
 
     elif request.method == 'GET':
