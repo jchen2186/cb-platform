@@ -12,6 +12,7 @@
 
 #main-hero{
 	background-image: url("/static/img/mainSplash.png");
-	background-size: fill;
+	background-size: contain;
+	background-position: center;
 	background-repeat: none;
 }
