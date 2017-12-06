@@ -94,6 +94,8 @@ class CreateEntryForm(FlaskForm):
     """WTForm for adding an entry to a particular cohrus battle."""
     team_name = StringField('Team Name', validators=[
         DataRequired('Please enter your team name')])
+    title = StringField('Title', validators=[
+        DataRequired('Please enter a title for your entry.')])
     description = TextAreaField('Description', validators=[
         DataRequired('Please provide of a description of your entry.')])
     video_link = StringField('Link to the Chorus Battle Video', validators=[
