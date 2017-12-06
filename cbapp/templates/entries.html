@@ -1,33 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% include "chorusheader.html"%}
-<div class="level-item">
-  <a id="createEntry" class="button is-large is-info" href="#">Create Entry</a>
+{% include "chorusheader.html" %}
+<div class="content column">
+  {% if session['role'] == 3 %}
+    <a class="button is-large is-info" href="/chorusbattle/{{ cb }}/entries/createround/">Create Round</a>
+  {% else %}
+    <a class="button is-large is-info" href="/chorusbattle/{{ cb }}/entries/create/">Create Entry</a>
+  {% endif %}
 </div>
 <!-- Contains the entries for the chorus battle-->
 <div class="tabs">
   <ul>
-    <li class="round-tabs is-active"><a onclick="changeTab(event,1)">Round 1</a></li>
-    <li class="round-tabs"><a onclick="changeTab(event,2)">Round 2</a></li>
-    <li class="round-tabs"><a onclick="changeTab(event,3)">Round 3</a></li>
+    {% for i in range(1, roundCount+1) %}
+      <li class="round-tabs"><a onclick="changeTab(event,{{ i }})">Round {{ i }}</a></li>
+    {% endfor %}
+    {% for i in range(roundCount+1, maxRound) %}
+      <li class="round-tabs"><a disabled>Round {{ i }}</a></li>
+    {% endfor %}
   </ul>
 </div>
 {% for round in rounds %}
-<section class="section round">
-	{% for entry in round %}
+<div class="container">
+  <div class="columns">
+    <div class="column is-8"></div>
+    <div class="column is-4">
 
+      <div class="notification">
+        <h2 class="title is-4">Round Information</h2>
+          <p class="content">
+            <strong>Theme: </strong>{{ round[0] }}
+            <br>
+            <strong>Deadline: </strong>{{ round[1] }}
+          <br>
+          </p>
+      </div>
+    </div>
+  </div>
+</div>
+<section class="section round">
+	{% for entry in round[2:] %}
+  <hr>
 	<article class="media">
 	<div class="media-content">
     <div class="columns">
   		<div class="content column is-half">
   			<h2> {{entry.title }} </h2>
-          <a class="button is-info" href="/chorusbattle/{{ cb }}/judge/{{ entry.title }}"><span>Judge</span>
-          </a>
+          {% if session['role'] == 3 %}
+            <a class="button is-info" href="/chorusbattle/{{ cb }}/judge/{{ entry.title }}"><span>Judge</span></a>
+          {% endif %}
   			<p> {{ entry.owners }} </p>
   			<p> {{ entry.description }} </p>
       </div>
-      <iframe style="margin-top:85px" width="560" height="315" src="{{ entry.video }}" frameborder="0" allowfullscreen></iframe>
+      <iframe class="entryVideo" width="560" height="315" src="{{ entry.video_link }}" frameborder="0" allowfullscreen></iframe>
 		</div>
 	</div>
   </article>
@@ -37,21 +62,21 @@
 <script>
   let i;
   let rounds = document.getElementsByClassName("round");
+  let roundTabs = document.getElementsByClassName("round-tabs");
+  roundTabs[{{ roundCount-1 }}].classList.add('is-active');
   if (rounds.length > 1) {
     for (i = 1; i < rounds.length; i++) {
       rounds[i].style.display = "none";
     }
-    document.getElementById("createEntry").href = "/chorusbattle/{{ cb }}/entries/1/create/";
   }
 
   function changeTab(evt, round) {
-    let roundTabs = document.getElementsByClassName("round-tabs");
+    roundTabs = document.getElementsByClassName("round-tabs");
     rounds = document.getElementsByClassName("round");
     for (i = 0; i < roundTabs.length; i++) {
       roundTabs[i].classList.remove('is-active');
     }
     roundTabs[round-1].classList.add('is-active');
-    document.getElementById("createEntry").href = "/chorusbattle/{{ cb }}/entries/"+parseInt(round)+"/create/";
     for (i = 0; i < rounds.length; i++) {
       if (roundTabs[i].classList.contains('is-active')) {
         rounds[i].style.display = "block";
