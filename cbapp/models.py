@@ -233,10 +233,11 @@ class Round(db.Model):
     deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
     round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle. Why is this needed?
 
-    def __init__(self, chorusbattle, deadline, round_number):
+    def __init__(self, chorusbattle, theme, deadline):
         self.chorusbattle = chorusbattle
+        self.theme = theme
         self.deadline = deadline
-        self.round_number = round_number
+        self.round_number = session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
 
 class Team(db.Model):
     """
