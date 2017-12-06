@@ -1,51 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
+  <section class="section">
+    <a class="button is-primary" href="/chorusbattle/{{ cb }}/entries/">Go Back</a>
+  </section>
+  <section class="section">
   <div class="container">
-    <h2 class="title is-2">Create a New Round</h2>
+    <h2 class="title is-2 has-text-centered">Create a New Round For {{ cb }}</h2>
+    <div class="columns">
+      <div class="column is-one-third"></div>
+      <div class="column is-one-third">
+        <form method="POST" action="/chorusbattle/{{ cb }}/entries/createround/">
+          {{ form.hidden_tag() }}
+          
+          <div class="field">
+            <div class="label">{{ form.theme.label }}</div>
+            <div class="control">{{ form.theme(class_="input") }}</div>
+            {% if form.theme.errors %}
+              {% for error in form.theme.errors %}
+                <p class="error-message">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
 
-    <form method="POST" action="/create/round">
-      {{ form.hidden_tag() }}
-      
-      <div class="form-group">
-        {{ form.round_number.label }}
+          <div class="field">
+            <div class="label">{{ form.deadline.label }}</div>
+            <div class="control">{{ form.deadline(class_="input", type="datetime-local") }}</div>
+            {% if form.deadline.errors %}
+              {% for error in form.deadline.errors %}
+                <p class="error-message">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+
           <br>
-          {% if form.round_number.errors %}
-            {% for error in form.round_number.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.round_number }}
+          {{ form.submit(class="button is-link") }}
+        </form>
       </div>
-      
-      <div class="form-group">
-        {{ form.theme.label }}
-          <br>
-          {% if form.theme.errors %}
-            {% for error in form.theme.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.theme }}
-      </div>
-      
-      <div class="form-group">
-        {{ form.deadline.label }}
-          <br>
-          {% if form.deadline.errors %}
-            {% for error in form.deadline.errors %}
-              <p class="error-message">{{ error }}</p>
-            {% endfor %}
-          {% endif %}
-
-        {{ form.deadline }}
-      </div>
-
-      <br>
-      {{ form.submit(class="button is-link") }}
-    </form>
+    </div>
   </div>
-
+</section>
 {% endblock %}
