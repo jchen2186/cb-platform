@@ -34,7 +34,7 @@
         <div class="level-item">
           <a class="button is-primary" href=
           {% if "entries" in request.path %}
-            "/chorusbattle/{{ cb }}"
+            "/chorusbattle/{{ cb.id }}"
           {% else %}
             "/chorusbattle/{{ cb.id }}/entries">
           {% endif %}
