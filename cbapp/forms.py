@@ -4,7 +4,7 @@ This module contains the structure of all of the forms used on the app.
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
-from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError
+from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError, FieldList
 from wtforms.validators import DataRequired, Email, Length
 from .models import User, ChorusBattle
 from datetime import datetime
@@ -61,6 +61,14 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired('Please enter your username.')])
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
+
+class CreateTeamForm(FlaskForm):
+    """WTForm for creating a chorus battle team."""
+    team_name = StringField('Name of Team', validators=[
+        DataRequired('Please enter a name for your team.')])
+    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member')])
+    teampic = FileField('Team Logo (Optional)')
+    submit = SubmitField('Create Team')
 
 class CreateChorusBattleForm(FlaskForm):
     """WTForm for creating a chorus battle."""
