@@ -83,14 +83,14 @@
         <div class="label">{{ form.propic.label }}</div>
         <div class="file is-medium is-boxed has-name is-primary">
           <label class="file-label">
-            {{ form.propic(class_="file-input") }}
+            {{ form.propic(class_="file-input", onchange="changeText()", accept="image/jpeg, image/png") }}
             <span class="file-cta">
               <span class="file-label">
                 Profile Picture...
               </span>
             </span>
             <span class="file-name">
-              {{ form.propic.name }}
+              No file
             </span>
           </label>
         </div>
@@ -104,4 +104,11 @@
     </form>
   </div>
 </section>
+<script>
+  function changeText() {
+    let fileName = document.getElementsByClassName('file-name')[0];
+    let fileInput = document.getElementsByClassName('file-input')[0];
+    fileName.innerHTML = fileInput.value.substring(fileInput.value.lastIndexOf('\\')+1, fileInput.length);
+  }
+</script>
 {% endblock %}

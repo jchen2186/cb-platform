@@ -252,11 +252,12 @@ class Team(db.Model):
     """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
     """
 
-    def __init__(self, id, team_name, leader_id, chorusbattle):
-        self.id = id
+    def __init__(self, team_name, leader_id, team_logo, chorusbattle):
         self.team_name = team_name
         self.leader_id = leader_id
+        self.team_logo = team_logo
         self.chorusbattle = chorusbattle
+
 
 class Judge(db.Model):
     """
