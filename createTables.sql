@@ -82,3 +82,15 @@ INSERT INTO userroles(id, role_title)
 			(5, 'Artist'),
 			(6, 'Mixer'),
 			(7, 'Animator');
+
+
+ALTER TABLE chorusbattles ADD COLUMN creator_id INTEGER NOT NULL;      
+ADD CONSTRAINT fk_0 FOREIG KEY(creator_id) REFERENCES users(id);
+ADD COLUMN no_of_rounds INTEGER;      
+ADD COLUMN start_date TIMESTAMP WITHOUT TIME ZONE;
+
+
+
+
+
+

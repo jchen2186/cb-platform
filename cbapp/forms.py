@@ -57,13 +57,17 @@ class SignupForm(FlaskForm):
     submit = SubmitField('Sign up')
 
 class LoginForm(FlaskForm):
-    """WTForm for login page."""
+    """
+    WTForm for login page.
+    """
     username = StringField('Username', validators=[DataRequired('Please enter your username.')])
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
 
 class CreateChorusBattleForm(FlaskForm):
-    """WTForm for creating a chorus battle."""
+    """
+    WTForm for creating a chorus battle.
+    """
     name = StringField('Name of Chorus Battle', validators=[
         DataRequired('Please enter a name for your chorus battle.')])
     description = TextAreaField('Description', validators=[
@@ -81,7 +85,9 @@ class CreateChorusBattleForm(FlaskForm):
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
-    """WTForm for adding a round for a particular chorus battle."""
+    """
+    WTForm for adding a round for a particular chorus battle.
+    """
     round_number = IntegerField('Round Number', validators=[
         DataRequired('Please enter the round number.')])
     theme = TextAreaField('Theme', validators=[
@@ -91,7 +97,9 @@ class CreateRoundForm(FlaskForm):
     submit = SubmitField('Create New Round')
 
 class CreateEntryForm(FlaskForm):
-    """WTForm for adding an entry to a particular cohrus battle."""
+    """
+    WTForm for adding an entry to a particular chorus battle.
+    """
     team_name = StringField('Team Name', validators=[
         DataRequired('Please enter your team name')])
     description = TextAreaField('Description', validators=[
@@ -99,3 +107,20 @@ class CreateEntryForm(FlaskForm):
     video_link = StringField('Link to the Chorus Battle Video', validators=[
         DataRequired('Please provide a link to your Chorus Battle Video')])
     submit = SubmitField('Submit Entry')
+
+class JudgeEntryForm(FlaskForm):
+    """
+    WTForm for a judge to grade a particular entry for a chorus battle.
+    """
+    grades =   [(1, '1'),
+                (2, '2'),
+                (3, '3'),
+                (4, '4'),
+                (5, '5'),
+                (6, '6'),
+                (7, '7'),
+                (8, '8'),
+                (9, '9'),
+                (10, '10')]
+    vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for vocals.')])
