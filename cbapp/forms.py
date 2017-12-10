@@ -25,7 +25,9 @@ def validate_email(form, field):
         raise ValidationError('There already exists an account with this email.')
 
 class SignupForm(FlaskForm):
-    """WTForm for sign up page."""
+    """
+    WTForm for sign up page.
+    """
     first_name = StringField('First name', validators=[
         DataRequired('Please enter your first name.')])
     last_name = StringField('Last name', validators=[
@@ -112,6 +114,7 @@ class JudgeEntryForm(FlaskForm):
     """
     WTForm for a judge to grade a particular entry for a chorus battle.
     """
+    # Each category will be graded on a scale of 1 to 10
     grades =   [(1, '1'),
                 (2, '2'),
                 (3, '3'),
@@ -123,4 +126,13 @@ class JudgeEntryForm(FlaskForm):
                 (9, '9'),
                 (10, '10')]
     vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
-        DataRequired('Please select a score for vocals.')])
+        DataRequired('Please select a score for the vocals.')])
+    instrumental = SelectField('Instrumental', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the instrumental.')])
+    art = SelectField('Art', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the art.')])
+    editing = SelectField('Editing', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the editing.')])
+    transitions = SelectField('Vocals', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the transitions.')])
+    submit = SubmitField('Submit Entry')

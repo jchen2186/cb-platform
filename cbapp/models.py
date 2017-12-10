@@ -129,6 +129,7 @@ class User(db.Model):
             return False
         return True
 
+
 class ChorusBattle(db.Model):
     """
     Model to store chorus battle and related information.
