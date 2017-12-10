@@ -29,6 +29,7 @@ Association table showing chorus battlers for each entry
 user_teams = db.Table('user_teams', 
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
+    db.Column('status', db.String(100), nullable=False), # Status: ['pending', 'member']
     db.PrimaryKeyConstraint('user_id', 'team_id'))
 """
 Association table showing users on a particular team
@@ -249,6 +250,7 @@ class Team(db.Model):
     leader_id = db.Column(db.String(100), db.ForeignKey('users.id')) #: User ID of team leader.
     team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the team is participating in.
+    member = db.relationship('User', secondary='user_teams') #: Team members of the team
     """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
     """
 
