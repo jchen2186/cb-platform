@@ -207,14 +207,16 @@ class Entry(db.Model):
     id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the round.
 
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id')) #: id of the team that made the entry.
+    title = db.Column(db.String(100)) #: Title of the entry.
     description = db.Column(db.String(500)) #: User-inputted description of the entry.
     video_link= db.Column(db.String(500)) #: Link to the video entry, preferably YouTube so we can embed it.
     submission_date = db.Column(db.DateTime(timezone=True), default=func.now()) #: Date of the submission of the entry.
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the entry belongs to
     round_number = db.Column(db.Integer, db.ForeignKey('rounds.id')) #: The round of the chorus battle that the entry belongs to.
 
-    def __init__(self, team_name, description, video_link, chorusname, round_number):
-        self.team_name = team_name
+    def __init__(self, team_name, title, description, video_link, chorusid, round_number):
+        self.team_id = Team.query.filter_by(team_name=team_name).first().id
+        self.title = title
         self.description = description
         self.video_link = video_link
         self.chorusbattle = chorusid
@@ -231,10 +233,11 @@ class Round(db.Model):
     deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
     round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle. Why is this needed?
 
-    def __init__(self, chorusbattle, deadline, round_number):
+    def __init__(self, chorusbattle, theme, deadline):
         self.chorusbattle = chorusbattle
+        self.theme = theme
         self.deadline = deadline
-        self.round_number = round_number
+        self.round_number = session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
 
 class Team(db.Model):
     """
@@ -242,15 +245,19 @@ class Team(db.Model):
     """
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the team.
-    team_name=db.Column(db.String(100)) #: Name of the team.
+    team_name = db.Column(db.String(100)) #: Name of the team.
+    leader_id = db.Column(db.String(100), db.ForeignKey('users.id')) #: User ID of team leader.
     team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
-    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) 
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the team is participating in.
     """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
     """
 
-    def __init__(self, id, chorusbattle):
-        self.id = id
+    def __init__(self, team_name, leader_id, team_logo, chorusbattle):
+        self.team_name = team_name
+        self.leader_id = leader_id
+        self.team_logo = team_logo
         self.chorusbattle = chorusbattle
+
 
 class Judge(db.Model):
     """
