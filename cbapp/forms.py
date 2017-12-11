@@ -4,10 +4,10 @@ This module contains the structure of all of the forms used on the app.
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
-from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError
+from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError, FieldList
 from wtforms.validators import DataRequired, Email, Length
-from .models import User
-
+from .models import User, ChorusBattle
+from datetime import datetime
 def validate_username(form, field):
     """
     Checks whether username is unique. If is not
@@ -66,6 +66,14 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
 
+class CreateTeamForm(FlaskForm):
+    """WTForm for creating a chorus battle team."""
+    team_name = StringField('Name of Team', validators=[
+        DataRequired('Please enter a name for your team.')])
+    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member')])
+    teampic = FileField('Team Logo (Optional)')
+    submit = SubmitField('Create Team')
+
 class CreateChorusBattleForm(FlaskForm):
     """
     WTForm for creating a chorus battle.
@@ -83,19 +91,18 @@ class CreateChorusBattleForm(FlaskForm):
     video_link = StringField('Link to the Chorus Battle Introduction Video')
     no_of_rounds = StringField('Number of Rounds', validators=[
         DataRequired('Please enter the number of rounds.')])
-    start_date = DateTimeField('Start Date/Time', format="%Y-%m-%d %H:%M", validators=[DataRequired('Please enter a start date and time.')])
+    start_date = DateTimeField('Start Date/Time', default=datetime.now, format="%Y-%m-%dT%H:%M", validators=[DataRequired('Please enter a start date and time.')])
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
-    """
-    WTForm for adding a round for a particular chorus battle.
-    """
-    round_number = IntegerField('Round Number', validators=[
-        DataRequired('Please enter the round number.')])
+    """WTForm for adding a round for a particular chorus battle."""
+    # round_number = IntegerField('Round Number', validators=[
+    #     DataRequired('Please enter the round number.')])
     theme = TextAreaField('Theme', validators=[
         DataRequired('Please enter the theme for this particular round.')])
-    deadline = DateTimeField('Deadline', validators=[
-        DataRequired('Please enter the deadline (date and time) for this round.')])
+    deadline = DateTimeField('Deadline', default=datetime.now, format="%Y-%m-%dT%H:%M", validators=[
+        DataRequired('Please enter the deadline (date and time) for this round.')
+        ])
     submit = SubmitField('Create New Round')
 
 class CreateEntryForm(FlaskForm):
@@ -104,6 +111,8 @@ class CreateEntryForm(FlaskForm):
     """
     team_name = StringField('Team Name', validators=[
         DataRequired('Please enter your team name')])
+    title = StringField('Title', validators=[
+        DataRequired('Please enter a title for your entry.')])
     description = TextAreaField('Description', validators=[
         DataRequired('Please provide of a description of your entry.')])
     video_link = StringField('Link to the Chorus Battle Video', validators=[

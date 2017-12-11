@@ -32,3 +32,15 @@ Updating the Requirements
 ```
 pip3 freeze > requirements.txt
 ```
+
+## How to Run Pylint
+In the cbplatform directory, run the following:
+```
+python3 pylintrunner.py
+```
+
+## How to Run Tests
+In the cbplatform directory, run the following:
+```
+pytest
+```

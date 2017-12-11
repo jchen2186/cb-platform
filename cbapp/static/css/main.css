@@ -1,24 +1,29 @@
+.entryVideo {
+	margin: 0 auto;
+}
+
 .navbar-brand .navbar-item:hover {
 	color: lightgray;
 }
 
 .team-header .hero-foot {
-	padding:10px;
+	padding: 10px;
 }
 
 .team-logo {
-	border-radius:50%;
+	border-radius: 50%;
 }
 
 #user_icon {
+	border-radius: 50%;
 	margin: auto 0;
 }
 
 #main-hero {
 	background-image: url("/static/img/mainSplash.png");
-	background-size: contain;
+	background-size: cover;
 	background-position: center;
-	background-repeat: none;
+	background-repeat: no-repeat;
 }
 
 ul.menu-list {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Temporary CB Title</title>
+  <title>Connect! Chorus Battle</title>
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css">
   <link rel="stylesheet" href="{{  url_for('static', filename='css/main.css') }}">
@@ -13,7 +13,7 @@
 	<nav class="navbar" role="navigation">
 		<div class="container">
 			<div class="logo">
-				<a class="navbar-brand" href="/"><div class='navbar-item'>Chorus Battle!</div></a>
+				<a class="navbar-brand" href="/"><div class='navbar-item'>Connect! Chorus Battle</div></a>
 			</div>
 			<div class="navbar-menu">
 				<div class="navbar-start">
@@ -39,7 +39,7 @@
 						<!-- <img src=""> -->
 						{% if icon %}
 							<a class="navbar-item" href="{{ url_for('getUserProfile', username=session['username']) }}">
-          						<img class="image is-48x48" id="user_icon" src="data:image/png;charset=utf-8;base64, {{ icon }}" />
+          						<img class="image is-48x48" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ icon }}" />
           					</a>
         				{% endif %}
 						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
@@ -62,25 +62,29 @@
 			<div class="columns">
 				<div class="column">
 					<ul>
-						<lh>Github</lh>
-						<li> <a href="http://github.com/jchen2186/cbplatform" <i class="fa fa-github" aria-hidden="true"></i> Repo </a> </li>
+						<lh class="subtitle is-5">Github</lh>
+						<li> <a href="http://github.com/jchen2186/cbplatform"> <i class="fa fa-github" aria-hidden="true"></i> Repo </a> </li>
 					</ul>
 				</div>
 				<div class="column">
 					<ul>
-						<lh>Connect</lh>
-						<li> <a href="#" <i class="fa fa-twitter" aria-hidden="true"></i> Twitter </a> </li> 
-						<li> <a href="#" <i class="fa fa-facebook-official" aria-hidden="true"></i> FaceBook </a> </li>
-						<li> <a href="#" <i class="fa fa-envelope" aria-hidden="true"></i> Email </a> </li>
+						<lh class="subtitle is-5">Connect</lh>
+						<li> <a href="#"> <i class="fa fa-twitter" aria-hidden="true"></i> Twitter </a> </li> 
+						<li> <a href="#"> <i class="fa fa-facebook-official" aria-hidden="true"></i> Facebook </a> </li>
+						<li> <a href="#"> <i class="fa fa-envelope" aria-hidden="true"></i> Email </a> </li>
 					</ul>
 				</div>
 				<div class="column">
-					<p>Any Questions?</p>
-					<a href="/help/faq">FAQ</a>
+					<ul>
+						<lh class="subtitle is-5">Any Questions?</lh>
+						<li><a href="/help/faq">FAQ</a></li>
+					</ul>
 				</div>
 			</div>
 		</div>
-		<p> <i class="fa fa-copyright" aria-hidden="true"></i>Copyright JAVJJ 2017</p>
+		<div class="hero-foot has-text-centered">
+			<p> Connect! Chorus Battle <i class="fa fa-copyright" aria-hidden="true"></i> magica.py 2017</p>
+		</div>
 	</section>
 
 </body>

@@ -68,7 +68,7 @@
 
       <div class="field">
         <div class="label">{{ form.start_date.label }}</div>
-        <div class="control">{{ form.start_date(class_="input") }}</div>
+        <div class="control">{{ form.start_date(class_="input", type="datetime-local") }}</div>
           {% if form.start_date.errors %}
             {% for error in form.start_date.errors %}
               <p class="is-danger">{{ error }}</p>
