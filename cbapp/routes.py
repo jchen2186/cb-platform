@@ -11,6 +11,7 @@ from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_t
 import urllib.parse
 import os
 from base64 import b64encode
+import copy
 
 # pylint: disable=C0103
 
@@ -179,9 +180,17 @@ def team(teamID=None):
     """
     form = InviteTeamForm()
     team = Team.query.filter_by(id=teamID).first()
+    team_users = db.session.query(user_teams).filter_by(team_id=teamID, member_status='member').all()
+    team_members = []
+    for member in team_users:
+        userObject = {
+            'user': copy.deepcopy(User.query.filter_by(id=member.user_id).first())
+        }
+        userObject['role'] = UserRole.query.filter_by(id=userObject['user'].role_id).first().role_title.capitalize()
+        userObject['user_icon'] = b64encode(userObject['user'].user_icon).decode('utf-8')
+        team_members.append(userObject)
     if team:
-        print(dir(team))
-        return render_template('team.html', form=form, team=team, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('team.html', form=form, team=team, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/<cb>/createteam/', methods=['GET', 'POST'])
