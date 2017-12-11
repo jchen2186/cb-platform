@@ -33,9 +33,9 @@
   </div>
 </div>
 {% endif %}
-<section class="hero is-primary is-medium team-header">
-  <div class="hero-body">
-    {% with messages = get_flashed_messages() %}
+<section class="section">
+  <div class="container">
+      {% with messages = get_flashed_messages() %}
       {% if messages %}
         <div class=flashes>
           {% for message in messages %}
@@ -51,7 +51,9 @@
       {% endif %}
     {% endwith %}
   </div>
-  <div class="hero-foot">
+</sectoin>
+<section class="hero is-primary team-header">
+  <div class="hero-body">
     <div class="container">
       <div class="columns">
         <div class="column is-one-quarter">
