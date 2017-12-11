@@ -141,7 +141,7 @@ class User(db.Model):
           str: the title of the user's role
 
         """
-        userrole = db.session.query(User.role_id).filter(User.id == user_id)
+        role = db.session.query(User.role_id).filter(User.id == user_id)
         roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
         return roles[role - 1]
 

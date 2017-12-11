@@ -8,7 +8,7 @@
       Judging for {{ chorusBattle }}
     </h1>
     <h2 class="subtitle">
-        Team 2&ensp;-&ensp;Entry {{entry}}
+        Team 2&ensp;-&ensp;Entry {{ entry }} 
     </h2>
   </div>
 </div>
@@ -18,142 +18,86 @@
 <div class="container">
 <div class="columns">
 	<div class="column is-half">
-		<table class="table">
-		<thead>
-		<tr>
-			<th><abbr title="Criteria">Criteria</abbr></th>
-			<th><abbr title="Score">Score</abbr></th>
-			<th><abbr title="Comments">Comments</abbr></th>
-		</tr>
-		</thead>
+		<form method="POST" action="/chorusbattles/{{ chorusBattle }}/judge/{{ entry }}"/>
+			{{ form.hidden_tag() }}
+	          
+			<table class="table">
+			<thead>
+			<tr>
+				<th><abbr title="Criteria">Criteria</abbr></th>
+				<th><abbr title="Score">Score</abbr></th>
+				<th><abbr title="Comments">Comments</abbr></th>
+			</tr>
+			</thead>
 
-		<tbody>
-		<tr>
-		<th>Vocals</th>
-		<td>
-		<div class="field">
-			<div class="control">
-			    <div class="select is-primary">
-			      <select>
-			        <option></option>
-			        <option>1</option>
-			        <option>2</option>
-			        <option>3</option>
-			        <option>4</option>
-			        <option>5</option>
-			        <option>6</option>
-			        <option>7</option>
-			        <option>8</option>
-			        <option>9</option>
-			        <option>10</option>
-			      </select>
+			<tbody>
+			<tr>
+			<th>Vocals</th>
+			<td>
+			<div class="field">
+				<div class="control">
+				    <div class="select is-primary">
+				      {{ form.vocals }}
+					</div>
 				</div>
 			</div>
-		</div>
-		</td>
-		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-		</tr>
-		<th>Instrumental</th>
-		<td>
-		<div class="field">
-		  <div class="control">
-		    <div class="select is-primary">
-		      <select>
-		        <option></option>
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		        <option>6</option>
-		        <option>7</option>
-		        <option>8</option>
-		        <option>9</option>
-		        <option>10</option>
-		      </select>
-		    </div>
-		  </div>
-		</div>
-		</td>
-		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-		</tr>
-		<tr>
-		<th>Art</th>
-		<td>
-		<div class="field">
-		  <div class="control">
-		    <div class="select is-primary">
-		      <select>
-		        <option></option>
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		        <option>6</option>
-		        <option>7</option>
-		        <option>8</option>
-		        <option>9</option>
-		        <option>10</option>
-		      </select>
-		    </div>
-		  </div>
-		</div>
-		</td>
-		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-		</tr>
-		<tr>
-		<th>Editing</th>
-		<td>
-		<div class="field">
-		  <div class="control">
-		    <div class="select is-primary">
-		      <select>
-		        <option></option>
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		        <option>6</option>
-		        <option>7</option>
-		        <option>8</option>
-		        <option>9</option>
-		        <option>10</option>
-		      </select>
-		    </div>
-		  </div>
-		</div>
-		</td>
-		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-		</tr>
-		<tr>
-		<th>Transitions</th>
-		<td>
-		<div class="field">
-		  <div class="control">
-		    <div class="select is-primary">
-		      <select>
-		        <option></option>
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		        <option>6</option>
-		        <option>7</option>
-		        <option>8</option>
-		        <option>9</option>
-		        <option>10</option>
-		      </select>
-		    </div>
-		  </div>
-		</div>
-		</td>
-		<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
-		</tr>
-		</tbody>
-		</table>
+			</td>
+			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			</tr>
+			<th>Instrumental</th>
+			<td>
+			<div class="field">
+			  <div class="control">
+			    <div class="select is-primary">
+			        {{ form.instrumental }}
+			    </div>
+			  </div>
+			</div>
+			</td>
+			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			</tr>
+			<tr>
+			<th>Art</th>
+			<td>
+			<div class="field">
+			  <div class="control">
+			    <div class="select is-primary">
+			        {{ form.art }}
+			    </div>
+			  </div>
+			</div>
+			</td>
+			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			</tr>
+			<tr>
+			<th>Editing</th>
+			<td>
+			<div class="field">
+			  <div class="control">
+			    <div class="select is-primary">
+			        {{ form.editing }}
+			    </div>
+			  </div>
+			</div>
+			</td>
+			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			</tr>
+			<tr>
+			<th>Transitions</th>
+			<td>
+			<div class="field">
+			  <div class="control">
+			    <div class="select is-primary">
+			        {{ form.transitions }}
+			    </div>
+			  </div>
+			</div>
+			</td>
+			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			</tr>
+			</tbody>
+			</table>
+		</form>
 		<a class="button is-primary">Submit Score</a>
 	</div>
 	<div class="column">

@@ -6,7 +6,7 @@ user to the templates.
 
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team
 import urllib.parse
 import os
@@ -252,13 +252,14 @@ def judgeEntry(cb=None, entry=None):
     The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
     where he/she can grade an entry using a rubric.
     """
-    # If user is not a judge, redirect them to the chorus battle page
-    if session['role'] != 'Judge':
+    # If user is not a judge, redirect the user to the chorus battle page
+    if session['role'] != 3:
         return redirect(url_for('chorusInfo', cb=cb))
 
     form = JudgeEntryForm()
+    
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, form=form,
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, form=form, 
                                 icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 
