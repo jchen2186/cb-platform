@@ -9,11 +9,24 @@ our app works as intended.
 
 import unittest
 from unittest.mock import patch, DEFAULT, Mock
+import os
+import flaskr
+import tempfile
 # from bs4 import BeautifulSoup
 import cbapp
 
 class TestCBAppUnit(unittest.TestCase):
     """Class of unit tests that checks if the templates exist."""
+    def setUp(self):
+        self.db_fd, flaskr.app.config['DATABASE'] = tempfile.mkstemp()
+        flaskr.app.testing = True
+        self.app = flaskr.app.test_client()
+        with flaskr.app.app_context():
+            flaskr.init_db()
+
+    def tearDown(self):
+        os.close(self.db_fd)
+        os.unlink(flaskr.app.config['DATABASE'])
 
     def test_login_gets_login_template(self):
         """Checks if the login route exists. The test passes if it does."""
@@ -167,3 +180,10 @@ class TestCBAppUnit(unittest.TestCase):
             call_args = render_template.call_args
             file_name = call_args[0][0]
             self.assertEqual(file_name, "faq.html")
+
+    def test_get_userrole(self):
+        """ Checks if the get_userrole static method in the User model returns the correct
+            role for a user. If it does, the test passes. """
+        userrole = cbapp.models.User.get_userrole(6)
+        self.assertEqual(userrole,'Judge')
+

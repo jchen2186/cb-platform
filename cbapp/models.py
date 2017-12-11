@@ -129,6 +129,22 @@ class User(db.Model):
             return False
         return True
 
+    @staticmethod
+    def get_userrole(user_id):
+        """
+        Gets the role title of a particular user
+
+        Args:
+          user_id (int): the id of the user to get the role of
+
+        Returns: 
+          str: the title of the user's role
+
+        """
+        userrole = db.session.query(User.role_id).filter(User.id == user_id)
+        roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
+        return roles[role - 1]
+
 
 class ChorusBattle(db.Model):
     """
@@ -183,7 +199,7 @@ class UserRole(db.Model):
     """
     Model to store the roles and the associated id with the role.
     
-    0.Choose Role
+    0. Choose Role
     1. Administrator
     2. Unassigned
     3. Judge

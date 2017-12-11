@@ -114,6 +114,7 @@ class JudgeEntryForm(FlaskForm):
     """
     WTForm for a judge to grade a particular entry for a chorus battle.
     """
+
     # Each category will be graded on a scale of 1 to 10
     grades =   [(1, '1'),
                 (2, '2'),
@@ -125,6 +126,8 @@ class JudgeEntryForm(FlaskForm):
                 (8, '8'),
                 (9, '9'),
                 (10, '10')]
+
+    # The judges can select the scores for vocals, instrumental, art, editing, and transitions.
     vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the vocals.')])
     instrumental = SelectField('Instrumental', coerce=int, choices=grades, validators=[
