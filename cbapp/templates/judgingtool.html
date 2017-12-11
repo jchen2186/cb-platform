@@ -40,6 +40,11 @@
 				      {{ form.vocals }}
 					</div>
 				</div>
+				{% if form.team_name.errors %}
+		            {% for error in form.vocals.errors %}
+		              <p class="is-danger">{{ error }}</p>
+		            {% endfor %}
+		        {% endif %}
 			</div>
 			</td>
 			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
@@ -52,6 +57,11 @@
 			        {{ form.instrumental }}
 			    </div>
 			  </div>
+			  	{% if form.instrumental.errors %}
+		            {% for error in form.instrumental.errors %}
+		              <p class="is-danger">{{ error }}</p>
+		            {% endfor %}
+		        {% endif %}
 			</div>
 			</td>
 			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
@@ -60,11 +70,16 @@
 			<th>Art</th>
 			<td>
 			<div class="field">
-			  <div class="control">
-			    <div class="select is-primary">
-			        {{ form.art }}
-			    </div>
-			  </div>
+				<div class="control">
+				  	<div class="select is-primary">
+				      	{{ form.art }}
+				  	</div>
+			  	</div>
+			  	{% if form.art.errors %}
+		            {% for error in form.art.errors %}
+		              <p class="is-danger">{{ error }}</p>
+		            {% endfor %}
+		        {% endif %}
 			</div>
 			</td>
 			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
@@ -78,6 +93,11 @@
 			        {{ form.editing }}
 			    </div>
 			  </div>
+				{% if form.editing.errors %}
+		            {% for error in form.editing.errors %}
+		              <p class="is-danger">{{ error }}</p>
+		            {% endfor %}
+		        {% endif %}
 			</div>
 			</td>
 			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
@@ -91,6 +111,11 @@
 			        {{ form.transitions }}
 			    </div>
 			  </div>
+			  	{% if form.transitions.errors %}
+		            {% for error in form.transitions.errors %}
+		              <p class="is-danger">{{ error }}</p>
+		            {% endfor %}
+		        {% endif %}
 			</div>
 			</td>
 			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
