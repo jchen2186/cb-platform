@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% if currentUser == team.leader_id %}
 <div class="modal">
   <div class="modal-background" onclick="showInviteModal()"></div>
   <div class="modal-card">
@@ -30,6 +32,7 @@
     </form>
   </div>
 </div>
+{% endif %}
 <section class="hero is-primary is-medium team-header">
   <div class="hero-body">
     {% with messages = get_flashed_messages() %}
@@ -53,11 +56,15 @@
       <div class="columns">
         <div class="column is-one-quarter">
           <!-- team logo -->
-          <a href="https://placeholder.com"><img src="http://via.placeholder.com/200x200" class="team-logo"></a>
+          {% if team.team_logo %}
+            <img class="team-logo image is-128x128" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ team_logo }}" />
+          {% else %}
+            <img src="http://via.placeholder.com/200x200" class="team-logo" />
+          {% endif %}
         </div>
         <div class="column is-three-quarters">
           <h1 class="title">
-            {{ team.team_name }}  <button class="button is-info" onclick="showInviteModal()">Invite user</button>
+            {{ team.team_name }}  {% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% endif %}
           </h1>
           <h2 class="subtitle">
             Team Motto
@@ -74,7 +81,7 @@
       <div class="column is-two-thirds">
         <div class="notification" id="current-cb">
           <h2 class="title is-4">Current Chorus Battle!</h2>
-          <p class="content">none yet : ( </p>
+          <p class="content">{% if chorusBattle %}{{ chorusBattle }}{% else%}none yet : ({% endif%}</p>
         </div>
         <div class="notification is-info" id="notices">
           <h2 class="title is-4">Notices</h2>

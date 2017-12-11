@@ -190,7 +190,15 @@ def team(teamID=None):
         userObject['user_icon'] = b64encode(userObject['user'].user_icon).decode('utf-8')
         team_members.append(userObject)
     if team:
-        return render_template('team.html', form=form, team=team, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        team_logo = None
+        if team.team_logo:
+            team_logo = b64encode(team.team_logo).decode('utf-8')
+        chorusBattle = None
+        chorusBattle = ChorusBattle.query.filter_by(id=team.chorusbattle).first().name
+        currentUser = User.query.filter_by(username=(session['username'] if 'username' in session else None)).first()
+        if currentUser:
+            currentUser = currentUser.id
+        return render_template('team.html', currentUser = currentUser, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/<cb>/createteam/', methods=['GET', 'POST'])
