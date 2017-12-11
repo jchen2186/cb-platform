@@ -96,7 +96,15 @@
         </div>
         <div class="notification" id="current-members">
           <h2 class="title is-4">Current Members</h2>
-          <p class="content">none yet : ( </p>
+          <div class="columns">
+            {% for member in team_members %} 
+              <a class="user-panel" href="{{ url_for('getUserProfile', username=member['user'].username) }}">
+                <div class="column">
+                  <img class="image is-48x48" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ member.user_icon }}" /><p class="content-text">{{ member['user'].username }}<br>{{ member.role }}</p>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
         </div>
         <div class="notification" id="past-members">
           <h2 class="title is-4">Past Members</h2>
