@@ -6,8 +6,8 @@ user to the templates.
 
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
 import urllib.parse
 import os
 from base64 import b64encode
@@ -170,14 +170,19 @@ def createEntry(cb=None):
     elif request.method == 'GET':
         return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
-@app.route('/team/<name>', methods=['GET'])
-def team(name=None):
+@app.route('/team/<teamID>/', methods=['GET'])
+def team(teamID=None):
     """
     The route '/team/<name>' will direct the user to a page containing
     information about the selected chorus battle team, stored as the
     variable name.
     """
-    return render_template('team.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
+    form = InviteTeamForm()
+    team = Team.query.filter_by(id=teamID).first()
+    if team:
+        print(dir(team))
+        return render_template('team.html', form=form, team=team, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/<cb>/createteam/', methods=['GET', 'POST'])
 def createTeam(cb=None):
@@ -202,6 +207,48 @@ def createTeam(cb=None):
 
     elif request.method == 'GET':
         return render_template("createteam.html", form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
+def inviteTeam(teamID=None):
+    """
+    The route /team/<teamID>/invite/ allows a team leader to invite a user to their team
+    """
+    form = InviteTeamForm()
+    if request.method == 'POST':
+        team = Team.query.filter_by(id=teamID).first()
+        invitee = User.query.filter_by(username=form.username.data).first()
+        if invitee:
+            team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
+            if team_user:
+                flash('You have already invited ' + invitee.username +'.')
+            else:
+                team.member.append(invitee)
+                db.session.commit()
+                flash('You have invited ' + invitee.username + '.')
+        else:
+            flash(form.username.data + 'is not a registered user.')
+    return redirect(request.referrer or url_for('team', teamID=teamID))
+
+@app.route('/team/<teamID>/join/', methods=['GET'])
+def joinTeam(teamID=None):
+    """
+    The route /team/<teamID>/join/ allows users to accept an invitation to join a team.
+    """
+    userID = User.query.filter_by(username=session['username']).first().id
+    team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID).first()
+    team_name = Team.query.filter_by(id=teamID).first().team_name
+    if team_user:
+        if team_user.member_status == 'member':
+            flash('You are a member of ' + team_name + ' already.')
+            return redirect(request.referrer or url_for('home'))
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'member'" + \
+            "WHERE user_id=" + userID + " and team_id=" + teamID + ";")
+        flash('You have successfully joined ' + team_name + '.')
+    else:
+        flash('You are not invited to ' + team_name + '.')
+    return redirect(request.referrer or url_for('home'))
+
 @app.route('/chorusbattle/', methods=['GET'])
 def chorusBattleAll():
     """
@@ -316,4 +363,4 @@ def getUserIcon(username):
     user_icon = User.query.filter_by(username=username).first().user_icon
     if user_icon:
         user_icon = b64encode(user_icon).decode('utf-8')
-    return user_icon
+    return user_icon    
