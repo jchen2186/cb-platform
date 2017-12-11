@@ -75,7 +75,7 @@ class User(db.Model):
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
-    subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='users')
+    subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='subscriber')
 
     def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
@@ -173,7 +173,7 @@ class ChorusBattle(db.Model):
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
     # judges = db.relationship('Judge', secondary=judges)
-    subscribers = db.relationship("User", secondary='subscription', backref="chorusbattles")
+    subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
