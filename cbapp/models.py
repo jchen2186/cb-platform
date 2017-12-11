@@ -29,7 +29,7 @@ Association table showing chorus battlers for each entry
 user_teams = db.Table('user_teams', 
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
-    db.Column('status', db.String(100), nullable=False), # Status: ['pending', 'member']
+    db.Column('member_status', db.String(100), default='pending'), # Status: ['pending', 'member']
     db.PrimaryKeyConstraint('user_id', 'team_id'))
 """
 Association table showing users on a particular team
