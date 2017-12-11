@@ -99,8 +99,14 @@ class CreateRoundForm(FlaskForm):
         ])
     submit = SubmitField('Create New Round')
 
+class InviteTeamForm(FlaskForm):
+    """WTForm for inviting a user to a team."""
+    username = StringField('Username', validators=[
+        DataRequired('Please enter a username')])
+    submit = SubmitField('Invite')
+
 class CreateEntryForm(FlaskForm):
-    """WTForm for adding an entry to a particular cohrus battle."""
+    """WTForm for adding an entry to a particular chorus battle."""
     team_name = StringField('Team Name', validators=[
         DataRequired('Please enter your team name')])
     title = StringField('Title', validators=[
