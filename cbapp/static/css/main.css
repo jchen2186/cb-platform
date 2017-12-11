@@ -1,3 +1,17 @@
+.user-panel {
+	border: none;
+	text-decoration: none !important;
+}
+
+.content-text {
+	text-align: center;
+	text-overflow: ellipsis;
+}
+
+.user-panel:hover {
+	background-color: lightgray !important;
+}
+
 .entryVideo {
 	margin: 0 auto;
 }

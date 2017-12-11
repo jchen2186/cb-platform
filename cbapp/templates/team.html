@@ -1,19 +1,70 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% if currentUser == team.leader_id %}
+<div class="modal">
+  <div class="modal-background" onclick="showInviteModal()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Invite User</p>
+      <button class="delete" onclick="showInviteModal()" aria-label="close"></button>
+    </header>
+    <form method="POST" action="/team/{{ team.id }}/invite/">
+      <section class="modal-card-body">
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <div class="label">{{ form.username.label }}</div>
+              <div class="control">{{ form.username(class_="input", id="userinput") }}</div>
+              {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                  <p class="is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+      </div>
+      </section>
+      <footer class="modal-card-foot">
+        {{ form.submit(class="button is-link") }}
+      </footer>
+    </form>
+  </div>
+</div>
+{% endif %}
 <section class="hero is-primary is-medium team-header">
   <div class="hero-body">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class=flashes>
+          {% for message in messages %}
+            {% if 'not a registered user' in message %}
+              <div class="notification is-warning">{{ message }}</div>
+            {% elif 'You have already' in message %}
+              <div class="notification is-info">{{ message }}</div>
+            {% else %}
+              <div class="notification is-success">{{ message }}</div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
   </div>
   <div class="hero-foot">
     <div class="container">
       <div class="columns">
         <div class="column is-one-quarter">
           <!-- team logo -->
-          <a href="https://placeholder.com"><img src="http://via.placeholder.com/200x200" class="team-logo"></a>
+          {% if team.team_logo %}
+            <img class="team-logo image is-128x128" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ team_logo }}" />
+          {% else %}
+            <img src="http://via.placeholder.com/200x200" class="team-logo" />
+          {% endif %}
         </div>
         <div class="column is-three-quarters">
           <h1 class="title">
-            Team Title
+            {{ team.team_name }}  {% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% endif %}
           </h1>
           <h2 class="subtitle">
             Team Motto
@@ -30,7 +81,7 @@
       <div class="column is-two-thirds">
         <div class="notification" id="current-cb">
           <h2 class="title is-4">Current Chorus Battle!</h2>
-          <p class="content">none yet : ( </p>
+          <p class="content">{% if chorusBattle %}{{ chorusBattle }}{% else%}none yet : ({% endif%}</p>
         </div>
         <div class="notification is-info" id="notices">
           <h2 class="title is-4">Notices</h2>
@@ -52,7 +103,15 @@
         </div>
         <div class="notification" id="current-members">
           <h2 class="title is-4">Current Members</h2>
-          <p class="content">none yet : ( </p>
+          <div class="columns">
+            {% for member in team_members %} 
+              <a class="user-panel" href="{{ url_for('getUserProfile', username=member['user'].username) }}">
+                <div class="column">
+                  <img class="image is-48x48" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ member.user_icon }}" /><p class="content-text">{{ member['user'].username }}<br>{{ member.role }}</p>
+                </div>
+              </a>
+            {% endfor %}
+          </div>
         </div>
         <div class="notification" id="past-members">
           <h2 class="title is-4">Past Members</h2>
@@ -62,4 +121,11 @@
     </div> <!-- columns -->
   </div> <!-- container -->
 </section>
+<script>
+  function showInviteModal() {
+    let modal = document.getElementsByClassName('modal')[0];
+    modal.classList.toggle('is-active');
+    document.getElementById('userinput').focus();
+  }
+</script>
 {% endblock %}
