@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="modal">
+  <div class="modal-background" onclick="showInviteModal()"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">Invite User</p>
+      <button class="delete" onclick="showInviteModal()" aria-label="close"></button>
+    </header>
+    <form method="POST" action="/team/{{ team.id }}/invite/">
+      <section class="modal-card-body">
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <div class="label">{{ form.username.label }}</div>
+              <div class="control">{{ form.username(class_="input", id="userinput") }}</div>
+              {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                  <p class="is-danger">{{ error }}</p>
+                {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+      </div>
+      </section>
+      <footer class="modal-card-foot">
+        {{ form.submit(class="button is-link") }}
+      </footer>
+    </form>
+  </div>
+</div>
 <section class="hero is-primary is-medium team-header">
   <div class="hero-body">
     {% with messages = get_flashed_messages() %}
       {% if messages %}
         <div class=flashes>
           {% for message in messages %}
-            <div class="notification is-info">{{ message }}</div>
+            {% if 'not a registered user' in message %}
+              <div class="notification is-warning">{{ message }}</div>
+            {% elif 'You have already' in message %}
+              <div class="notification is-info">{{ message }}</div>
+            {% else %}
+              <div class="notification is-success">{{ message }}</div>
+            {% endif %}
           {% endfor %}
         </div>
       {% endif %}
@@ -22,7 +57,7 @@
         </div>
         <div class="column is-three-quarters">
           <h1 class="title">
-            {{ team.team_name }}
+            {{ team.team_name }}  <button class="button is-info" onclick="showInviteModal()">Invite user</button>
           </h1>
           <h2 class="subtitle">
             Team Motto
@@ -71,4 +106,11 @@
     </div> <!-- columns -->
   </div> <!-- container -->
 </section>
+<script>
+  function showInviteModal() {
+    let modal = document.getElementsByClassName('modal')[0];
+    modal.classList.toggle('is-active');
+    document.getElementById('userinput').focus();
+  }
+</script>
 {% endblock %}
