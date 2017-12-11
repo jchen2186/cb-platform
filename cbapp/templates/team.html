@@ -33,10 +33,10 @@
   </div>
 </div>
 {% endif %}
-<section class="section">
-  <div class="container">
       {% with messages = get_flashed_messages() %}
       {% if messages %}
+      <section class="section">
+        <div class="container">
         <div class=flashes>
           {% for message in messages %}
             {% if 'not a registered user' in message %}
@@ -48,6 +48,8 @@
             {% endif %}
           {% endfor %}
         </div>
+      </div>
+        </section>
       {% endif %}
     {% endwith %}
   </div>
