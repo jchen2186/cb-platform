@@ -43,7 +43,21 @@ subscriptions = db.Table('subscriptions',
 Association table showing chorus battle that users are subscribed to to show notifications.
 """
 
+class Notification(db.Model):
+    """
+    Class to store notifications made by user.
+    """
+    __tablename__='notifications'
+    id = db.Column(db.Integer, primary_key= True)
+    notifier = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False)
+    message = db.Column(db.String(200))
+    date_posted = db.Column(db.DateTime(timezone=True), default=func.now())
 
+    def __init__(self, notifier, chorusbattle_id, message):
+        self.notifier=notifier
+        self.chorusbattle_id=chorusbattle_id
+        self.message=message
 
 class User(db.Model):
     """
