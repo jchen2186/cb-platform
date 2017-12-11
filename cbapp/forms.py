@@ -139,12 +139,17 @@ class JudgeEntryForm(FlaskForm):
     # The judges can select the scores for vocals, instrumental, art, editing, and transitions.
     vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the vocals.')])
+    vocals_comment = TextAreaField()
     instrumental = SelectField('Instrumental', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the instrumental.')])
+    instrumental_comment = TextAreaField()
     art = SelectField('Art', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the art.')])
+    art_comment = TextAreaField()
     editing = SelectField('Editing', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the editing.')])
+    editing_comment = TextAreaField()
     transitions = SelectField('Vocals', coerce=int, choices=grades, validators=[
         DataRequired('Please select a score for the transitions.')])
+    transitions_comment = TextAreaField()
     submit = SubmitField('Submit Entry')

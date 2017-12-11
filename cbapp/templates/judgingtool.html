@@ -40,14 +40,16 @@
 				      {{ form.vocals }}
 					</div>
 				</div>
-				{% if form.team_name.errors %}
+				{% if form.vocals.errors %}
 		            {% for error in form.vocals.errors %}
 		              <p class="is-danger">{{ error }}</p>
 		            {% endfor %}
 		        {% endif %}
 			</div>
 			</td>
-			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			<td>
+				{{ form.vocals_comment(class="textarea", placeholder="Enter comments.") }}
+			</td>
 			</tr>
 			<th>Instrumental</th>
 			<td>
@@ -64,7 +66,9 @@
 		        {% endif %}
 			</div>
 			</td>
-			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			<td>
+				{{ form.instrumental_comment(class="textarea", placeholder="Enter comments.") }}
+			</td>
 			</tr>
 			<tr>
 			<th>Art</th>
@@ -82,7 +86,9 @@
 		        {% endif %}
 			</div>
 			</td>
-			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			<td>
+				{{ form.art_comment(class="textarea", placeholder="Enter comments.") }}
+			</td>
 			</tr>
 			<tr>
 			<th>Editing</th>
@@ -100,7 +106,9 @@
 		        {% endif %}
 			</div>
 			</td>
-			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			<td>
+				{{ form.editing_comment(class="textarea", placeholder="Enter comments.") }}
+			</td>
 			</tr>
 			<tr>
 			<th>Transitions</th>
@@ -118,12 +126,14 @@
 		        {% endif %}
 			</div>
 			</td>
-			<td><textarea class="textarea" placeholder="Enter comments."></textarea></td>
+			<td>
+				{{ form.transitions_comment(class="textarea", placeholder="Enter comments.") }}
+			</td>
 			</tr>
 			</tbody>
 			</table>
 		</form>
-		<a class="button is-primary">Submit Score</a>
+		{{ form.submit(class="button is-primary") }}
 	</div>
 	<div class="column">
 		<iframe width="560" height="315" src="https://www.youtube.com/embed/G2lXOwRi7Tk" frameborder="0" allowfullscreen></iframe>
