@@ -252,9 +252,15 @@ def judgeEntry(cb=None, entry=None):
     The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
     where he/she can grade an entry using a rubric.
     """
-    
+    # If user is not a judge, redirect them to the chorus battle page
+    if session['role'] != 'Judge':
+        return redirect(url_for('chorusInfo', cb=cb))
+
+    form = JudgeEntryForm()
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, form=form,
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
 def createRound(cb=None):
