@@ -60,6 +60,17 @@ class Notification(db.Model):
         self.message=message
 
     @staticmethod
+    def is_subscribed(user_id, cb):
+        """
+        Checks if a user is subscribed to a cb.
+        """
+        subs = db.session.query(subscriptions).filter_by(user_id=user_id, chorusbattle_id=cb)
+        if len(subs) == 0:
+            return False
+
+        return True
+
+    @staticmethod
     def get_notifications(user_id):
         """
         Calls a query that gets all the notifications for subscription of a user_id.

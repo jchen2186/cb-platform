@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification
 import urllib.parse
 import os
 from base64 import b64encode
@@ -111,6 +111,10 @@ def home():
     print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
+
+    # get 10 most recent notifications
+    notif = Notification.get_notifications(1)
+
     return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
@@ -149,6 +153,18 @@ def chorusInfo(cb=None):
             deadlines=round_deadlines,
             maxRound = maxRound,
             teams=teams)
+
+@app.route('/chorusbattle/<cb>/subscribe')
+def subscribe(cb=None):
+    if 'username' not in session:
+         return redirect(url_for('login'))
+
+    user_id = User.query.filter_by(username=session['username']).first().id
+
+    if not Notification.is_subscribed(user_id,cb):
+       User.subscriptions.append(cb)
+
+    return redirect(url_for('chorusInfo', cb=cb))
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
