@@ -52,6 +52,27 @@
 	</div>
 	<br>
 	{% endfor %}
+
+	<!-- Search Results for Teams -->
+	<div class="container">
+		<h2 class="title is-2">Teams</h2>
+	</div>
+	<br>
+	{% for i in range(resultsTeams|length) %}
+	<div class="card">
+		<header class="card-header">
+			<p class="card-header-title">
+				<a href="/team/{{resultsTeams[i][0]}}">{{resultsTeams[i][1]}}</a>
+			</p>
+		</header>
+		<div class="card-content">
+			<div clas="content">
+				{{resultsTeams[i][2]}}
+			</div>
+		</div>
+	</div>
+	<br>
+	{% endfor %}
 </div>
 
 {% endblock %}
