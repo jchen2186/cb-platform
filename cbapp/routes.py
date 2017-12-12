@@ -200,10 +200,10 @@ def chorusInfo(cb=None):
         judges_list.append(temp)
 
     if row:
-        current_user = User.query.filter_by(username=session['username']).first()
-        user_id = current_user.id
         subbed = False
         if 'username' in session:
+            current_user = User.query.filter_by(username=session['username']).first()
+            user_id = current_user.id
             subbed= Notification.is_subscribed(user_id, cb)
 
         return render_template('chorusinfo.html', cb=row, 
