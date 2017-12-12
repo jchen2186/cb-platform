@@ -4,6 +4,15 @@ CREATE TABLE userroles (
 	PRIMARY KEY (id)
 );
 
+INSERT INTO userroles(id, role_title) 
+	VALUES  (1, 'Administrator'),
+			(2, 'Unassigned'),
+			(3, 'Judge'),
+			(4, 'Singer'),
+			(5, 'Artist'),
+			(6, 'Mixer'),
+			(7, 'Animator');
+
 CREATE TABLE users (
     id serial NOT NULL,
     firstname VARCHAR(100) NOT NULL,
@@ -19,7 +28,7 @@ CREATE TABLE users (
 
 
 CREATE TABLE chorusbattles (
-	id serial NOT NULL, 
+	id serial NOT NULL PRIMARY KEY, 
 	name VARCHAR(150) NOT NULL,
     description VARCHAR(500) NOT NULL,
     rules VARCHAR(500),
@@ -27,21 +36,9 @@ CREATE TABLE chorusbattles (
     video_link VARCHAR(150),
     start_date TIMESTAMP WITHOUT TIME ZONE,
     no_of_rounds INTEGER NOT NULL,
-    creator_id INTEGER NOT NULL,
-	-- organizers integer NOT NULL, 
-	-- entries integer NOT NULL,
-	PRIMARY KEY (id),
-    CONSTRAINT creator_user_id FOREIGN KEY(creator_id) REFERENCES users(id)
+    creator_id INTEGER NOT NULL REFERENCES users(id)
 );
 
--- CREATE TABLE entries (
--- 	id serial NOT NULL,
--- 	team_id 
--- 	submission_date TIMESTAMP WITH TIME ZONE,
--- 	chorusbattle INTEGER NOT NULL,
--- 	PRIMARY KEY (id),
--- 	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
--- );
 
 CREATE TABLE entries (
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -51,7 +48,7 @@ CREATE TABLE entries (
 	title VARCHAR(100),
 	description VARCHAR(500),
 	submission_date TIMESTAMP WITH TIME ZONE,
-	video_link VARCHAR(500),
+	video_link VARCHAR(500)
 );
 
 
@@ -61,7 +58,8 @@ CREATE TABLE orders(
 	item_code integer REFERENCES items(item_code),
 	item_grade character(1),
 	ord_qty numeric,
-	ord_amount numeric);  
+	ord_amount numeric
+);  
 
 
 CREATE TABLE rounds (
@@ -95,24 +93,3 @@ CREATE TABLE user_teams (
 	team_id INTEGER REFERENCES teams(id),
 	PRIMARY KEY (user_id, team_id)
 );
-
-INSERT INTO userroles(id, role_title) 
-	VALUES  (1, 'Administrator'),
-			(2, 'Unassigned'),
-			(3, 'Judge'),
-			(4, 'Singer'),
-			(5, 'Artist'),
-			(6, 'Mixer'),
-			(7, 'Animator');
-
-
-ALTER TABLE chorusbattles ADD COLUMN creator_id INTEGER NOT NULL;      
-ADD CONSTRAINT fk_0 FOREIG KEY(creator_id) REFERENCES users(id);
-ADD COLUMN no_of_rounds INTEGER;      
-ADD COLUMN start_date TIMESTAMP WITHOUT TIME ZONE;
-
-
-
-
-
-
