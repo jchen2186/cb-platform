@@ -123,6 +123,11 @@ CREATE TABLE judge_scores(
 	art INTEGER NOT NULL,
 	editing INTEGER NOT NULL,
 	transitions INTEGER NOT NULL,
+	vocals_comment VARCHAR(500),
+	instrumental_comment VARCHAR(500),
+	art_comment VARCHAR(500),
+	editing_comment VARCHAR(500),
+	transitions_comment VARCHAR(500),
 	PRIMARY KEY (judge_id,entry_id)
 );
 

@@ -7,13 +7,8 @@ user to the templates.
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-<<<<<<< HEAD
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
-=======
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm, NotificationForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions
->>>>>>> e62fee8176d5bf9a0219c704903e6ed3c89e8f56
 import urllib.parse
 import os
 from base64 import b64encode
@@ -297,7 +292,7 @@ def team(teamID=None):
     """
     form = InviteTeamForm()
     team = Team.query.filter_by(id=teamID).first()
-    team_users = db.session.query(UserTeam).filter_by(team_id=teamID, member_status='member').all()
+    team_users = db.session.query(user_teams).filter_by(team_id=teamID, member_status='member').all()
     team_members = []
     for member in team_users:
         userObject = {
@@ -629,6 +624,9 @@ def judgeEntry(cb=None, entry=None):
         return render_template("judgingtool.html", chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
                                 icon=getUserIcon((session['username'] if 'username' in session else None)))
 
+    elif request.method == 'POST':
+        if form.validate():
+            return
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
 def createRound(cb=None):

@@ -90,15 +90,25 @@ class JudgeScore(db.Model):
     art = db.Column(db.Integer, nullable=False)
     editing = db.Column(db.Integer, nullable=False)
     transitions = db.Column(db.Integer, nullable=False)
+    vocals_comment = db.Column(db.String(500))
+    instrumental_comment = db.Column(db.String(500))
+    art_comment = db.Column(db.String(500))
+    editing_comment = db.Column(db.String(500))
+    transitions_comment = db.Column(db.String(500))
 
-    def __init__(self,judge_id,entry_id,vocals,instrumental,art,editing,transitions):
+    def __init__(self,judge_id,entry_id,vocals,vocals_comment,instrumental,instrumental_comment,art,art_comment,editing,editing_comment,transitions, transitions_comment):
         self.judge_id = judge_id
         self.entry_id = entry_id
         self.vocals = vocals
+        self.vocals_comment = vocals_comment
         self.instrumental = instrumental
+        self.instrumental_comment = instrumental_comment
         self.art = art
+        self.art_comment = art_comment
         self.editing = editing
+        self.editing_comment = editing_comment
         self.transitions = transitions
+        self.transitions_comment = transitions_comment
 
 class Notification(db.Model):
     """
