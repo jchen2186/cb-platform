@@ -15,7 +15,7 @@ import os.path as op
 import os
 
 class TestCBAppUnit(unittest.TestCase):
-    """Class of unit tests that checks if the templates exist."""
+    """Class of unit tests for the chorus battle app."""
     
     def setUp(self):
         """ Set up class for testing. """
@@ -259,12 +259,6 @@ class TestCBAppUnit(unittest.TestCase):
                                         'templates',
                                         'userprofile.html'))
         self.assertTrue(file_exists)
-
-    def test_index_page_loads(self):
-        """ Checks if the index page loads correctly. """
-        tester = cbapp.app.test_client(self)
-        response = tester.get('/', content_type='html/text')
-        self.assertTrue(b'Login' in response.data)
 
 
     # def test_login_gets_login_template(self):
