@@ -342,7 +342,6 @@ class ChorusBattle(db.Model):
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
     judges = db.relationship('User', secondary='judges')
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
-    winner = db.Column(db.Integer,db.ForeignKey('teams.id'))
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
         self.description = description
@@ -467,7 +466,7 @@ class Round(db.Model):
         self.chorusbattle = chorusbattle
         self.theme = theme
         self.deadline = deadline
-        self.round_number = session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
+        self.round_number = db.session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
 
     def set_winner(self, winner_id):
         """

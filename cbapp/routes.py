@@ -255,7 +255,7 @@ def chorusEntries(cb=None):
 
         entries = Entry.query.filter_by(chorusbattle=cb, round_number=rd).all()
         for entry in entries:
-            currRound.append({'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
+            currRound.append({'id':entry.id, 'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
         rounds.append(currRound)
     
     subbed = False
@@ -748,21 +748,21 @@ def chorusRound(cb=None,round_number=None):
         return redirect(url_for('login'))
     if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
-    round_id = db.session.query(Round.id).filter_by(chorusbattle_id=cb, round_number=round_number).first()
-    round_info = Round.query.filter_by(round_id).first()
-    ChorusBattle.query.filter_by(id=cb).first()
-    if request.method == 'GET':
-        if Round.has_winner():
-            return redirect(url_for('chorusInfo', cb=cb))
-        else:
-            return render_template('chorusRound.html',cb=cb, round=round_number)
+    round_id = db.session.query(Round.id).filter_by(chorusbattle=cb).first()
+    # round_info = db.session.query(Round).filter_by(id=round_id).first() 
+    # ChorusBattle.query.filter_by(id=cb).first()
+    # if request.method == 'GET':
+    #     if Round.has_winner():
+    #         return redirect(url_for('chorusInfo', cb=cb))
+    #     else:
+    #         return render_template('chorusRound.html',cb=cb, round=round_id)
 
-    else:
-        if form.validate():
-            Round.choose_winner(form.winning_team.data)
-            return redirect(url_for('chorusInfo', cb=cb, subbed=True))
+    # else:
+    #     if form.validate():
+    #         Round.choose_winner(form.winning_team.data)
+    #         return redirect(url_for('chorusInfo', cb=cb, subbed=True))
 
-
+    return render_template('chorusRound.html',cb=cb, round=round_id)
 
 
 
