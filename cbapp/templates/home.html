@@ -74,9 +74,10 @@
           {% for notif in notifications%}
             <div class="notification">
               <p class="content">
-                {{ notif.messsage }}
+                {{ notif.message }}
+                <br>
                 <small>{{notif.date_posted}}</small>
-                }
+                
               </p>
             </div>
           {% endfor %}

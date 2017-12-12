@@ -121,7 +121,12 @@ def home():
 @app.route('/home/notifications/')
 @app.route('/home/notifications/<int:page>')
 def viewNotifications(page=1):
-    pass
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    notifs = Notification.get_notifications(6).paginate(page,10,False)
+    notifications = notifs.items
+    return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
+         icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
