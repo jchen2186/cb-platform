@@ -8,6 +8,10 @@ from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, Valid
 from wtforms.validators import DataRequired, Email, Length
 from .models import User, ChorusBattle
 from datetime import datetime
+
+"""
+Custom Validators
+"""
 def validate_username(form, field):
     """
     Checks whether username is unique. If is not
@@ -32,6 +36,19 @@ def validate_username_exists(form, field):
     """
     if User.is_username_unique(field.data):
         raise ValidationError('This username does not exist.')
+
+def validate_judge(form, field):
+    """
+    Checks whether a user is a judge. If the 
+    user is not a judge, it will raise a
+    validation error.
+    """
+    if User.is_username_unique(field.data):
+        # If username is not in the users table, raise an error
+        raise ValidationError('This username does not exist.')
+    elif User.get_role(field.data) != 'Judge':
+        # If the username exists but is not a judge, raise an error
+        raise ValidationError('This user is not a judge.')
 
 class SignupForm(FlaskForm):
     """
