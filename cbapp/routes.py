@@ -278,8 +278,7 @@ def createEntry(cb=None):
         if not form.validate():
             # we need to update the entries table on postgres
             return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
-        team = Team.query.filter_by(team_name=form.team_name.data).first()
-        newEntry = Entry(team.id, form.title.data, form.description.data,
+        newEntry = Entry(form.team_name.data, form.title.data, form.description.data,
                          form.video_link.data, cb, rd)
 
         db.session.add(newEntry)
@@ -405,7 +404,7 @@ def createTeam(cb=None):
                 flash(member + ' is not a registered user.')
         db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
-
+    return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
 @app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
 def inviteTeam(teamID=None):
     """
