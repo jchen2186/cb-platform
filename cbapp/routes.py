@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore, judges
 import urllib.parse
 import os
 from base64 import b64encode
@@ -170,8 +170,9 @@ def chorusInfo(cb=None):
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
     teams_query = Team.query.filter_by(chorusbattle=cb).all()
-    # judges = Judge.query.filter_by(chorusbattle_id=cb)
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb)
     teams = []
+    judges_list = []
 
     round_deadlines = []
     maxRound = row.no_of_rounds
@@ -190,6 +191,13 @@ def chorusInfo(cb=None):
             temp["team_logo"] = b64encode(team.team_logo).decode('utf-8')
 
         teams.append(temp)
+    
+    for judge in judges_query:
+        temp={}
+        temp["user_id"] = judge.user_id
+        temp['name'] = User.query.filter_by(id=judge.user_id).first().username
+
+        judges_list.append(temp)
 
     if row:
         current_user = User.query.filter_by(username=session['username']).first()
@@ -203,7 +211,8 @@ def chorusInfo(cb=None):
             deadlines=round_deadlines,
             maxRound = maxRound,
             teams=teams,
-            subbed=subbed)
+            subbed=subbed,
+            judges=judges_list)
 
 @app.route('/chorusbattle/<cb>/subscribe')
 def subscribe(cb=None):
