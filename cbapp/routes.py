@@ -315,7 +315,10 @@ def team(teamID=None):
             'user': copy.deepcopy(User.query.filter_by(id=member.user_id).first())
         }
         userObject['role'] = UserRole.query.filter_by(id=userObject['user'].role_id).first().role_title.capitalize()
-        userObject['user_icon'] = b64encode(userObject['user'].user_icon).decode('utf-8')
+        
+        user_icon = userObject['user'].user_icon
+        if user_icon:
+            userObject['user_icon'] = b64encode(user_icon).decode('utf-8')
         team_members.append(userObject)
     if team:
         team_logo = None
