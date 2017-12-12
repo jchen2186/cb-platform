@@ -18,7 +18,7 @@
 <div class="container">
 <div class="columns">
 	<div class="column is-half">
-		<form method="POST" action="/chorusbattles/{{ chorusBattle }}/judge/{{ entry['id'] }}"/>
+		<form method="POST" action="/chorusbattle/{{ chorusbattle['id'] }}/entries/{{ entry['id'] }}/judge"/>
 			{{ form.hidden_tag() }}
 	          
 			<table class="table">
@@ -132,8 +132,9 @@
 			</tr>
 			</tbody>
 			</table>
+			{{ form.submit(class="button is-primary") }}
+
 		</form>
-		{{ form.submit(class="button is-primary") }}
 	</div>
 	<div class="column">
 		<iframe width="560" height="315" src=" {{ entry['video_link']}}" frameborder="0" allowfullscreen></iframe>

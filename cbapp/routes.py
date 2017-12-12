@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore
 import urllib.parse
 import os
 from base64 import b64encode
@@ -604,7 +604,7 @@ def writeNotification(cb=None):
         flash("Your notification has been posted!")
         return redirect(url_for('chorusInfo', cb=cb))
 
-@app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
+@app.route('/chorusbattle/<cb>/entries/<entry>/judge', methods=['GET', 'POST'])
 def judgeEntry(cb=None, entry=None):
     """
     The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
@@ -623,10 +623,19 @@ def judgeEntry(cb=None, entry=None):
     if request.method == 'GET':
         return render_template("judgingtool.html", chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
                                 icon=getUserIcon((session['username'] if 'username' in session else None)))
-
     elif request.method == 'POST':
         if form.validate():
-            return
+            judge_id = User.get_user_id(session['username'])
+            new_judge_score = JudgeScore(judge_id,entry,
+                                        form.vocals.data,form.vocals_comment.data,
+                                        form.instrumental.data,form.instrumental_comment.data,
+                                        form.art.data,form.art_comment.data,
+                                        form.editing.data,form.editing_comment.data,
+                                        form.transitions.data,form.transitions_comment.data)
+            db.session.add(new_judge_score)
+            db.session.commit()
+
+            return redirect(url_for('chorusEntries', cb=cb))
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
 def createRound(cb=None):
