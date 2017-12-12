@@ -26,14 +26,27 @@ chorusbattle_entries = db.Table('chorusbattle_entries',
 Association table showing chorus battlers for each entry
 """
 
-user_teams = db.Table('user_teams', 
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
-    db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
-    db.Column('member_status', db.String(100), default='pending'), # Status: ['pending', 'member']
-    db.PrimaryKeyConstraint('user_id', 'team_id'))
+# user_teams = db.Table('user_teams', 
+#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+#     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
+#     db.Column('member_status', db.String(100), default='pending'), # Status: ['pending', 'member']
+#     db.PrimaryKeyConstraint('user_id', 'team_id'))
 """
 Association table showing users on a particular team
 """
+
+class UserTeam(db.Model):
+    """
+    Association table showing users on a particular team
+    """
+    __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, primary_key = True)
+    member_status = db.Column(db.String(100), default='pending')
+    def __init__(self, user_id, team_id, member_status='pending'):
+        self.user_id = user_id
+        self.team_id = team_id
+        self.member_status = member_status
 
 class User(db.Model):
     """
@@ -50,7 +63,7 @@ class User(db.Model):
     user_icon = db.Column(db.LargeBinary) #: Icon for the user.
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
-    teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
+    teams = db.relationship('Team', secondary='user_teams') #: All the teams the users have joined.
     
     def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
@@ -111,7 +124,8 @@ class User(db.Model):
         Returns:
           bool: True if username is unique and False if it is not 
         """
-        if db.session.query(User.id).filter(User.username==username).count() > 0:
+        if db.session.query(User).filter_by(username=username[0]).count() > 0:
+            print(username)
             return False
         return True
 
@@ -160,6 +174,19 @@ class User(db.Model):
         user_id = db.session.query(User.id).filter(User.username == username)
         return user_id
 
+    @staticmethod
+    def get_user(username):
+        """
+        Gets the user given a username
+
+        Args:
+            username (str): the username of the user
+
+        Returns
+            User: the user object representing the user
+        """ 
+        user = db.session.query(User).filter(User.username == username).first()
+        return user
 
 
 class ChorusBattle(db.Model):
@@ -179,7 +206,7 @@ class ChorusBattle(db.Model):
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
-    # judges = db.relationship('Judge', secondary=judges)
+    judges = db.relationship('User', secondary=judges)
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
@@ -282,7 +309,7 @@ class Team(db.Model):
     leader_id = db.Column(db.String(100), db.ForeignKey('users.id')) #: User ID of team leader.
     team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the team is participating in.
-    member = db.relationship('User', secondary='user_teams') #: Team members of the team
+    members = db.relationship("User", secondary="user_teams")
     """ id of the ChorusBattle the team belongs to. A new team must be created per chorus battle, even if they have the same name and same members.
     """
 
@@ -291,6 +318,9 @@ class Team(db.Model):
         self.leader_id = leader_id
         self.team_logo = team_logo
         self.chorusbattle = chorusbattle
+
+    def get_id(self):
+        return self.id
 
 class Judge(db.Model):
     """
@@ -304,16 +334,3 @@ class Judge(db.Model):
         self.user_id = user_id
         self.chorusbattle_id = chorusbattle_id
 
-class UserTeam(db.Model):
-    """
-    Model to store the correspondng team(s) for a user
-    """
-    __tablename__ = 'user_teams'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, primary_key = True)
-    member_status = db.Column(db.String(100), default='pending')
-
-    def __init__(self, user_id, team_id, member_status='pending'):
-        self.user_id = user_id
-        self.team_id = team_id
-        self.member_status = member_status

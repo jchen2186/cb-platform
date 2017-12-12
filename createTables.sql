@@ -52,16 +52,6 @@ CREATE TABLE entries (
 );
 
 
-CREATE TABLE orders(
-	ord_no integer PRIMARY KEY,
-	ord_date date,
-	item_code integer REFERENCES items(item_code),
-	item_grade character(1),
-	ord_qty numeric,
-	ord_amount numeric
-);  
-
-
 CREATE TABLE rounds (
 	id serial NOT NULL,
 	chorusbattle INTEGER NOT NULL,
@@ -70,11 +60,20 @@ CREATE TABLE rounds (
 );
 
 CREATE TABLE teams (
-	id serial NOT NULL,
-	chorusbattle INTEGER NOT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
+	id serial NOT NULL PRIMARY KEY,
+	chorusbattle INTEGER NOT NULL REFERENCES chorusbattles(id),
+	team_name VARCHAR(100) NOT NULL,
+	leader_id INTEGER NOT NULL REFERENCES users(id),
+	team_logo BYTEA
 );
+
+
+id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the team.
+    team_name = db.Column(db.String(100)) #: Name of the team.
+    leader_id = db.Column(db.String(100), db.ForeignKey('users.id')) #: User ID of team leader.
+    team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the team is participating in.
+    members = db.relationship('User', secondary='user_teams')
 
 CREATE TABLE judges (
 	user_id INTEGER REFERENCES users(id),
@@ -91,5 +90,9 @@ CREATE TABLE chorusbattle_entries (
 CREATE TABLE user_teams (
 	user_id INTEGER REFERENCES users(id),
 	team_id INTEGER REFERENCES teams(id),
+	member_status VARCHAR(100) NOT NULL,
 	PRIMARY KEY (user_id, team_id)
 );
+
+ALTER TABLE teams ADD COLUMN team_name VARCHAR(100) NOT NULL, ADD COLUMN leader_id INTEGER NOT NULL REFERENCES users(id), ADD COLUMN team_logo BYTEA;
+ALTER TABLE user_teams ADD COLUMN member_status VARCHAR(100) NOT NULL;

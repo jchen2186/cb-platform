@@ -7,7 +7,7 @@ user to the templates.
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, UserTeam
 import urllib.parse
 import os
 from base64 import b64encode
@@ -183,7 +183,7 @@ def team(teamID=None):
     """
     form = InviteTeamForm()
     team = Team.query.filter_by(id=teamID).first()
-    team_users = db.session.query(user_teams).filter_by(team_id=teamID, member_status='member').all()
+    team_users = db.session.query(UserTeam).filter_by(team_id=teamID, member_status='member').all()
     team_members = []
     for member in team_users:
         userObject = {
@@ -217,18 +217,28 @@ def createTeam(cb=None):
         teampic = None
         if form.teampic.data:
             teampic = request.files.getlist('teampic')[0].read()
-        leader_id = User.query.filter_by(username=session['username']).first().id
+        leader_id = User.get_user_id(session['username'])
         print(form.members, '\n',form.members.entries,'\n',  form.members.data)
         newteam = Team(form.team_name.data, leader_id, teampic, cb)
         db.session.add(newteam)
-        # Add each team member to the user_teams table
-        for member in form.members.data:
-            db.session.add(UserTeam(member,newteam.id))
-        db.session.add(UserTeam(member,newteam.id))
+        db.session.commit()
+        # Add the team leader to the user_teams table
+        leader = UserTeam(leader_id,newteam.get_id(),member_status='pending')
+        leader.member = User.get_user(session['username'])
+        # newteam.members.append(leader.member)
+        db.session.add(leader)
+
+        # Add each of the other team members to the user_teams table
+        for member in form.members:
+            team_member_id = User.get_user_id(member.data)
+            team_member = UserTeam(team_member_id,newteam.get_id(),member_status='pending')
+            team_member.member = User.get_user(member.data)
+            # newteam.members.append(team_member.member)
+            db.session.add(team_member)
+        
         db.session.commit()
 
-
-        return redirect(url_for('team', name=form.team_name.data))
+        return redirect(url_for('team', teamID=newteam.get_id()))
 
     elif request.method == 'GET':
         return render_template("createteam.html", form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
@@ -314,7 +324,7 @@ def createChorusBattle():
         new_cb = ChorusBattle(form.name.data, form.description.data,
                              form.rules.data, form.prizes.data, form.video_link.data, 
                              form.start_date.data, form.no_of_rounds.data, creator_id)
-        for len()
+        
         new_cb_judge = Judge()
         db.session.add(new_cb)
         db.session.commit()
