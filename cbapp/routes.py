@@ -119,9 +119,22 @@ def chorusInfo(cb=None):
     as the variable cb.
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
+    teams = Team.query.filter_by(chorusbattle=cb).all()
+
+    round_deadlines = []
+    maxRound = row.no_of_rounds
+    roundCount = len(Round.query.filter_by(chorusbattle=cb).all())
+    print('roundCount', roundCount)
+    for rd in range(1, roundCount+1):
+        roundQuery = Round.query.filter_by(chorusbattle=cb, round_number=rd).first()
+        deadline = roundQuery.deadline
+        round_deadlines.append(deadline)
 
     if row:
-        return render_template('chorusinfo.html', cb=row, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('chorusinfo.html', cb=row, 
+            icon=getUserIcon((session['username'] if 'username' in session else None)),
+            deadlines=round_deadlines,
+            maxRound = maxRound)
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
