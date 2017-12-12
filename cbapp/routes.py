@@ -148,23 +148,37 @@ def chorusInfo(cb=None):
         teams.append(temp)
 
     if row:
+        current_user = User.query.filter_by(username=session['username']).first()
+        user_id = current_user.id
         return render_template('chorusinfo.html', cb=row, 
             icon=getUserIcon((session['username'] if 'username' in session else None)),
             deadlines=round_deadlines,
             maxRound = maxRound,
-            teams=teams)
+            teams=teams,
+            subbed=Notification.is_subscribed(user_id, cb))
 
 @app.route('/chorusbattle/<cb>/subscribe')
 def subscribe(cb=None):
     if 'username' not in session:
          return redirect(url_for('login'))
 
-    user_id = User.query.filter_by(username=session['username']).first().id
+    current_user = User.query.filter_by(username=session['username']).first()
+    user_id = current_user.id
 
     if not Notification.is_subscribed(user_id,cb):
-       User.subscriptions.append(cb)
-
-    return redirect(url_for('chorusInfo', cb=cb))
+        this_cb = ChorusBattle.query.filter_by(id=cb).first()
+        current_user.subscriptions.append(this_cb)
+        db.session.commit()
+        chorusbattle_name = this_cb.name
+        flash('You subscribed to '+ chorusbattle_name +"!")
+        return redirect(url_for('chorusInfo', cb=cb, subbed=True))
+    else:
+        this_cb = ChorusBattle.query.filter_by(id=cb).first()
+        chorusbattle_name = this_cb.name
+        current_user.subscriptions.remove(this_cb)
+        db.session.commit()
+        flash('You are no longer subscribed to '+ chorusbattle_name +".")
+        return redirect(url_for('chorusInfo', cb=cb, subbed=True))
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):

@@ -64,7 +64,7 @@ class Notification(db.Model):
         """
         Checks if a user is subscribed to a cb.
         """
-        subs = db.session.query(subscriptions).filter_by(user_id=user_id, chorusbattle_id=cb)
+        subs = db.session.query(subscriptions).filter_by(user_id=user_id, chorusbattle_id=cb).all()
         if len(subs) == 0:
             return False
 
