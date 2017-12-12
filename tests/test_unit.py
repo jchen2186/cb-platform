@@ -261,6 +261,15 @@ class TestCBAppUnitFilesExist(unittest.TestCase):
                                         'userprofile.html'))
         self.assertTrue(file_exists)
 
+    def test_check_search(self):
+        """ Checks if the search file exists. """
+        file_exists = op.exists(op.join(self.dir,
+                                        '..',
+                                        'cbapp',
+                                        'templates',
+                                        'searchresult.html'))
+        self.assertTrue(file_exists)
+
 class TestCBAppUnitRoutesExist(unittest.TestCase):
     """Class of unit tests for the chorus battle app that checks if routes exist."""
     
@@ -424,6 +433,23 @@ class TestCBAppUnitRoutesExist(unittest.TestCase):
                 call_args = url_for.call_args
                 file_name = call_args[0][0]
                 self.assertEqual(file_name, "login")
+
+    def test_search_redirect_search_template(self):
+        """Checks if the home route redirects the user to login when the user is not logged in.
+        The test passes if it does."""
+        with cbapp.app.test_request_context('/search/', method='POST'):
+            self.assertEqual(flask.request.path, '/search/')
+            self.assertEqual(flask.request.method, 'POST')
+
+            with patch.multiple("cbapp.routes",
+                                request=DEFAULT,
+                                render_template=DEFAULT) as mock_functions:
+                cbapp.routes.search()
+                render_template = mock_functions["render_template"]
+
+                call_args = render_template.call_args
+                file_name = call_args[0][0]
+                self.assertEqual(file_name, "searchresult.html")
 
     # # need to fix this so it generates home when a user is logged in
     # def test_home_get_home_template(self):
