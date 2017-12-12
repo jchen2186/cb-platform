@@ -445,7 +445,7 @@ class Round(db.Model):
         self.chorusbattle = chorusbattle
         self.theme = theme
         self.deadline = deadline
-        self.round_number = session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
+        self.round_number = db.session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
 
 class Team(db.Model):
     """
