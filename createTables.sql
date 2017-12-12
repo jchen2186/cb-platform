@@ -76,7 +76,9 @@ CREATE TABLE teams (
 	chorusbattle INTEGER NOT NULL REFERENCES chorusbattles(id),
 	team_name VARCHAR(100) NOT NULL,
 	leader_id INTEGER NOT NULL REFERENCES users(id),
-	team_logo BYTEA
+	team_logo BYTEA,
+	about VARCHAR(500),
+	open_roles VARCHAR(500)
 );
 
 
