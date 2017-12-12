@@ -4,6 +4,7 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
+from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm
@@ -385,9 +386,32 @@ def createRound(cb=None):
     elif request.method == 'GET':
         return render_template('createround.html', cb=cb, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
+@app.route('/community/', methods=['GET'])
+def viewCommunity():
+    users = User.query.order_by(func.random()).limit(20).all()
+    user_icons = []
+    for user in users:
+        user_icon = user.user_icon
+        if user_icon:
+            user_icons.append(b64encode(user_icon).decode('utf-8'))
+        else:
+            user_icons.append(None)
+    teams = Team.query.order_by(func.random()).limit(20).all()
+    team_icons = []
+    team_chorusbattles = []
+    for team in teams:
+        team_icon = team.team_logo
+        if team_icon:
+            team_icons.append(b64encode(team_logo).decode('utf-8'))
+        else:
+            team_icons.append(None)
+        team_chorusbattles.append(ChorusBattle.query.filter_by(id=team.chorusbattle).first().name)
+    print(users, teams)
+    return render_template('community.html', users=users, user_icons=user_icons, teams=teams, team_chorusbattles=team_chorusbattles, \
+        team_icons=team_icons, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 # work in progress
-@app.route('/user/<username>/', methods=['GET'])
+@app.route('/user/<username>/', methods=['GET', 'POST'])
 def getUserProfile(username=None):
     """
     The route '/user/<username>' directs the user to the profile page of
@@ -399,6 +423,7 @@ def getUserProfile(username=None):
         return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
+
 
 @app.route('/help/faq/', methods=['GET'])
 def faq():
