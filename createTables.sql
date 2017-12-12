@@ -34,13 +34,35 @@ CREATE TABLE chorusbattles (
     CONSTRAINT creator_user_id FOREIGN KEY(creator_id) REFERENCES users(id)
 );
 
+-- CREATE TABLE entries (
+-- 	id serial NOT NULL,
+-- 	team_id 
+-- 	submission_date TIMESTAMP WITH TIME ZONE,
+-- 	chorusbattle INTEGER NOT NULL,
+-- 	PRIMARY KEY (id),
+-- 	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
+-- );
+
 CREATE TABLE entries (
-	id serial NOT NULL,
+	id SERIAL NOT NULL PRIMARY KEY,
+	chorusbattle INTEGER NOT NULL REFERENCES chorusbattles(id), 
+	team_id INTEGER NOT NULL REFERENCES teams(id),
+	round_number INTEGER NOT NULL,
+	title VARCHAR(100),
+	description VARCHAR(500),
 	submission_date TIMESTAMP WITH TIME ZONE,
-	chorusbattle INTEGER NOT NULL,
-	PRIMARY KEY (id),
-	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
+	video_link VARCHAR(500),
 );
+
+
+CREATE TABLE orders(
+	ord_no integer PRIMARY KEY,
+	ord_date date,
+	item_code integer REFERENCES items(item_code),
+	item_grade character(1),
+	ord_qty numeric,
+	ord_amount numeric);  
+
 
 CREATE TABLE rounds (
 	id serial NOT NULL,

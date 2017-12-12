@@ -84,7 +84,7 @@ def signup():
         db.session.commit()
         print(newuser)
         session['username'] = newuser.username
-        session['role'] = newuser.role_id
+        session['role'] = newuser.get_role()
         session['first_name'] = newuser.firstname
         return redirect(url_for('home'))
         # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
@@ -253,13 +253,17 @@ def judgeEntry(cb=None, entry=None):
     where he/she can grade an entry using a rubric.
     """
     # If user is not a judge, redirect the user to the chorus battle page
-    if session['role'] != 3:
+    if 'username' not in session:
+        return redirect(url_for('home'))
+    if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
 
     form = JudgeEntryForm()
-    
+    chorusbattle_info = ChorusBattle.query.filter_by(id=cb).first()
+    entry_info = Entry.query.filter_by(id=entry).first()
+
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, form=form, 
+        return render_template("judgingtool.html", chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
                                 icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 

@@ -5,10 +5,10 @@
 <div class="hero-body has-text-centered">
   <div class="container">
     <h1 class="title">
-      Judging for {{ chorusBattle }}
+      Judging for {{ chorusbattle['id'] }}
     </h1>
     <h2 class="subtitle">
-        Team 2&ensp;-&ensp;Entry {{ entry }} 
+        Team 2&ensp;-&ensp;Entry {{ entry['id'] }} 
     </h2>
   </div>
 </div>
@@ -18,7 +18,7 @@
 <div class="container">
 <div class="columns">
 	<div class="column is-half">
-		<form method="POST" action="/chorusbattles/{{ chorusBattle }}/judge/{{ entry }}"/>
+		<form method="POST" action="/chorusbattles/{{ chorusBattle }}/judge/{{ entry['id'] }}"/>
 			{{ form.hidden_tag() }}
 	          
 			<table class="table">
@@ -136,8 +136,8 @@
 		{{ form.submit(class="button is-primary") }}
 	</div>
 	<div class="column">
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/G2lXOwRi7Tk" frameborder="0" allowfullscreen></iframe>
-	    <br><br><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam lobortis, nibh a vestibulum interdum, massa leo posuere libero, et elementum est magna in mi. Donec ligula lorem, pulvinar nec dapibus sit amet, consectetur vitae tortor. Proin venenatis augue dignissim, imperdiet tellus ac, maximus lacus. Etiam at urna risus. Donec bibendum nec elit at pharetra. Aenean hendrerit est vel eleifend pellentesque. Aenean at lacus iaculis, semper velit sed, sodales ex.
+		<iframe width="560" height="315" src=" {{ entry['video_link']}}" frameborder="0" allowfullscreen></iframe>
+	    <br><br><p> 
         </p>
 	</div>
 </div>
