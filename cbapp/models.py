@@ -49,10 +49,10 @@ class Notification(db.Model):
     """
     __tablename__='notifications'
     id = db.Column(db.Integer, primary_key= True)
-    notifier = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False)
-    message = db.Column(db.String(200))
-    date_posted = db.Column(db.DateTime(timezone=True), default=func.now())
+    notifier = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False) # User who made the notification.
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False) # Chorus battle that the notification belongs to.
+    message = db.Column(db.String(200)) # The message in the notification.
+    date_posted = db.Column(db.DateTime(timezone=True), default=func.now()) # Date posted.
 
     def __init__(self, notifier, chorusbattle_id, message):
         self.notifier=notifier
