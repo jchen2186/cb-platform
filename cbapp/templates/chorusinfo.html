@@ -59,15 +59,15 @@
 
 							<div class="tile is-child notification is-info">
 								<h3 class="title">Judges</h3>
+								{% if judges%}
 								<div class="content">
-									{% if judges %}
-										{% for judge in judges %}
-											{{ judge.username }}
-										{% endfor %}
-									{% else %}
-										<p>No judges announced yet.</p>
-									{% endif %}
+									<ul>
+									{% for judge in judges %}
+									<li><a href="{{ url_for('getUserProfile', username=judge.name) }}">{{ judge.name }}</a></li>
+									{% endfor %}
+									</ul>
 								</div>
+								{% endif %}
 								<h3 class="title">Start Date</h3>
 								<div class="content">
 									<p>{{ cb.start_date }}</p>

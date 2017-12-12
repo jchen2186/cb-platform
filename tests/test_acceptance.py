@@ -26,8 +26,11 @@ class TestCBAppAccept(unittest.TestCase):
         soup = BeautifulSoup(response.data, 'html.parser')
         self.assertEqual('Login', soup.h2.text)
 
-
-    ##### check that the forms exist on all of the relevant templates #####
+class TestCBAppAcceptFormsExist(unittest.TestCase):
+    """ Class of acceptance tests that checks if the forms exist on certain templates. """
+    def setUp(self):
+        cbapp.app.config['TESTING'] = True
+        self.app = cbapp.app.test_client()
 
     def test_login_form_exists(self):
         """ """
