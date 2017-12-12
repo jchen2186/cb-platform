@@ -319,6 +319,9 @@ def team(teamID=None):
         user_icon = userObject['user'].user_icon
         if user_icon:
             userObject['user_icon'] = b64encode(user_icon).decode('utf-8')
+        else:
+            userObject['user_icon'] = None
+
         team_members.append(userObject)
     if team:
         team_logo = None
