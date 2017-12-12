@@ -33,21 +33,6 @@
   </div>
 </div>
 {% endif %}
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class=flashes>
-          {% for message in messages %}
-            {% if 'not a registered user' in message %}
-              <div class="notification is-warning">{{ message }}</div>
-            {% elif 'You have already' in message %}
-              <div class="notification is-info">{{ message }}</div>
-            {% else %}
-              <div class="notification is-success">{{ message }}</div>
-            {% endif %}
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
 <section class="hero is-primary team-header">
   <div class="hero-body">
     <div class="container">

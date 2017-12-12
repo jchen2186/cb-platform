@@ -23,6 +23,23 @@
 							</p>
 					</div> <!-- content -->
 				</div> <!-- box -->
+
+				<div class="notification is-primary">
+						<h3 class="title">Teams in this Chorus Battle</h3>
+						<p>
+						{{ cb.description }}
+						</p>
+						<h3>Rules</h3>
+						<p>
+							{{ cb.rules }}
+						</p>
+						<h3>Prizes</h3>
+							<p>
+								{{ cb.prizes }}
+							</p>
+				</div> <!-- box -->
+
+
 			</div> <!-- column -->
 
 			<div class="column is-half">
@@ -47,9 +64,15 @@
 								<h3 class="title">Deadlines</h3>
 								<div class="content">
 									<ul>
-										<li>Round 1: 12/1/2017 12:00:00 AM EST</li>
-										<li>Round 2: 1/1/2018 12:00:00 AM EST</li>
-										<li>Round 3: 2/1/2018 12:00:00 AM EST</li>
+										{% for i in range(1, maxRound) %}
+										<li>Round {{i}}: 
+										{% if deadlines[i-1] %}
+											{{ deadlines[i-1] }}
+										{% else %}
+											No date available yet!
+										{% endif %}
+										</li>
+										{% endfor %}
 									</ul>
 								</div>
 								<h3 class="title">Grace Period</h3>
