@@ -124,3 +124,9 @@ CREATE TABLE judge_scores(
 	transitions INTEGER NOT NULL,
 	PRIMARY KEY (judge_id,entry_id)
 );
+
+CREATE TABLE cb_users (
+	user_id INTEGER REFERENCES users(id),
+	chorusbattle_id INTEGER REFERENCES chorusbattles(id),
+	PRIMARY KEY (user_id, chorusbattle_id)
+);

@@ -18,10 +18,10 @@ cb_users = db.Table('cb_users',
 Association table showing organizers for chorus battles)
 """
 
-# judges = db.Table('judges', 
-#     db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False,),
-#     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
-#     db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
+judges = db.Table('judges', 
+    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False,),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
 """
 Association table showing organizers for chorus battles)
 """
@@ -52,17 +52,17 @@ Association table showing chorus battle that users are subscribed to to show not
 """
 
 
-class Judge(User):
-    """
-    Model to store user_id of judges to the respective chorus battle. Uses association table judges.
-    """
-    __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+# class Judge(db.Model):
+#     """
+#     Model to store user_id of judges to the respective chorus battle. Uses association table judges.
+#     """
+#     __tablename__ = 'judges',
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+#     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
 
-    def __init__(self, user_id, chorusbattle_id):
-        self.user_id = user_id
-        self.chorusbattle_id = chorusbattle_id
+#     def __init__(self, user_id, chorusbattle_id):
+#         self.user_id = user_id
+#         self.chorusbattle_id = chorusbattle_id
 
 # class UserTeam(db.Model):
 #     """
@@ -280,7 +280,7 @@ class ChorusBattle(db.Model):
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
-    judges = db.relationship('Judge')
+    judges = db.relationship('User', secondary='judges')
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):

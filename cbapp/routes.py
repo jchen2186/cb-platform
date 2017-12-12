@@ -381,7 +381,7 @@ def createChorusBattle():
         db.session.add(new_cb)
         db.session.commit()
 
-        return redirect(url_for('chorusInfo', cb=newcb.id))
+        return redirect(url_for('chorusInfo', cb=new_cb.id))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
