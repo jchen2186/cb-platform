@@ -771,29 +771,22 @@ def chorusRound(cb=None,round_number=None):
         return redirect(url_for('chorusInfo', cb=cb))
     round_id = db.session.query(Round.id).filter_by(chorusbattle=cb).first()
     round_info = db.session.query(Round).filter_by(id=round_id).first() 
-    entries = Entry.get_entries_for_round(round_id)
-
-    if entries:
-        entries_choices = []
-        for entry in entries:
-            entries_choices.append((entry.id,entry.title))
-        form = ChooseRoundWinnerForm()
-        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, entries_choices=entries_choices,form=form)
-
+    form = ChooseRoundWinnerForm()
+    if request.method == 'GET':
+        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
     else:
-        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, entries_choices=[(0,'No entries for this round')],form=form)
+        if form.validate():
+            winning_team_id = db.session.query(Team.id).filter_by(team_name=form.winning_entry.data).first()
+            if winning_team_id:
+                Round.choose_winner(round_id,winning_team_id)
+                db.session.commit()
+                return redirect(url_for('chorusInfo', cb=cb))
+            else:
+                flash('Invalid team name.')
+                return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
+        else:
+            return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
 
-    # ChorusBattle.query.filter_by(id=cb).first()
-    # if request.method == 'GET':
-    #     if Round.has_winner():
-    #         return redirect(url_for('chorusInfo', cb=cb))
-    #     else:
-    #         return render_template('chorusRound.html',cb=cb, round=round_id)
-
-    # else:
-    #     if form.validate():
-    #         Round.choose_winner(form.winning_team.data)
-    #         return redirect(url_for('chorusInfo', cb=cb, subbed=True))
 
 
 

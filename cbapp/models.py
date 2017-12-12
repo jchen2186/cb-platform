@@ -402,7 +402,7 @@ class ChorusBattle(db.Model):
           chorusbattle_id(int): The id of the chorus battle
           team_id(int): THe id of the team
         """
-        selected_chorusbattle = db.session.query(ChorusBattle).filter_by(id == chorusbattle_id)
+        selected_chorusbattle = db.session.query(ChorusBattle).filter_by(id = chorusbattle_id)
         selected_chorusbattle.set_winner(team_id)
 
 
@@ -490,7 +490,7 @@ class Round(db.Model):
           round_id(int): The id of the round
           team_id(int): THe id of the team
         """
-        selected_round = db.session.query(Round).filter_by(id == round_id)
+        selected_round = db.session.query(Round).filter_by(id = round_id).first()
         selected_round.set_winner(team_id)
 
     @staticmethod
@@ -501,7 +501,7 @@ class Round(db.Model):
         Returns:
             bool: True if round has winner, False if it does not.
         """
-        round_winner = db.session.query(Round.winner).filter_by(id == round_id)
+        round_winner = db.session.query(Round.winner).filter_by(id = round_id).first()
         if round_winner:
             return True
         else:
