@@ -11,7 +11,7 @@ from flask import session
 db = SQLAlchemy()
 
 judges = db.Table('judges', 
-    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False),
+    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False,),
     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
     db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
 """
@@ -26,18 +26,9 @@ chorusbattle_entries = db.Table('chorusbattle_entries',
 Association table showing chorus battlers for each entry
 """
 
-# user_teams = db.Table('user_teams', 
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
-#     db.Column('team_id', db.Integer, db.ForeignKey('teams.id'), nullable=False),
-#     db.Column('member_status', db.String(100), default='pending'), # Status: ['pending', 'member']
-#     db.PrimaryKeyConstraint('user_id', 'team_id'))
-"""
-Association table showing users on a particular team
-"""
-
 class UserTeam(db.Model):
     """
-    Association table showing users on a particular team
+    Association object showing users on a particular team
     """
     __tablename__ = 'user_teams'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
@@ -47,6 +38,15 @@ class UserTeam(db.Model):
         self.user_id = user_id
         self.team_id = team_id
         self.member_status = member_status
+
+class JudgeScores(db.Model):
+    """
+    Association object that stores the judge's scores for an entry
+    """
+    judge_id 
+    entry_id
+    vocals 
+    instrumental
 
 class User(db.Model):
     """
@@ -291,7 +291,7 @@ class Round(db.Model):
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the round belongs to.
     theme = db.Column(db.String(500)) #: User-inputted theme for the round of the chorus battle.
     deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
-    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle. Why is this needed?
+    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle.
 
     def __init__(self, chorusbattle, theme, deadline):
         self.chorusbattle = chorusbattle

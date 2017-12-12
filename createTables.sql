@@ -38,7 +38,14 @@ CREATE TABLE chorusbattles (
     no_of_rounds INTEGER NOT NULL,
     creator_id INTEGER NOT NULL REFERENCES users(id)
 );
-
+"""
+__tablename__ = 'rounds'
+    id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the round. 
+    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the round belongs to.
+    theme = db.Column(db.String(500)) #: User-inputted theme for the round of the chorus battle.
+    deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
+    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle.
+"""
 
 CREATE TABLE entries (
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -55,6 +62,9 @@ CREATE TABLE entries (
 CREATE TABLE rounds (
 	id serial NOT NULL,
 	chorusbattle INTEGER NOT NULL,
+	theme VARCHAR(500),
+	deadline TIMESTAMP WITH TIMEZONE,
+	round_number INTEGER,
 	PRIMARY KEY (id),
 	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
 );
@@ -67,13 +77,6 @@ CREATE TABLE teams (
 	team_logo BYTEA
 );
 
-
-id = db.Column(db.Integer, primary_key = True) #: Primary key to identify the team.
-    team_name = db.Column(db.String(100)) #: Name of the team.
-    leader_id = db.Column(db.String(100), db.ForeignKey('users.id')) #: User ID of team leader.
-    team_logo = db.Column(db.LargeBinary) #: Image for the team logo.
-    chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the team is participating in.
-    members = db.relationship('User', secondary='user_teams')
 
 CREATE TABLE judges (
 	user_id INTEGER REFERENCES users(id),
