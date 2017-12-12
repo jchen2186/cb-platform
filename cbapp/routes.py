@@ -420,9 +420,11 @@ def getUserProfile(username=None):
     row = User.query.filter_by(username=username).first()
     if row:
         if request.method == 'POST':
-            print('New status',request.form['current_status'])
-            row.current_status = request.form['current_status']
-            db.session.commit()
+            if session['username'] == username:
+                print('New status',request.form['current_status'])
+                row.current_status = request.form['current_status']
+                db.session.commit()
+                flash('You have successfully changed your status')
             return redirect(url_for('getUserProfile', username=username))
         teamQuery = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
         teams = []
