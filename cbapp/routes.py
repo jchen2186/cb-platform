@@ -244,20 +244,22 @@ def createTeam(cb=None):
         teampic = None
         if form.teampic.data:
             teampic = request.files.getlist('teampic')[0].read()
-        leader_id = User.query.filter_by(username=session['username']).first().id
+        leader = User.query.filter_by(username=session['username']).first()
         print(form.members, '\n',form.members.entries,'\n',  form.members.data)
-        newteam = Team(form.team_name.data, leader_id, teampic, cb)
+        newteam = Team(form.team_name.data, leader.id, teampic, cb)
         db.session.add(newteam)
         db.session.commit()
+        # invite leader
+        newteam.member.append(leader)
         # invite members
         for member in form.members.data:
             invitee = User.query.filter_by(username=member).first()
             if invitee:
                 newteam.member.append(invitee)
-                db.session.commit()
                 flash('You have invited ' + invitee.username + '.')
             else:
                 flash(member + ' is not a registered user.')
+        db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
 
     elif request.method == 'GET':
@@ -269,19 +271,23 @@ def inviteTeam(teamID=None):
     The route /team/<teamID>/invite/ allows a team leader to invite a user to their team
     """
     form = InviteTeamForm()
+    print(dir(user_teams))
     if request.method == 'POST':
         team = Team.query.filter_by(id=teamID).first()
-        invitee = User.query.filter_by(username=form.username.data).first()
-        if invitee:
-            team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
-            if team_user:
-                flash('You have already invited ' + invitee.username + '.')
+        if User.query.filter_by(username=session['username']).first().id == team.leader_id:
+            invitee = User.query.filter_by(username=form.username.data).first()
+            if invitee:
+                team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
+                if team_user:
+                    flash('You have already invited ' + invitee.username + '.')
+                else:
+                    team.member.append(invitee)
+                    db.session.commit()
+                    flash('You have invited ' + invitee.username + '.')
             else:
-                team.member.append(invitee)
-                db.session.commit()
-                flash('You have invited ' + invitee.username + '.')
+                flash(form.username.data + ' is not a registered user.')
         else:
-            flash(form.username.data + ' is not a registered user.')
+            flash('You are not the team leader.')
     return redirect(request.referrer or url_for('team', teamID=teamID))
 
 @app.route('/team/<teamID>/join/', methods=['GET'])
