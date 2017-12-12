@@ -7,7 +7,7 @@ user to the templates.
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm, ChooseRoundWinnerForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore, judges
 import urllib.parse
 import os
@@ -749,7 +749,19 @@ def chorusRound(cb=None,round_number=None):
     if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
     round_id = db.session.query(Round.id).filter_by(chorusbattle=cb).first()
-    # round_info = db.session.query(Round).filter_by(id=round_id).first() 
+    round_info = db.session.query(Round).filter_by(id=round_id).first() 
+    entries = Entry.get_entries_for_round(round_id)
+
+    if entries:
+        entries_choices = []
+        for entry in entries:
+            entries_choices.append((entry.id,entry.title))
+        form = ChooseRoundWinnerForm()
+        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, entries_choices=entries_choices,form=form)
+
+    else:
+        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, entries_choices=[(0,'No entries for this round')],form=form)
+
     # ChorusBattle.query.filter_by(id=cb).first()
     # if request.method == 'GET':
     #     if Round.has_winner():
@@ -762,7 +774,6 @@ def chorusRound(cb=None,round_number=None):
     #         Round.choose_winner(form.winning_team.data)
     #         return redirect(url_for('chorusInfo', cb=cb, subbed=True))
 
-    return render_template('chorusRound.html',cb=cb, round=round_id)
 
 
 

@@ -43,20 +43,13 @@
         <div class="level-item">
           <a class="button is-primary" href=
           {% if "entries" in request.path %}
-            "/chorusbattle/{{ cb.id }}"
+            "/chorusbattle/{{ cb.id }}
           {% else %}
-            "/chorusbattle/{{ cb.id }}/entries">
+            "/chorusbattle/{{ cb.id }}/entries"
           {% endif %}
-              <span>Entries</span>
+           >   <span>Entries</span>
           </a>
         </div>
-        {% if session.role == 'Judge' %}
-        <div class="level-item">
-          <a class="button is-info" href="{{ url_for('createRound', cb=cb.id) }}">
-              <span>Create Round</span>
-          </a>
-        </div>
-        {% endif %}
       </div> 
 
         <!-- level-left -->

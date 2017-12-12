@@ -203,6 +203,5 @@ class NotificationForm(FlaskForm):
     submit = SubmitField("Send")
 
 class ChooseRoundWinnerForm(FlaskForm):
-    # round_winner = SelectField('Winner of this Round', choices=teams,validators=[
-        # DataRequired('Please select a winner for this round.')])
+    winning_entry = StringField('Winner of this Round',validators=[DataRequired('Please select a winner for this round.')])
     submit = SubmitField('Submit Decision')

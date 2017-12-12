@@ -450,6 +450,10 @@ class Entry(db.Model):
         self.chorusbattle = chorusid
         self.round_number = round_number
 
+    @staticmethod
+    def get_entries_for_round(round_id):
+        return db.session.query(Entry).filter_by(round_number=round_id).all()
+
 class Round(db.Model):
     """ 
     Model to store the rounds of a chorus battle. It contains information about the round.

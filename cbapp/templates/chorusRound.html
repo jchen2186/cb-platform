@@ -2,5 +2,31 @@
 {% block content %}
 
 {% include "chorusheader.html"%}
-{{ round }}
+<div class="container">
+  <div class="columns">
+    <div class="column is-4"></div>
+    <div class="column is-4">
+
+      <div class="notification">
+        <h2 class="title is-4 has-text-centered">Select Winner for Round</h2>
+        	<form method="POST" action="/chorusbattle/{{cb}}/round/{{round_number}}">
+        		{{ form.hidden_tag() }}
+			<div class="field">
+		        <div class="label">{{ form.winning_entry.label }}</div>
+		        <div class="control">
+		            {{ form.winning_entry(class_="input") }}
+		        </div>
+		        {% if form.winning_entry.errors %}
+		          {% for error in form.winning_entry.errors %}
+		            <p class="is-danger">{{ error }}</p>
+		          {% endfor %}
+		        {% endif %}
+	      	</div>
+		    {{ form.submit(class="button is-link") }}
+	      	</form>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
 {% endblock %}
