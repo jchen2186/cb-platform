@@ -283,15 +283,25 @@ def createEntry(cb=None):
     elif request.method == 'GET':
         return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
-@app.route('/team/<teamID>/', methods=['GET'])
+@app.route('/team/<teamID>/', methods=['GET', 'POST'])
 def team(teamID=None):
     """
     The route '/team/<name>' will direct the user to a page containing
     information about the selected chorus battle team, stored as the
     variable name.
     """
-    form = InviteTeamForm()
+
     team = Team.query.filter_by(id=teamID).first()
+    # edit open_roles
+    if request.method == 'POST':
+        if 'open_roles' in request.form:
+            team.open_roles = request.form['open_roles']
+            flash('You have successfully changed the open roles.')
+        if 'about' in request.form:
+            team.about = request.form['about']
+            flash('You have successfully changed the about section')
+        db.session.commit()
+    form = InviteTeamForm()
     team_users = db.session.query(user_teams).filter_by(team_id=teamID, member_status='member').all()
     team_members = []
     for member in team_users:
@@ -557,7 +567,7 @@ def createChorusBattle():
 
     # If the user is not a judge, redirect them to the home page.
     if session['role'] != 'Judge':
-        redirect(url_for('home'))
+        return redirect(url_for('home'))
 
     if request.method == 'POST':
         if not form.validate():
@@ -712,10 +722,13 @@ def getUserProfile(username=None):
     if row:
         if request.method == 'POST':
             if session['username'] == username:
-                print('New status',request.form['current_status'])
-                row.current_status = request.form['current_status']
+                if 'current_status' in request.form:
+                    row.current_status = request.form['current_status']
+                    flash('You have successfully changed your status')
+                if 'description' in request.form:
+                    row.description = request.form['description']
+                    flash('You have successfully changed your description')
                 db.session.commit()
-                flash('You have successfully changed your status')
             return redirect(url_for('getUserProfile', username=username))
         teamQuery = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
         teams = []
