@@ -256,7 +256,7 @@ def chorusEntries(cb=None):
 
         entries = Entry.query.filter_by(chorusbattle=cb, round_number=rd).all()
         for entry in entries:
-            currRound.append({'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
+            currRound.append({'id': entry.id, 'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
         rounds.append(currRound)
     
     subbed = False
@@ -264,7 +264,7 @@ def chorusEntries(cb=None):
         user_id = User.get_id_by_username(session['username'])
         subbed= Notification.is_subscribed(user_id, cb)
 
-    return render_template('entries.html', subbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('entries.html', entrysubbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
 def createEntry(cb=None):
