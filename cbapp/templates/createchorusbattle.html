@@ -15,8 +15,9 @@
   <div class="container">
     <form method="POST" action="/create/chorusbattle/" class="field">
       {{ form.hidden_tag() }}
-        
-      <div class="field"> <!-- name -->
+      
+      <!-- Name -->
+      <div class="field">
         <div class="label">{{ form.name.label }}</div>
         <div class="control">{{ form.name(class_="input") }}</div>
         {% if form.name.errors %}
@@ -26,6 +27,7 @@
         {% endif %}
       </div>
       
+      <!-- Description -->
       <div class="field">
         <div class="label">{{ form.description.label }}</div>
         <div class="control">{{ form.description(class_="textarea") }}</div>
@@ -35,7 +37,27 @@
             {% endfor %}
         {% endif %}
       </div>
-      
+
+      <!-- Judges -->
+      <div class="field">
+        <div class="label">{{ form.judges.label }}
+         <button class="button is-info is-small" type="button" onclick="pushMemberInput()">Add Row</button>
+         <button class="button is-danger is-small" type="button" onclick="popMemberInput()">Delete Row</button>
+       </div>
+
+        <div class="control" id="members">
+        {% for judge in form.judges %}
+          {{ judge(class_="input") }}
+        {% endfor %}
+        </div>
+        {% if form.judges.errors %}
+            {% for error in form.judges.errors %}
+              <p class="is-danger">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Rules -->
       <div class="field">
         <div class="label">{{ form.rules.label }}</div>
         <div class="control">{{ form.rules(class_="textarea") }}</div>
@@ -46,6 +68,7 @@
         {% endif %}
       </div>
 
+      <!-- Prizes -->
       <div class="field">
         <div class="label">{{ form.prizes.label }}</div>
         <div class="control">{{ form.prizes(class_="textarea") }}</div>
@@ -56,6 +79,7 @@
           {% endif %}
       </div>
 
+      <!-- Video Link -->
       <div class="field">
         <div class="label">{{ form.video_link.label }}</div>
         <div class="control">{{ form.video_link(class_="input") }}</div>
@@ -66,6 +90,7 @@
           {% endif %}
       </div>
 
+      <!-- Start Date -->
       <div class="field">
         <div class="label">{{ form.start_date.label }}</div>
         <div class="control">{{ form.start_date(class_="input", type="datetime-local") }}</div>
@@ -76,6 +101,7 @@
           {% endif %}
       </div>
 
+      <!-- Number of Rounds -->
       <div class="field">
         <div class="label">{{ form.no_of_rounds.label }}</div>
         <div class="control">{{ form.no_of_rounds(class_="input") }}</div>
@@ -86,8 +112,43 @@
           {% endif %}
       </div>
       <br>
+
+      <!-- Submit -->
       {{ form.submit(class="button is-link") }}
     </form>
   </div>
 </section>
+<script>
+
+  function pushMemberInput() {
+    let members = document.getElementById('members');
+    let count = members.childElementCount;
+    if (count > 10) {
+      return;
+    }
+    let newRow = document.createElement('input');
+    newRow.setAttribute('class', 'input');
+    newRow.setAttribute('id', 'members-' + String(count));
+    newRow.setAttribute('name', 'members-' + String(count));
+    newRow.setAttribute('type', 'text');
+    newRow.innerHTML = '<button class="button is-info is-small is-pulled-right" type="button" onclick="pushMemberInput()">Add Row</button>'
+    members.appendChild(newRow);
+  }
+
+  function popMemberInput() {
+    let members = document.getElementById('members');
+    let count = members.childElementCount;
+    if (count <= 1) {
+      return;
+    }
+    let delRow = document.getElementById('members-' + String(count-1));
+    delRow.parentNode.removeChild(delRow);
+  }
+
+  function changeText() {
+    let fileName = document.getElementsByClassName('file-name')[0];
+    let fileInput = document.getElementsByClassName('file-input')[0];
+    fileName.innerHTML = fileInput.value.substring(fileInput.value.lastIndexOf('\\')+1, fileInput.length);
+  }
+</script>
 {% endblock %}

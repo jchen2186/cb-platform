@@ -11,20 +11,20 @@ from flask import session
 
 db = SQLAlchemy()
 
-judges = db.Table('judges', 
-    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False),
+cb_users = db.Table('cb_users', 
+    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False,),
     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
     db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
 """
 Association table showing organizers for chorus battles)
 """
 
-chorusbattle_entries = db.Table('chorusbattle_entries', 
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
-    db.Column('entry_id', db.Integer, db.ForeignKey('entries.id'), nullable=False),
-    db.PrimaryKeyConstraint('user_id', 'entry_id'))
+judges = db.Table('judges', 
+    db.Column('user_id', db.Integer,db.ForeignKey('users.id'), nullable=False,),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'chorusbattle_id'))
 """
-Association table showing chorus battlers for each entry
+Association table showing organizers for chorus battles)
 """
 
 user_teams = db.Table('user_teams', 
@@ -36,6 +36,14 @@ user_teams = db.Table('user_teams',
 Association table showing users on a particular team
 """
 
+chorusbattle_entries = db.Table('chorusbattle_entries', 
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+    db.Column('entry_id', db.Integer, db.ForeignKey('entries.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id', 'entry_id'))
+"""
+Association table showing chorus battlers for each entry
+"""
+
 subscriptions = db.Table('subscriptions',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
     db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
@@ -43,6 +51,84 @@ subscriptions = db.Table('subscriptions',
 """
 Association table showing chorus battle that users are subscribed to to show notifications.
 """
+
+
+# class Judge(db.Model):
+#     """
+#     Model to store user_id of judges to the respective chorus battle. Uses association table judges.
+#     """
+#     __tablename__ = 'judges',
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+#     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+
+#     def __init__(self, user_id, chorusbattle_id):
+#         self.user_id = user_id
+#         self.chorusbattle_id = chorusbattle_id
+
+# class UserTeam(db.Model):
+#     """
+#     Association object showing users on a particular team
+#     """
+#     __tablename__ = 'user_teams'
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
+#     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, primary_key = True)
+#     member_status = db.Column(db.String(100), default='pending')
+#     def __init__(self, user_id, team_id, member_status='pending'):
+#         self.user_id = user_id
+#         self.team_id = team_id
+#         self.member_status = member_status
+
+class JudgeScore(db.Model):
+    """
+    Association object that stores the judge's scores for an entry
+    """
+    __tablename__ = 'judge_scores'
+    judge_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), nullable=False, primary_key = True)
+    vocals = db.Column(db.Integer, nullable=False)
+    instrumental = db.Column(db.Integer, nullable=False)
+    art = db.Column(db.Integer, nullable=False)
+    editing = db.Column(db.Integer, nullable=False)
+    transitions = db.Column(db.Integer, nullable=False)
+    vocals_comment = db.Column(db.String(500))
+    instrumental_comment = db.Column(db.String(500))
+    art_comment = db.Column(db.String(500))
+    editing_comment = db.Column(db.String(500))
+    transitions_comment = db.Column(db.String(500))
+
+    def __init__(self,judge_id,entry_id,vocals,vocals_comment,instrumental,instrumental_comment,art,art_comment,editing,editing_comment,transitions, transitions_comment):
+        self.judge_id = judge_id
+        self.entry_id = entry_id
+        self.vocals = vocals
+        self.vocals_comment = vocals_comment
+        self.instrumental = instrumental
+        self.instrumental_comment = instrumental_comment
+        self.art = art
+        self.art_comment = art_comment
+        self.editing = editing
+        self.editing_comment = editing_comment
+        self.transitions = transitions
+        self.transitions_comment = transitions_comment
+
+    @staticmethod
+    def has_judged_before(judge_id,entry_id):
+        """
+        Returns whethere a judge has judged a particular entry before
+
+        Args:
+          judge_id(int): The id of the judge
+          entry_id(int): The id of the entry
+
+        Returns:
+          bool: True if the judge has judged the entry before, 
+                False if they have not.
+        """
+
+        judged_entry = db.session.query(JudgeScore).filter_by(judge_id=judge_id, entry_id=entry_id).all()
+        if len(judged_entry) == 0:
+            return False
+
+        return True
 
 class Notification(db.Model):
     """
@@ -100,11 +186,11 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id')) #: User role for the user.
     user_icon = db.Column(db.LargeBinary) #: Icon for the user.
     description = db.Column(db.String(500), default="No description yet!") # Description for the user.
-    chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
+    chorusbattles = db.relationship('ChorusBattle', secondary='cb_users', backref='users') #: A history of all the chorus btatles the user has participated in.
+    current_status = db.Column(db.String(500), default="No current status!") # Current Status for the user.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
     subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='subscriber')
-
     def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
@@ -141,6 +227,12 @@ class User(db.Model):
         """
         return self.username
 
+    def get_id(self):
+        """
+        Get the user's id.
+        """
+        return self.id
+
     def get_role(self):
         """
         Gets the user's role (in words).
@@ -164,7 +256,8 @@ class User(db.Model):
         Returns:
           bool: True if username is unique and False if it is not 
         """
-        if db.session.query(User.id).filter(User.username==username).count() > 0:
+        if db.session.query(User).filter_by(username=username[0]).count() > 0:
+            print(username)
             return False
         return True
 
@@ -184,8 +277,50 @@ class User(db.Model):
         return True
 
     @staticmethod
-    def get_id_by_username(username):
+    def get_userrole(user_id):
+        """
+        Gets the role title of a particular user
 
+        Args:
+          user_id (int): the id of the user to get the role of
+
+        Returns: 
+          str: the title of the user's role
+
+        """
+        role = db.session.query(User.role_id).filter(User.id == user_id)
+        roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
+        return roles[role - 1]
+
+    @staticmethod
+    def get_user_id(username):
+        """
+        Gets the user id of a particular user given the username
+
+        Args:
+          username (str): the username of the user
+
+        Returns:
+          int: the id of the user
+        """
+        user_id = db.session.query(User.id).filter(User.username == username)
+        return user_id
+
+    @staticmethod
+    def get_user(username):
+        """
+        Gets the user given a username
+
+        Args:
+            username (str): the username of the user
+
+        Returns
+            User: the user object representing the user
+        """ 
+        user = db.session.query(User).filter(User.username == username).first()
+        return user
+
+    def get_id_by_username(username):
         return User.query.filter_by(username=username).first().id
 
 class ChorusBattle(db.Model):
@@ -205,7 +340,7 @@ class ChorusBattle(db.Model):
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
-    # judges = db.relationship('Judge', secondary=judges)
+    judges = db.relationship('User', secondary='judges')
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
@@ -237,12 +372,25 @@ class ChorusBattle(db.Model):
         self.description = description
 
 
-        
+    @staticmethod
+    def get_chorus_battle_name(id):
+        """
+        Gets the chorus battle name for a chorus battle given the id.
+
+        Args:
+          id(int): The id of the chorus battle
+            
+        Returns:
+          str: The name of the chorus battle
+        """
+        cb_name = db.session.query(ChorusBattle.name).filter(ChorusBattle.id == id)
+        return cb_name
+
 class UserRole(db.Model):
     """
     Model to store the roles and the associated id with the role.
     
-    0.Choose Role
+    0. Choose Role
     1. Administrator
     2. Unassigned
     3. Judge
@@ -291,7 +439,7 @@ class Round(db.Model):
     chorusbattle = db.Column(db.Integer, db.ForeignKey('chorusbattles.id')) #: The chorus battle the round belongs to.
     theme = db.Column(db.String(500)) #: User-inputted theme for the round of the chorus battle.
     deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
-    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle. Why is this needed?
+    round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle.
 
     def __init__(self, chorusbattle, theme, deadline):
         self.chorusbattle = chorusbattle
@@ -319,15 +467,15 @@ class Team(db.Model):
         self.team_logo = team_logo
         self.chorusbattle = chorusbattle
 
+    def get_id(self):
+        """
+        Gets the id of a user
 
-class Judge(db.Model):
-    """
-    Model to store user_id of judges to the respective chorus battle. Uses association table judges.
-    """
-    __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
+        Args:
+          None
 
-    def __init__(self, user_id, chorusbattle_id):
-        self.user_id = user_id
-        self.chorusbattle_id = chorusbattle_id
+        Returns:
+          int: The user's id
+        """
+        return self.id
+

@@ -15,7 +15,7 @@
 
             <div class="column is-three-quarters">
               <h1 class="title">
-                {{ username }}<br>
+                {{ user.username }}<br>
               </h1>
               <h2 class="subtitle">
                 {{ role }}
@@ -33,43 +33,66 @@
             <div class="notification">
               <h2 class="title is-4">About</h2>
               <p class="content">
-                user's personal description goes here
+                {{ user.description }}
               </p>
             </div>
 
             <div class="notification">
               <h2 class="title is-4">Current Competitions</h2>
-            
-              <div class="columns">
-                <div class="column is-one-third">
-                  <h2 class="title is-6">Competition</h2>
-                </div>
-
-                <div class="column is-one-third">
-                  <h2 class="title is-6">Team</h2>
-                </div>
-
-              </div>
-            </div>
-            
+                <table class="table is-fullwidth is-hoverable">
+                  <thead>
+                    <tr>
+                      <th>Competition</th>
+                      <th>Team</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for team in teams %}
+                      <tr>
+                        <td><a class="no-underline" href="{{ url_for('chorusInfo', cb=team['cid']) }}">{{ team['chorusbattle'] }}</a></td>
+                        <td> <a class="no-underline" href="{{ url_for('team', teamID=team['id']) }}">{{ team['team_name'] }}</a></td>           
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>            
           </div>
 
           <div class="column is-4">
             <div class="notification">
-              <h2 class="title is-4">Current Status</h2>
-              <div class="content">
-                looking for chorus battle to join or already participating in x chorus battle
-              </div>
-            </div>
-            <div class="notification">
-              <h2 class="title is-4">Social Media</h2>
-              <div class="content">
-                maybe put links to chorus battle entries that the user liked
+              <h2 class="title is-4">Current Status {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editCurrentStatus()">Edit</button>{% endif %}</h2>
+
+              <div class="content" id="current_status">
+                {{ user.current_status }}
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+<script>
 
+  function editCurrentStatus() {
+    let status = document.getElementById('current_status');
+    if (status.classList.contains('is-active')) {
+      status.innerHTML = '{{ user.current_status }}';
+      status.classList.remove('is-active');
+    } else {
+      status.innerHTML = `
+      <form method="post" action="/user/{{ user.username }}/">
+        <div class="field">
+          <div class="control">
+          <textarea class="textarea" placeholder="{{ user.current_status }}" rows="4" cols="50" name="current_status">{{ user.current_status }}</textarea>
+          <br>
+          <input type="submit" class="button is-small is-info" value="Update" />
+          </div>
+        </div>
+      </form>
+      `;
+      status.classList.add('is-active');
+    }
+
+
+  }
+</script>
 {% endblock %}
