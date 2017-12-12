@@ -268,13 +268,14 @@ def createTeam(cb=None):
         
         db.session.commit()
 
-        return redirect(url_for('team', teamID=newteam.get_id()))
 
         # invite members
         for member in form.members.data:
             invitee = User.query.filter_by(username=member).first()
             if invitee:
                 flash('You have invited ' + invitee.username + '.')
+
+        return redirect(url_for('team', teamID=newteam.get_id()))
 
     elif request.method == 'GET':
         return render_template("createteam.html", form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
@@ -361,7 +362,11 @@ def createChorusBattle():
                              form.rules.data, form.prizes.data, form.video_link.data, 
                              form.start_date.data, form.no_of_rounds.data, creator_id)
         
-        new_cb_judge = Judge()
+        # Add judges to chorus battle
+        for judge in form.judges.data:
+            team_judge = User.query.filter_by(username=judge).first()
+            new_cb.judges.append(team_judge)
+        
         db.session.add(new_cb)
         db.session.commit()
 

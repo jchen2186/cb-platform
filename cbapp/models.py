@@ -103,7 +103,6 @@ class User(db.Model):
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary='user_teams') #: All the teams the users have joined.
     subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='subscriber')
-
     def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
@@ -245,7 +244,7 @@ class ChorusBattle(db.Model):
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
-    judges = db.relationship('User', secondary=judges)
+    judges = db.relationship('User', secondary='judges',backref='chorusbattles')
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
@@ -383,18 +382,3 @@ class Team(db.Model):
           int: The user's id
         """
         return self.id
-
-    
-
-class Judge(db.Model):
-    """
-    Model to store user_id of judges to the respective chorus battle. Uses association table judges.
-    """
-    __tablename__ = 'judges',
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), primary_key = True)
-
-    def __init__(self, user_id, chorusbattle_id):
-        self.user_id = user_id
-        self.chorusbattle_id = chorusbattle_id
-

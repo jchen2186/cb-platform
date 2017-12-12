@@ -112,7 +112,7 @@ class CreateChorusBattleForm(FlaskForm):
         DataRequired('Please provide a brief description of your chorus battle.')])
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
-    judges = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a judge'), validate_username_exists])
+    judges = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a judge'), validate_judge])
     rules = TextAreaField('List of Rules', validators=[
         DataRequired('Please provide a list of rules.')])
     prizes = TextAreaField('Prizes', validators=[
