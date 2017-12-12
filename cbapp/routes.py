@@ -404,7 +404,7 @@ def createTeam(cb=None):
                 flash(member + ' is not a registered user.')
         db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
-
+    return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
 @app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
 def inviteTeam(teamID=None):
     """
