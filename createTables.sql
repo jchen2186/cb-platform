@@ -113,3 +113,14 @@ CREATE TABLE notifications(
     date_posted TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE judge_scores(
+	judge_id INTEGER REFERENCES users(id),
+	entry_id INTEGER REFERENCES entries(id),
+	vocals INTEGER NOT NULL,
+	instrumental INTEGER NOT NULL,
+	art INTEGER NOT NULL,
+	editing INTEGER NOT NULL,
+	transitions INTEGER NOT NULL,
+	PRIMARY KEY (judge_id,entry_id)
+);
