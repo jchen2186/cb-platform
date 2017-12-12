@@ -39,14 +39,14 @@ class UserTeam(db.Model):
         self.team_id = team_id
         self.member_status = member_status
 
-class JudgeScores(db.Model):
-    """
-    Association object that stores the judge's scores for an entry
-    """
-    judge_id 
-    entry_id
-    vocals 
-    instrumental
+# class JudgeScores(db.Model):
+#     """
+#     Association object that stores the judge's scores for an entry
+#     """
+#     judge_id =  
+#     entry_id = 
+#     vocals = 
+#     instrumental = 
 
 class User(db.Model):
     """
@@ -237,7 +237,20 @@ class ChorusBattle(db.Model):
         self.description = description
 
 
-        
+    @staticmethod
+    def get_chorus_battle_name(id):
+        """
+        Gets the chorus battle name for a chorus battle given the id.
+
+        Args:
+          id(int): The id of the chorus battle
+            
+        Returns:
+          str: The name of the chorus battle
+        """
+        cb_name = db.session.query(ChorusBattle.name).filter(ChorusBattle.id == id)
+        return cb_name
+
 class UserRole(db.Model):
     """
     Model to store the roles and the associated id with the role.
@@ -320,7 +333,19 @@ class Team(db.Model):
         self.chorusbattle = chorusbattle
 
     def get_id(self):
+        """
+        Gets the id of a user
+
+        Args:
+          None
+
+        Returns:
+          int: The user's id
+        """
         return self.id
+
+    
+
 
 class Judge(db.Model):
     """
