@@ -66,25 +66,21 @@
       <div class="column is-two-thirds">
         <div class="notification" id="current-cb">
           <h2 class="title is-4">Current Chorus Battle!</h2>
-          <p class="content">{% if chorusBattle %}{{ chorusBattle }}{% else%}none yet : ({% endif%}</p>
+          <p class="content">{% if chorusBattle %}<a class="no-underline" href="{{ url_for('chorusInfo', cb=team.chorusbattle) }}"><strong>{{ chorusBattle }}</strong></a>{% else%}none yet : ({% endif%}</p>
         </div>
         <div class="notification is-info" id="notices">
           <h2 class="title is-4">Notices</h2>
           <p class="content">[Media Posts]</p>
         </div>
         <div class="notification" id="about">
-          <h2 class="title is-4">About</h2>
-          <p class="content">We r team</p>
-        </div>
-        <div class="notification" id="past-cb">
-          <h2 class="title is-4">Past Chorus Battles</h2>
-          <p class="content"></p>
+          <h2 class="title is-4">About {% if currentUser == team.leader_id %}<button class="button is-small is-info" onclick="editAbout()">Edit</button>{% endif %}</h2>
+          <p class="content" id="aboutText">{{ team.about.replace('\r\n', '<br />\n') | safe }}</p>
         </div>
       </div>
       <div class="column is-one-third">
         <div class="notification" id="looking-roles">
-          <h2 class="title is-4">Open Roles</h2>
-          <p class="content">Closed!</p>
+          <h2 class="title is-4">Open Roles {% if currentUser == team.leader_id %}<button class="button is-small is-info" onclick="editOpenRoles()">Edit</button>{% endif %}</h2>
+          <p class="content" id="open_roles">{{ team.open_roles.replace('\r\n', '<br />\n') | safe }}</p>
         </div>
         <div class="notification" id="current-members">
           <h2 class="title is-4">Current Members</h2>
@@ -98,10 +94,6 @@
             {% endfor %}
           </div>
         </div>
-        <div class="notification" id="past-members">
-          <h2 class="title is-4">Past Members</h2>
-          <p class="content"></p>
-        </div>
       </div>
     </div> <!-- columns -->
   </div> <!-- container -->
@@ -112,5 +104,48 @@
     modal.classList.toggle('is-active');
     document.getElementById('userinput').focus();
   }
+
+function editOpenRoles() {
+  let status = document.getElementById('open_roles');
+  if (status.classList.contains('is-active')) {
+    status.innerHTML = `{{ team.open_roles.replace('\r\n', '<br />\n') | safe }}`;
+    status.classList.remove('is-active');
+  } else {
+    status.innerHTML = `
+    <form method="post" action="/team/{{ team.id }}/">
+      <div class="field">
+        <div class="control">
+        <textarea class="textarea" placeholder="{{ team.open_roles }}" rows="4" cols="50" name="open_roles">{{ team.open_roles }}</textarea>
+        <br>
+        <input type="submit" class="button is-small is-info" value="Update" />
+        </div>
+      </div>
+    </form>
+    `;
+    status.classList.add('is-active');
+  }
+}
+
+  function editAbout() {
+  let about = document.getElementById('aboutText');
+  if (about.classList.contains('is-active')) {
+    about.innerHTML = `{{ team.about.replace('\r\n', '<br />\n') | safe }}`;
+    about.classList.remove('is-active');
+  } else {
+    about.innerHTML = `
+    <form method="post" action="/team/{{ team.id }}/">
+      <div class="field">
+        <div class="control">
+        <textarea class="textarea" placeholder="{{ team.about }}" rows="4" cols="50" name="about">{{ team.about }}</textarea>
+        <br>
+        <input type="submit" class="button is-small is-info" value="Update" />
+        </div>
+      </div>
+    </form>
+    `;
+    about.classList.add('is-active');
+  }
+}
+
 </script>
 {% endblock %}
