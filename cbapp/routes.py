@@ -778,6 +778,6 @@ def search():
                 teamInfo = []
                 teamInfo.append(team.id)
                 teamInfo.append(team.team_name)
-                teamInfo.append(team.about)
+                #teamInfo.append(team.about)
                 resultsTeams.append(teamInfo)
     return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
