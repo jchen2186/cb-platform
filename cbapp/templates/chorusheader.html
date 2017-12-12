@@ -34,12 +34,13 @@
           </a>
           {% endif %}
         </div>
-        <div class="level-item">
-          <a class="button is-success" href="{{ url_for('createTeam', cb=cb.id) }}">
-              <span>Join this chorus battle</span>
-          </a>
-        </div>
-
+        {% if 'username' in session %}
+          <div class="level-item">
+            <a class="button is-success" href="{{ url_for('createTeam', cb=cb.id) }}">
+                <span>Join this chorus battle</span>
+            </a>
+          </div>
+        {% endif %}
         <div class="level-item">
           <a class="button is-primary" href=
           {% if "entries" in request.path %}

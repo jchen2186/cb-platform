@@ -11,9 +11,11 @@
 </div>
 
 <div class="container">
-	<section class="section">
-		<a class="button is-large is-info" href="/create/chorusbattle">Create Chorus Battle</a>
-	</section>
+	{% if 'username' in session %}
+		<section class="section">
+			<a class="button is-large is-info" href="/create/chorusbattle">Create Chorus Battle</a>
+		</section>
+	{% endif %}
 
 	{% for cb in info %}
 		<section class="section">
