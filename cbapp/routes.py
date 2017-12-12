@@ -7,8 +7,8 @@ user to the templates.
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore
 import urllib.parse
 import os
 from base64 import b64encode
@@ -88,7 +88,7 @@ def signup():
         db.session.commit()
         print(newuser)
         session['username'] = newuser.username
-        session['role'] = newuser.role_id
+        session['role'] = newuser.get_role()
         session['first_name'] = newuser.firstname
         return redirect(url_for('home'))
         # return render_template('home.html', propic=b64encode(propic).decode('utf-8'))
@@ -98,7 +98,9 @@ def signup():
 
 @app.route('/logout/')
 def logout():
-    """The route '/logout' will remove the user from the current session."""
+    """
+    The route '/logout' will remove the user from the current session.
+    """
     session.pop('username', None)
     return redirect(url_for('index'))
 
@@ -107,8 +109,9 @@ def home():
     """
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
-    form in order to log in."""
-    # print(session.items())
+    form in order to log in.
+    """
+    print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
 
@@ -386,9 +389,6 @@ def createTeam(cb=None):
         db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
 
-    elif request.method == 'GET':
-        return render_template("createteam.html", form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
-
 @app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
 def inviteTeam(teamID=None):
     """
@@ -548,25 +548,35 @@ def chorusBattleAll():
 def createChorusBattle():
     """
     The route '/create/chorusbattle' will direct the user, who has
-    to be a Judge, to the form where he/she will fill out information
+    to be a judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
     if there are any. Otherwise, the chorus battle will be created.
     """
     form = CreateChorusBattleForm()
 
+    # If the user is not a judge, redirect them to the home page.
+    if session['role'] != 'Judge':
+        redirect(url_for('home'))
+
     if request.method == 'POST':
         if not form.validate():
             return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))    
         creator_id = User.query.filter_by(username=session['username']).first().id
-        newcb = ChorusBattle(form.name.data, form.description.data,
+        # Create a new chorus battle
+        new_cb = ChorusBattle(form.name.data, form.description.data,
                              form.rules.data, form.prizes.data, form.video_link.data, 
                              form.start_date.data, form.no_of_rounds.data, creator_id)
-
-        db.session.add(newcb)
+        
+        # Add judges to chorus battle
+        for judge in form.judges:
+            team_judge = User.query.filter_by(username=judge.data).first()
+            new_cb.judges.append(team_judge)
+        
+        db.session.add(new_cb)
         db.session.commit()
 
-        return redirect(url_for('chorusInfo', cb=newcb.id))
+        return redirect(url_for('chorusInfo', cb=new_cb.id))
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
@@ -594,14 +604,49 @@ def writeNotification(cb=None):
         flash("Your notification has been posted!")
         return redirect(url_for('chorusInfo', cb=cb))
 
-@app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
+@app.route('/chorusbattle/<cb>/entries/<entry>/judge', methods=['GET', 'POST'])
 def judgeEntry(cb=None, entry=None):
     """
     The route '/chorusbattle/<cb>/judge/<entry>' directs the judge to a form
     where he/she can grade an entry using a rubric.
     """
+    # If user is not a judge, redirect the user to the chorus battle page
+    if 'username' not in session:
+        return redirect(url_for('home'))
+    if session['role'] != 'Judge':
+        return redirect(url_for('chorusInfo', cb=cb))
+
+    judge_id = User.get_user_id(session['username'])
+    form = JudgeEntryForm()
+    chorusbattle_info = ChorusBattle.query.filter_by(id=cb).first()
+    entry_info = Entry.query.filter_by(id=entry).first()
+    has_judged_before = JudgeScore.has_judged_before(judge_id, int(entry))
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusBattle=cb, entry=entry, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        if has_judged_before:
+            judged_entry = JudgeScore.query.filter_by(judge_id=judge_id, entry_id=entry).first()
+            return render_template("judgingtool.html", has_judged_before=True, judged_entry=judged_entry, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+        else:
+            return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+    elif request.method == 'POST':
+
+        if form.validate():
+            judge_id = User.get_user_id(session['username'])
+            new_judge_score = JudgeScore(judge_id,entry,
+                                        form.vocals.data,form.vocals_comment.data,
+                                        form.instrumental.data,form.instrumental_comment.data,
+                                        form.art.data,form.art_comment.data,
+                                        form.editing.data,form.editing_comment.data,
+                                        form.transitions.data,form.transitions_comment.data)
+            db.session.add(new_judge_score)
+            db.session.commit()
+
+            return redirect(url_for('chorusEntries', cb=cb))
+        else:
+             return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
 def createRound(cb=None):

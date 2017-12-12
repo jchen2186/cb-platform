@@ -8,6 +8,10 @@ from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, Valid
 from wtforms.validators import DataRequired, Email, Length
 from .models import User, ChorusBattle
 from datetime import datetime
+
+"""
+Custom Validators
+"""
 def validate_username(form, field):
     """
     Checks whether username is unique. If is not
@@ -24,8 +28,34 @@ def validate_email(form, field):
     if not User.is_email_unique(field.data):
         raise ValidationError('There already exists an account with this email.')
 
+def validate_username_exists(form, field):
+    """
+    Checks whether a username exists. If it 
+    does not exist, it will raise a validation
+    error.
+    """
+    if User.is_username_unique(field.data):
+        raise ValidationError('This username does not exist.')
+
+def validate_judge(form, field):
+    """
+    Checks whether a user is a judge. If the 
+    user is not a judge, it will raise a
+    validation error.
+    """
+    if User.is_username_unique(field.data):
+        # If username is not in the users table, raise an error
+        raise ValidationError('This username does not exist.')
+        return
+    judge = User.query.filter_by(username=field.data[0]).first()
+    if judge.get_role() != 'Judge':
+        # If the username exists but is not a judge, raise an error
+        raise ValidationError('This user is not a judge.')
+
 class SignupForm(FlaskForm):
-    """WTForm for sign up page."""
+    """
+    WTForm for sign up page.
+    """
     first_name = StringField('First name', validators=[
         DataRequired('Please enter your first name.')])
     last_name = StringField('Last name', validators=[
@@ -57,27 +87,34 @@ class SignupForm(FlaskForm):
     submit = SubmitField('Sign up')
 
 class LoginForm(FlaskForm):
-    """WTForm for login page."""
+    """
+    WTForm for login page.
+    """
     username = StringField('Username', validators=[DataRequired('Please enter your username.')])
     password = PasswordField('Password', validators=[DataRequired('Please enter your password.')])
     submit = SubmitField('Sign in')
 
 class CreateTeamForm(FlaskForm):
-    """WTForm for creating a chorus battle team."""
+    """
+    WTForm for creating a chorus battle team.
+    """
     team_name = StringField('Name of Team', validators=[
         DataRequired('Please enter a name for your team.')])
-    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member')])
+    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member'), validate_username_exists])
     teampic = FileField('Team Logo (Optional)')
     submit = SubmitField('Create Team')
 
 class CreateChorusBattleForm(FlaskForm):
-    """WTForm for creating a chorus battle."""
+    """
+    WTForm for creating a chorus battle.
+    """
     name = StringField('Name of Chorus Battle', validators=[
         DataRequired('Please enter a name for your chorus battle.')])
     description = TextAreaField('Description', validators=[
         DataRequired('Please provide a brief description of your chorus battle.')])
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
+    judges = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a judge'), validate_judge])
     rules = TextAreaField('List of Rules', validators=[
         DataRequired('Please provide a list of rules.')])
     prizes = TextAreaField('Prizes', validators=[
@@ -89,7 +126,9 @@ class CreateChorusBattleForm(FlaskForm):
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
-    """WTForm for adding a round for a particular chorus battle."""
+    """
+    WTForm for adding a round for a particular chorus battle.
+    """
     # round_number = IntegerField('Round Number', validators=[
     #     DataRequired('Please enter the round number.')])
     theme = TextAreaField('Theme', validators=[
@@ -100,13 +139,17 @@ class CreateRoundForm(FlaskForm):
     submit = SubmitField('Create New Round')
 
 class InviteTeamForm(FlaskForm):
-    """WTForm for inviting a user to a team."""
+    """
+    WTForm for inviting a user to a team.
+    """
     username = StringField('Username', validators=[
         DataRequired('Please enter a username')])
     submit = SubmitField('Invite')
 
 class CreateEntryForm(FlaskForm):
-    """WTForm for adding an entry to a particular chorus battle."""
+    """
+    WTForm for adding an entry to a particular chorus battle.
+    """
     team_name = StringField('Team Name', validators=[
         DataRequired('Please enter your team name')])
     title = StringField('Title', validators=[
@@ -115,6 +158,41 @@ class CreateEntryForm(FlaskForm):
         DataRequired('Please provide of a description of your entry.')])
     video_link = StringField('Link to the Chorus Battle Video', validators=[
         DataRequired('Please provide a link to your Chorus Battle Video')])
+    submit = SubmitField('Submit Entry')
+
+class JudgeEntryForm(FlaskForm):
+    """
+    WTForm for a judge to grade a particular entry for a chorus battle.
+    """
+
+    # Each category will be graded on a scale of 1 to 10
+    grades =   [(1, '1'),
+                (2, '2'),
+                (3, '3'),
+                (4, '4'),
+                (5, '5'),
+                (6, '6'),
+                (7, '7'),
+                (8, '8'),
+                (9, '9'),
+                (10, '10')]
+
+    # The judges can select the scores for vocals, instrumental, art, editing, and transitions.
+    vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the vocals.')])
+    vocals_comment = TextAreaField()
+    instrumental = SelectField('Instrumental', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the instrumental.')])
+    instrumental_comment = TextAreaField()
+    art = SelectField('Art', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the art.')])
+    art_comment = TextAreaField()
+    editing = SelectField('Editing', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the editing.')])
+    editing_comment = TextAreaField()
+    transitions = SelectField('Vocals', coerce=int, choices=grades, validators=[
+        DataRequired('Please select a score for the transitions.')])
+    transitions_comment = TextAreaField()
     submit = SubmitField('Submit Entry')
 
 class NotificationForm(FlaskForm):
