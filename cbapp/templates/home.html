@@ -65,6 +65,18 @@
               <div class="button">See All</div>
       </div>
       <div class="column is-8">
+        {% if team_invites %}
+          <h1 class="title is-4">
+            Team Invitations
+          </h1>
+          {% for team_invite in team_invites %}
+            <div class="notification is-info">
+              <p class="content">
+                You have been invited to <a class="no-underline" href="{{ url_for('team', teamID=team_invite.id) }}"><strong>{{ team_invite.team_name }}</strong></a>. <a class="button is-small is-success" href="{{ url_for('joinTeam', teamID=team_invite.id) }}">Accept</a> <a class="button is-small is-danger" href="{{ url_for('declineTeam', teamID=team_invite.id) }}">Decline</a>
+              </p>
+            </div>
+          {% endfor %}
+        {% endif %}
         <h1 class="title is-4">
           Notifications
         </h1>
