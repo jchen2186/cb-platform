@@ -38,7 +38,7 @@
 					<!-- <div id="user-icon"> -->
 						<!-- <img src=""> -->
 						{% if icon %}
-							<a class="navbar-item" href="{{ url_for('getUserProfile', username=session['username']) }}">
+							<a href="{{ url_for('getUserProfile', username=session['username']) }}">
           						<img class="image is-48x48" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ icon }}" />
           					</a>
         				{% endif %}
@@ -60,7 +60,7 @@
       {% for message in messages %}
         {% if 'You are not' in message or 'Sorry, the deadline for joining this chorus battle has passed.' in message or 'Incorrect username or password.' in message %}
           <div class="notification is-danger">{{ message }}</div>
-        {% elif 'not a registered user' %}
+        {% elif 'not a registered user' in message %}
         	<div class="notification is-warning">{{ message }}</div>
         {% elif 'already' in message %}
           <div class="notification is-info">{{ message }}</div>

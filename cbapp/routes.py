@@ -419,8 +419,26 @@ def getUserProfile(username=None):
     """
     row = User.query.filter_by(username=username).first()
     if row:
-        teams = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
+        if request.method == 'POST':
+            if session['username'] == username:
+                print('New status',request.form['current_status'])
+                row.current_status = request.form['current_status']
+                db.session.commit()
+                flash('You have successfully changed your status')
+            return redirect(url_for('getUserProfile', username=username))
+        teamQuery = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
+        teams = []
+        for team in teamQuery:
+            t = Team.query.filter_by(id=team.team_id).first()
+            team_chorusbattle = ChorusBattle.query.filter_by(id=t.chorusbattle).first().name
+            teams.append({
+                'id': t.id,
+                'team_name': t.team_name,
+                'cid': t.chorusbattle,
+                'chorusbattle': team_chorusbattle
+                })
+
+        return render_template("userprofile.html", user=row, teams=teams, role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
 
