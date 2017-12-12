@@ -132,10 +132,31 @@ def home():
 def viewNotifications(page=1):
     if 'username' not in session:
         return redirect(url_for('login'))
-    notifs = Notification.get_notifications(6).paginate(page,10,False)
-    notifications = notifs.items
-    return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
-         icon=getUserIcon((session['username'] if 'username' in session else None)))
+    user = User.query.filter_by(username=session['username']).first()
+    # check team invites
+    team_invitesQuery = db.session.query(user_teams).filter_by(user_id=user.id, member_status='pending').all()
+    team_invites = []
+    for team in team_invitesQuery:
+        team_invites.append(Team.query.filter_by(id=team.team_id).first())
+    # check team requests
+    owned_teams = Team.query.filter_by(leader_id=user.id).all()
+    team_requests = []
+    for owned_team in owned_teams:
+        team_requestsQuery = db.session.query(user_teams).filter_by(team_id=owned_team.id, member_status='request').all()
+        for team_request in team_requestsQuery:
+            team_requests.append({
+                'id': owned_team.id,
+                'team_name': owned_team.team_name,
+                'userID': team_request.user_id,
+                'username': User.query.filter_by(id=team_request.user_id).first().username
+                })
+    print(team_requests)
+    return render_template('home.html', team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+#     notifs = Notification.get_notifications(6).paginate(page,10,False)
+#     notifications = notifs.items
+#     return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
+#          icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
@@ -285,8 +306,13 @@ def team(teamID=None):
         chorusBattle = ChorusBattle.query.filter_by(id=team.chorusbattle).first().name
         currentUser = User.query.filter_by(username=(session['username'] if 'username' in session else None)).first()
         if currentUser:
+            team_user = db.session.query(user_teams).filter_by(user_id=currentUser.id, team_id=teamID).first()
+            print(team_user)
+            if team_user:
+                print(team_user.member_status)
             currentUser = currentUser.id
-        return render_template('team.html', currentUser = currentUser, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
+            return render_template('team.html', currentUser = currentUser, team_user=team_user, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('team.html', currentUser = currentUser, team_user=None, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/<cb>/createteam/', methods=['GET', 'POST'])
@@ -301,10 +327,20 @@ def createTeam(cb=None):
         print(type(datetime.datetime.now()),'>',type(deadline))
         flash('Sorry, the deadline for joining this chorus battle has passed.')
         return redirect(request.referrer or url_for('chorusInfo', cb=cb))
+    chorusrow = ChorusBattle.query.filter_by(id=cb).first()
+    leader = User.query.filter_by(username=session['username']).first()
+    # check if leader already created another team
+    for team in chorusrow.teams:
+        if team.leader_id == leader.id:
+            flash('You already lead a team in this chorus battle.')
+            return redirect(url_for('chorusInfo', cb=cb))
+
     form = CreateTeamForm()
     if request.method == 'POST':
+        
         if not form.validate():
             return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        
         # check if team name exists in competition
         teams = Team.query.filter_by(team_name=form.team_name.data).all()
         for team in teams:
@@ -316,20 +352,38 @@ def createTeam(cb=None):
         teampic = None
         if form.teampic.data:
             teampic = request.files.getlist('teampic')[0].read()
-        leader_id = User.query.filter_by(username=session['username']).first().id
+
         print(form.members, '\n',form.members.entries,'\n',  form.members.data)
-        newteam = Team(form.team_name.data, leader_id, teampic, cb)
+        # create team
+        newteam = Team(form.team_name.data, leader.id, teampic, cb)
         db.session.add(newteam)
         db.session.commit()
+        # invite leader
+        newteam.member.append(leader)
+        db.session.commit()
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'member'" + \
+            "WHERE user_id=" + str(leader.id) + " and team_id=" + str(newteam.id) + ";")
+        flash('You have successfully created a team.')
         # invite members
         for member in form.members.data:
             invitee = User.query.filter_by(username=member).first()
             if invitee:
-                newteam.member.append(invitee)
-                db.session.commit()
-                flash('You have invited ' + invitee.username + '.')
+                checkTeams = []
+                teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id, member_status='member').all()
+                for t in teamQuery:
+                    checkTeams.append(t.team_id)
+                in_team = False
+                for team in chorusrow.teams:
+                    if team.id in checkTeams:
+                        in_team = True
+                        flash(invitee.username + ' already belongs to a team in this chorus battle.')
+                if not in_team:
+                    newteam.member.append(invitee)
+                    flash('You have invited ' + invitee.username + '.')
             else:
                 flash(member + ' is not a registered user.')
+        db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
 
     elif request.method == 'GET':
@@ -341,20 +395,96 @@ def inviteTeam(teamID=None):
     The route /team/<teamID>/invite/ allows a team leader to invite a user to their team
     """
     form = InviteTeamForm()
+    print(dir(user_teams))
     if request.method == 'POST':
         team = Team.query.filter_by(id=teamID).first()
-        invitee = User.query.filter_by(username=form.username.data).first()
-        if invitee:
-            team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
-            if team_user:
-                flash('You have already invited ' + invitee.username + '.')
+        if User.query.filter_by(username=session['username']).first().id == team.leader_id:
+            invitee = User.query.filter_by(username=form.username.data).first()
+            if invitee:
+                team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
+                if team_user:
+                    flash('You have already invited ' + invitee.username + '.')
+                else:
+                    chorusrow = ChorusBattle.query.filter_by(id=team.chorusbattle).first()
+                    checkTeams = []
+                    teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id, member_status='member').all()
+                    for t in teamQuery:
+                        checkTeams.append(t.team_id)
+                    in_team = False
+                    for team in chorusrow.teams:
+                        if team in checkTeams:
+                            in_team = True
+                            flash(invitee.username + ' already belongs to a team in this chorus battle.')
+                    if not in_team:
+                        team.member.append(invitee)
+                        flash('You have invited ' + invitee.username + '.')
             else:
-                team.member.append(invitee)
-                db.session.commit()
-                flash('You have invited ' + invitee.username + '.')
+                flash(form.username.data + ' is not a registered user.')
         else:
-            flash(form.username.data + ' is not a registered user.')
+            flash('You are not the team leader.')
+        db.session.commit()
     return redirect(request.referrer or url_for('team', teamID=teamID))
+
+@app.route('/team/<teamID>/request/', methods=['GET'])
+def requestTeam(teamID=None):
+    """
+    The route /team/<teamID>/request/ allows users to request to join a team.
+    """
+    user = User.query.filter_by(username=session['username']).first()
+    team_user = db.session.query(user_teams).filter_by(user_id=user.id, team_id=teamID).first()
+    team_name = Team.query.filter_by(id=teamID).first().team_name
+    if team_user:
+        flash('You cannot request to join this team if you are already a member or if you declined an invitation.')
+        return redirect(request.referrer or url_for('team', teamID=teamID))
+    team = Team.query.filter_by(id=teamID).first()
+    if team:
+        team.member.append(user)
+        db.session.commit()
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'request'" + \
+            "WHERE user_id=" + str(user.id) + " and team_id=" + str(teamID) + ";")
+        flash('You have requested to join ' + team_name + '.')
+    else:
+        return redirect(request.referrer or url_for('home'))
+    return redirect(url_for('team', teamID=teamID))
+
+@app.route('/team/<teamID>/accept/<userID>', methods=['GET'])
+def acceptTeam(teamID=None, userID=None):
+    """
+    The route /team/<teamID>/accept/ allows team leaders to accept requested users.
+    """
+    user = User.query.filter_by(id=userID).first()
+    if user:
+        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID, member_status='request').first()
+        if team_user:
+            db.engine.execute("UPDATE user_teams " + \
+                "SET member_status = 'pending'" + \
+                "WHERE user_id=" + str(user.id) + " and team_id=" + str(teamID) + ";")
+            flash('You have invited ' + user.username + '.')
+        else:
+            flash('You cannot invite a user that is not requesting to join.')
+    else:
+        flash('You cannot invite a user that does not exist.')
+    return redirect(request.referrer or url_for('home'))
+
+@app.route('/team/<teamID>/reject/<userID>/', methods=['GET'])
+def rejectTeam(teamID=None, userID=None):
+    """
+    The route /team/<teamID>/reject/ allows team leaders to reject users that requested to join.
+    """
+    user = User.query.filter_by(id=userID).first()
+    if user:
+        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID, member_status='request').first()
+        if team_user:
+            db.engine.execute("UPDATE user_teams " + \
+                "SET member_status = 'rejected'" + \
+                "WHERE user_id=" + str(user.id) + " and team_id=" + str(teamID) + ";")
+            flash('You have rejected ' + user.username + '.')
+        else:
+            flash('You cannot reject a user that is not requesting to join.')
+    else:
+        flash('You cannot reject a user that does not exist.')
+    return redirect(request.referrer or url_for('home'))
 
 @app.route('/team/<teamID>/join/', methods=['GET'])
 def joinTeam(teamID=None):
@@ -370,10 +500,31 @@ def joinTeam(teamID=None):
             return redirect(request.referrer or url_for('home'))
         db.engine.execute("UPDATE user_teams " + \
             "SET member_status = 'member'" + \
-            "WHERE user_id=" + userID + " and team_id=" + teamID + ";")
+            "WHERE user_id=" + str(userID) + " and team_id=" + str(teamID) + ";")
         flash('You have successfully joined ' + team_name + '.')
     else:
         flash('You are not invited to ' + team_name + '.')
+    return redirect(request.referrer or url_for('home'))
+
+@app.route('/team/<teamID>/decline/', methods=['GET'])
+def declineTeam(teamID=None):
+    """
+    The route /team/<teamID>/decline/ allows users to decline a team invitation.
+    """
+    userID = User.query.filter_by(username=session['username']).first().id
+    team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID).first()
+    team_name = Team.query.filter_by(id=teamID).first().team_name
+    if team_user:
+        if team_user.member_status == 'member':
+            flash('You are a member of ' + team_name + ' already. Please contact your team leader to leave the team.')
+            return redirect(request.referrer or url_for('home'))
+        elif team_user.member_status == 'declined':
+            flash('You already declined the invitation to join this team.')
+            return redirect(request.referrer or url_for('home'))
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'declined'" + \
+            "WHERE user_id=" + str(userID) + " and team_id=" + str(teamID) + ";")
+        flash('You have declined to join ' + team_name + '.')
     return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/', methods=['GET'])
@@ -495,8 +646,8 @@ def viewCommunity():
     team_icons = []
     team_chorusbattles = []
     for team in teams:
-        team_icon = team.team_logo
-        if team_icon:
+        team_logo = team.team_logo
+        if team_logo:
             team_icons.append(b64encode(team_logo).decode('utf-8'))
         else:
             team_icons.append(None)
@@ -514,8 +665,26 @@ def getUserProfile(username=None):
     """
     row = User.query.filter_by(username=username).first()
     if row:
-        teams = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
-        return render_template("userprofile.html", username=row.get_username(), role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
+        if request.method == 'POST':
+            if session['username'] == username:
+                print('New status',request.form['current_status'])
+                row.current_status = request.form['current_status']
+                db.session.commit()
+                flash('You have successfully changed your status')
+            return redirect(url_for('getUserProfile', username=username))
+        teamQuery = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
+        teams = []
+        for team in teamQuery:
+            t = Team.query.filter_by(id=team.team_id).first()
+            team_chorusbattle = ChorusBattle.query.filter_by(id=t.chorusbattle).first().name
+            teams.append({
+                'id': t.id,
+                'team_name': t.team_name,
+                'cid': t.chorusbattle,
+                'chorusbattle': team_chorusbattle
+                })
+
+        return render_template("userprofile.html", user=row, teams=teams, role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
 
