@@ -65,6 +65,18 @@
               <div class="button">See All</div>
       </div>
       <div class="column is-8">
+        {% if team_requests %}
+          <h1 class="title is-4">
+            Team Requests
+          </h1>
+          {% for team_request in team_requests %}
+          <div class="notification is-info">
+            <p class="content">
+              <a class="no-underline" href="{{ url_for('getUserProfile', username=team_request['username']) }}">{{ team_request['username'] }}</a> has requested to join <a class="no-underline" href="{{ url_for('team', teamID=team_request['id']) }}">{{ team_request['team_name'] }}</a>. <a class="button is-small is-success" href="{{ url_for('acceptTeam', teamID=team_request['id'], userID=team_request['userID']) }}">Invite</a> <a class="button is-small is-danger" href="{{ url_for('rejectTeam', teamID=team_request['id'], userID=team_request['userID']) }}">Reject</a>
+            </p>
+          </div>
+          {% endfor %}
+        {% endif %}
         {% if team_invites %}
           <h1 class="title is-4">
             Team Invitations
