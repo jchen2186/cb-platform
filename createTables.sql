@@ -14,6 +14,7 @@ CREATE TABLE users (
     role_id INTEGER NOT NULL,
     user_icon BYTEA,
     description VARCHAR(500),
+    current_status VARCHAR(500),
     PRIMARY KEY (id),
     CONSTRAINT users_role_id FOREIGN KEY(role_id) REFERENCES userroles(id)
 );
