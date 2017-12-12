@@ -261,6 +261,15 @@ class TestCBAppUnitFilesExist(unittest.TestCase):
                                         'userprofile.html'))
         self.assertTrue(file_exists)
 
+    def test_check_search(self):
+        """ Checks if the search file exists. """
+        file_exists = op.exists(op.join(self.dir,
+                                        '..',
+                                        'cbapp',
+                                        'templates',
+                                        'searchresult.html'))
+        self.assertTrue(file_exists)
+
 class TestCBAppUnitRoutesExist(unittest.TestCase):
     """Class of unit tests for the chorus battle app that checks if routes exist."""
     
