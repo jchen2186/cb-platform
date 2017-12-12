@@ -49,7 +49,7 @@
   		<div class="content column is-half">
   			<h2> {{entry.title }} </h2>
           {% if session['role'] == 'Judge' %}
-            <a class="button is-info" href="/chorusbattle/{{ cb }}/judge/{{ entry.title }}"><span>Judge</span></a>
+            <a class="button is-info" href="/chorusbattle/{{ cb.id }}/entries/{{ entry.id }}/judge"><span>Judge</span></a>
           {% endif %}
   			<p> {{ entry.owners }} </p>
   			<p> {{ entry.description }} </p>
