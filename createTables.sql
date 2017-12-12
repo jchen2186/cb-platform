@@ -82,3 +82,18 @@ INSERT INTO userroles(id, role_title)
 			(5, 'Artist'),
 			(6, 'Mixer'),
 			(7, 'Animator');
+
+CREATE TABLE subscriptions (
+	user_id INTEGER REFERENCES users(id),
+	chorusbattle_id INTEGER REFERENCES chorusbattles(id),
+	PRIMARY KEY (user_id, chorusbattle_id)
+);
+
+CREATE TABLE notifications(
+	id INTEGER,
+    notifier INTEGER REFERENCES users(id),
+    chorusbattle_id INTEGER REFERENCES chorusbattles(id),
+    message VARCHAR(200) NOT NULL,
+    date_posted TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    PRIMARY KEY (id)
+);
