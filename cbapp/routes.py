@@ -16,6 +16,7 @@ import copy
 # pylint: disable=C0103
 
 # connect app to the postgresql database (local to our machines)
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://postgres:1@localhost:5432/cbapp')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
                                                        'postgresql://localhost/cbapp')
 db.init_app(app)
@@ -118,7 +119,8 @@ def chorusInfo(cb=None):
     as the variable cb.
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
-    teams = Team.query.filter_by(chorusbattle=cb).all()
+    teams_query = Team.query.filter_by(chorusbattle=cb).all()
+    teams = []
 
     round_deadlines = []
     maxRound = row.no_of_rounds
@@ -128,12 +130,22 @@ def chorusInfo(cb=None):
         roundQuery = Round.query.filter_by(chorusbattle=cb, round_number=rd).first()
         deadline = roundQuery.deadline
         round_deadlines.append(deadline)
+    
+    for team in teams_query:
+        temp = {}
+        temp["id"] = team.id
+        temp["team_name"] = team.team_name
+        if team.team_logo:
+            temp["team_logo"] = b64encode(team.team_logo).decode('utf-8')
+
+        teams.append(temp)
 
     if row:
         return render_template('chorusinfo.html', cb=row, 
             icon=getUserIcon((session['username'] if 'username' in session else None)),
             deadlines=round_deadlines,
-            maxRound = maxRound)
+            maxRound = maxRound,
+            teams=teams)
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):

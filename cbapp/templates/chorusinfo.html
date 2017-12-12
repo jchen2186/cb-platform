@@ -25,19 +25,23 @@
 				</div> <!-- box -->
 
 				<div class="notification is-primary">
-						<h3 class="title">Teams in this Chorus Battle</h3>
-						<p>
-						{{ cb.description }}
-						</p>
-						<h3>Rules</h3>
-						<p>
-							{{ cb.rules }}
-						</p>
-						<h3>Prizes</h3>
-							<p>
-								{{ cb.prizes }}
-							</p>
-				</div> <!-- box -->
+						<h3 class="title">Participating Teams!</h3>
+						{% if teams %}
+						{% for team in teams %}
+							<div class="media">
+								<div class="media-left">
+									<p class="image is-64x64">
+										<img src="data:image/jpeg;charset=utf-8;base64, {{ team.team_logo }}"/>
+									</p>
+								</div> <!-- media-left -->
+								<div class ="media-content">
+									<p><a href="/team/{{ team.id }}">{{ team.team_name }}</a></p>
+								</div>
+						{% endfor %}
+						{% else %}
+							<p>No teams are in this chorus battle yet. Why don't you join?</p>
+						{% endif %}
+				</div> <!-- notification -->
 
 
 			</div> <!-- column -->
