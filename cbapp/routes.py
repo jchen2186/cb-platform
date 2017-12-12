@@ -761,7 +761,7 @@ def search():
     resultsTeams = []
     if request.method == "POST":
         for user in User.query.all():
-            if request.form["search"].lower() in user.username(lower):
+            if request.form["search"].lower() in user.username.lower():
                 userInfo = []
                 userInfo.append(user.username)
                 userInfo.append(user.description)
