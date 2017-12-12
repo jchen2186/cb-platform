@@ -428,39 +428,74 @@ class TestCBAppUnitRoutesExist(unittest.TestCase):
     # # need to fix this so it generates home when a user is logged in
     # def test_home_get_home_template(self):
     #     """Checks if the home route exists. The test passes if it does."""
-    #     with patch.multiple("cbapp.routes",
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.home()
-    #         render_template = mock_functions["render_template"]
-    #         self.assertTrue(render_template.called)
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         self.assertEqual(file_name, "home.html")
+    #     with self.app.session_transaction() as sess:
+    #         sess['username'] = 'testuser'
 
+    #         with patch.multiple("cbapp.routes",
+    #                             # request=DEFAULT,
+    #                             render_template=DEFAULT) as mock_functions:
+    #             cbapp.routes.home()
+    #             render_template = mock_functions["render_template"]
+    #             self.assertTrue(render_template.called)
+    #             # call_args = render_template.call_args
+    #             # file_name = call_args[0][0]
+    #             # self.assertEqual(file_name, "home.html")
+
+    # # does not work because it can't query the database for a row
     # def test_cbinfo_get_cbinfo_template(self):
     #     """Checks if the chorusinfo route exists. The test passes if it does."""
-    #     with patch.multiple("cbapp.routes",
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.chorusInfo()
-    #         render_template = mock_functions["render_template"]
-    #         self.assertTrue(render_template.called)
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         self.assertEqual(file_name, "chorusinfo.html")
+    #     cb = 0
+    #     with cbapp.app.test_request_context('/chorusbattle/{}/'.format(cb), method='GET'):
+    #         self.assertEqual(flask.request.path, '/chorusbattle/{}/'.format(cb))
+    #         self.assertEqual(flask.request.method, 'GET')
+
+    #         with patch.multiple("cbapp.routes",
+    #                             render_template=DEFAULT,
+    #                             query=DEFAULT,
+    #                             filter_by=DEFAULT,
+    #                             first=DEFAULT,
+    #                             all=DEFAULT,
+    #                             print=DEFAULT,
+    #                             len=DEFAULT,
+    #                             range=DEFAULT,
+    #                             append=DEFAULT,
+    #                             b64encode=DEFAULT,
+    #                             is_subscribed=DEFAULT,
+    #                             getUserIcon=DEFAULT) as mock_functions:
+    #             cbapp.routes.chorusInfo(0)
+    #             render_template = mock_functions["render_template"]
+    #             query = mock_functions['query']
+    #             filter_by = mock_functions['filter_by']
+    #             first = mock_functions['first']
+    #             all = mock_functions['all']
+    #             print = mock_functions['print']
+    #             len = mock_functions['len']
+    #             range = mock_functions['range']
+    #             append = mock_functions['append']
+    #             b64encode = mock_functions['b64encode']
+    #             is_subscribed = mock_functions['is_subscribed']
+    #             getUserIcon = mock_functions['getUserIcon']
+
+    #             self.assertTrue(render_template.called)
+    #             call_args = render_template.call_args
+    #             file_name = call_args[0][0]
+    #             self.assertEqual(file_name, "chorusinfo.html")
 
     # def test_cbinfo_get_entries_template(self):
     #     """Checks if the chorusinfo entries route exists. The test passes if it does."""
-    #     with patch.multiple("cbapp.routes",
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.chorusEntries()
-    #         render_template = mock_functions["render_template"]
-    #         self.assertTrue(render_template.called)
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         self.assertEqual(file_name, "entries.html")
+    #     with cbapp.app.test_request_context('/home/', method='GET'):
+    #         self.assertEqual(flask.request.path, '/home/')
+    #         self.assertEqual(flask.request.method, 'GET')
+
+    #         with patch.multiple("cbapp.routes",
+    #                             request=DEFAULT,
+    #                             render_template=DEFAULT) as mock_functions:
+    #             cbapp.routes.chorusEntries()
+    #             render_template = mock_functions["render_template"]
+    #             self.assertTrue(render_template.called)
+    #             call_args = render_template.call_args
+    #             file_name = call_args[0][0]
+    #             self.assertEqual(file_name, "entries.html")
 
     # def test_team_get_team_template(self):
     #     """Checks if the team/<name> route exists. The test passes if it does."""
