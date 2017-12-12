@@ -60,9 +60,17 @@
         	<h2 class="title is-4">
           	Following Chorus Battles
         	</h2>
-
+            <div class="content">
+            {% if subs %}
+              <div class="tags">
+                {% for sub in subs%}
+                <span class="tag"><a href="{{ url_for('chorusInfo', cb=sub.id )}}">{{sub.name}}</a></span>
+                {% endfor %}
+              </div>
+            {% endif %}
               <br>
               <div class="button">See All</div>
+            </div>
       </div>
       <div class="column is-8">
         <h2 class="title is-4" style="display:inline-flex">

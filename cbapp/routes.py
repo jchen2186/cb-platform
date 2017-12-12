@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions
 import urllib.parse
 import os
 from base64 import b64encode
@@ -114,8 +114,17 @@ def home():
 
     # get 10 most recent notifications
     notif = Notification.get_notifications(6).paginate(1,5,False).items
+    subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    sub_cbs = []
+    for sub in subs:
+        cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
+        temp = {}
+        temp['name'] = cb.name
+        temp['id'] = cb.id
 
-    return render_template('home.html', notifications=notif,
+        sub_cbs.append(temp)
+
+    return render_template('home.html', notifications=notif, subs=sub_cbs,
         icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/home/notifications/')
