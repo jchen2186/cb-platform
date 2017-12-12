@@ -760,24 +760,27 @@ def search():
     resultsCB = []
     resultsTeams = []
     if request.method == "POST":
-        for user in User.query.all():
-            if request.form["search"].lower() in user.username.lower():
-                userInfo = []
-                userInfo.append(user.username)
-                userInfo.append(user.description)
-                resultsUsers.append(userInfo)
-        for chorusbattle in ChorusBattle.query.all():
-            if request.form["search"].lower() in chorusbattle.name.lower():
-                cbinfo = []
-                cbinfo.append(chorusbattle.id)
-                cbinfo.append(chorusbattle.name)
-                cbinfo.append(chorusbattle.description)
-                resultsCB.append(cbinfo)
-        for team in Team.query.all():
-            if request.form["search"].lower() in team.team_name.lower():
-                teamInfo = []
-                teamInfo.append(team.id)
-                teamInfo.append(team.team_name)
-                #teamInfo.append(team.about)
-                resultsTeams.append(teamInfo)
-    return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
+        if request.form["search"] == "":
+            return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
+        else:
+            for user in User.query.all():
+                if request.form["search"].lower() in user.username.lower():
+                    userInfo = []
+                    userInfo.append(user.username)
+                    userInfo.append(user.description)
+                    resultsUsers.append(userInfo)
+            for chorusbattle in ChorusBattle.query.all():
+                if request.form["search"].lower() in chorusbattle.name.lower():
+                    cbinfo = []
+                    cbinfo.append(chorusbattle.id)
+                    cbinfo.append(chorusbattle.name)
+                    cbinfo.append(chorusbattle.description)
+                    resultsCB.append(cbinfo)
+            for team in Team.query.all():
+                if request.form["search"].lower() in team.team_name.lower():
+                    teamInfo = []
+                    teamInfo.append(team.id)
+                    teamInfo.append(team.team_name)
+                    #teamInfo.append(team.about)
+                    resultsTeams.append(teamInfo)
+        return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
