@@ -1,3 +1,11 @@
+.media-link {
+	text-decoration: none !important;
+}
+
+.media-link:hover {
+	background-color: lightgray !important;
+}
+
 .user-panel {
 	border: none;
 	text-decoration: none !important;

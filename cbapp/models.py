@@ -72,6 +72,7 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True) #: Unique username for the user.
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id')) #: User role for the user.
     user_icon = db.Column(db.LargeBinary) #: Icon for the user.
+    description = db.Column(db.String(500), default="No description yet!") # Description for the user.
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.

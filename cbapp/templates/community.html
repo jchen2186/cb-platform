@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Explore the Chorus Battle Community
+      </h1>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="columns">
+      
+      <div class="column is-7">
+        <div class="notification">
+          <h2 class="title is-4">Users</h2>
+            {% for user in users %}
+              <a class="media-link" href="{{ url_for('getUserProfile', username=user.username) }}">
+                <article class="media media-link">
+                  <figure class="media-left">
+                    {% if user_icons[loop.index0] %}
+                      <img class="image is-64x64" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ user_icons[loop.index0] }}"/>
+                    {% else %}
+                      <img src="https://bulma.io/images/placeholders/128x128.png">
+                    {% endif %}
+                  </figure>
+
+                  <figure class="media-content">
+                    <div class="content">
+                      <p>
+                        <strong>{{ user.username }}</strong>
+                        <br>
+                        {{ user.description }}
+                      </p>
+                    </div>
+                  </figure>
+                </article>
+              </a>
+              <br>
+            {% endfor %}
+        </div>
+      </div>
+
+      <div class="column is-5">
+        <div class="notification">
+          <h2 class="title is-4">Teams</h2>
+
+          {% for team in teams %}
+            <a class="media-link" href="{{ url_for('team', teamID=team.id) }}">
+              <article class="media media-link">
+                <figure class="media-left">
+                  {% if team_icons[loop.index0] %}
+                    <img class="image is-64x64" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ team_icons[loop.index0] }}"/>
+                  {% else %}
+                    <p class="image is-64x64">
+                      <img src="https://bulma.io/images/placeholders/64x64.png">
+                    </p>
+                  {% endif %}
+                </figure>
+
+                <figure class="media-content">
+                  <div class="content">
+                    <p>
+                      <strong>{{ team.team_name }}</strong>
+                      <br>
+                      Participating in {{ team_chorusbattles[loop.index0] }}.
+                      <br>
+                    </p>
+                  </div>
+                </figure>
+              </article>
+            </a>
+            <br>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

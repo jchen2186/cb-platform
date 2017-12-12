@@ -13,6 +13,7 @@ CREATE TABLE users (
     username VARCHAR(100) UNIQUE NOT NULL,
     role_id INTEGER NOT NULL,
     user_icon BYTEA,
+    description VARCHAR(500),
     PRIMARY KEY (id),
     CONSTRAINT users_role_id FOREIGN KEY(role_id) REFERENCES userroles(id)
 );
