@@ -7,9 +7,9 @@
       <h1 class="title">
         Hello, {{ session.first_name }}!
       </h1>
-      <h2 class="subtitle">
+      <p class="subtitle">
         Here's what happened recently.
-      </h2>
+      </p>
 
     </div>
   </div>
@@ -18,9 +18,9 @@
   <div class="container">
     <div class="columns">
       <div class="column is-4">
-      	<h1 class="title is-4">
+      	<h2 class="title is-4">
           	My Chorus Battles
-        	</h1>
+        	</h2>
         	<article class="media">
           	<figure class="media-left">
           		<p class="image is-64x64">
@@ -57,31 +57,30 @@
           <br>
           <div class="button">See All</div>
       	<hr>
-        	<h1 class="title is-4">
+        	<h2 class="title is-4">
           	Following Chorus Battles
-        	</h1>
+        	</h2>
 
               <br>
               <div class="button">See All</div>
       </div>
       <div class="column is-8">
-        <h1 class="title is-4">
+        <h2 class="title is-4" style="display:inline-flex">
           Notifications
-        </h1>
-        <div class="notification">
-          <p class="content">
-          <strong>Team</strong> in <strong>Serendipity CB</strong> posted their entry <em>Entry Title</em> for Round 1.
-          <br>
-          <small>1/1/2018 11:59 PM</small>
-          </p>
-        </div>
-        <div class="notification">
-          <p class="content">
-          	<strong>Forrest Robin</strong> is opened for sign-ups!
-          <br>
-          <small>1/1/2018 11:59 PM</small>
-          </p>
-        </div>
+        </h2>
+        <a class="button" href="/home/notifications/" style="margin-left:10px">See All </a>
+
+        {% if notifications %}
+          {% for notif in notifications%}
+            <div class="notification">
+              <p class="content">
+                {{ notif.messsage }}
+                <small>{{notif.date_posted}}</small>
+                }
+              </p>
+            </div>
+          {% endfor %}
+        {% endif %}
 
 
         <div class="notification is-info">

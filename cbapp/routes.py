@@ -113,9 +113,15 @@ def home():
         return redirect(url_for('login'))
 
     # get 10 most recent notifications
-    notif = Notification.get_notifications(7)
+    notif = Notification.get_notifications(6)
 
-    return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('home.html', notifications=notif,
+        icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/home/notifications/')
+@app.route('/home/notifications/<int:page>')
+def viewNotifications(page=1):
+    pass
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
