@@ -23,6 +23,28 @@
 							</p>
 					</div> <!-- content -->
 				</div> <!-- box -->
+
+				<div class="notification is-primary">
+						<h3 class="title">Participating Teams!</h3>
+						{% if teams %}
+						{% for team in teams %}
+							<div class="media">
+								<div class="media-left">
+									<p class="image is-64x64">
+										<img src="data:image/jpeg;charset=utf-8;base64, {{ team.team_logo }}"/>
+									</p>
+								</div> <!-- media-left -->
+								<div class ="media-content">
+									<p><a href="/team/{{ team.id }}">{{ team.team_name }}</a></p>
+								</div>
+							</div> <!-- media -->
+						{% endfor %}
+						{% else %}
+							<p>No teams are in this chorus battle yet. Why don't you join?</p>
+						{% endif %}
+				</div> <!-- notification -->
+
+
 			</div> <!-- column -->
 
 			<div class="column is-half">
@@ -42,14 +64,20 @@
 								</div>
 								<h3 class="title">Start Date</h3>
 								<div class="content">
-									<p>11/1/2017 12:00:00 AM EST</p>
+									<p>{{ cb.start_date }}</p>
 								</div>
 								<h3 class="title">Deadlines</h3>
 								<div class="content">
 									<ul>
-										<li>Round 1: 12/1/2017 12:00:00 AM EST</li>
-										<li>Round 2: 1/1/2018 12:00:00 AM EST</li>
-										<li>Round 3: 2/1/2018 12:00:00 AM EST</li>
+										{% for i in range(1, maxRound) %}
+										<li>Round {{i}}: 
+										{% if deadlines[i-1] %}
+											{{ deadlines[i-1] }}
+										{% else %}
+											No date available yet!
+										{% endif %}
+										</li>
+										{% endfor %}
 									</ul>
 								</div>
 								<h3 class="title">Grace Period</h3>

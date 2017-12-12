@@ -13,6 +13,8 @@ CREATE TABLE users (
     username VARCHAR(100) UNIQUE NOT NULL,
     role_id INTEGER NOT NULL,
     user_icon BYTEA,
+    description VARCHAR(500),
+    current_status VARCHAR(500),
     PRIMARY KEY (id),
     CONSTRAINT users_role_id FOREIGN KEY(role_id) REFERENCES userroles(id)
 );
@@ -82,3 +84,18 @@ INSERT INTO userroles(id, role_title)
 			(5, 'Artist'),
 			(6, 'Mixer'),
 			(7, 'Animator');
+
+CREATE TABLE subscriptions (
+	user_id INTEGER REFERENCES users(id),
+	chorusbattle_id INTEGER REFERENCES chorusbattles(id),
+	PRIMARY KEY (user_id, chorusbattle_id)
+);
+
+CREATE TABLE notifications(
+	id serial,
+    notifier INTEGER REFERENCES users(id),
+    chorusbattle_id INTEGER REFERENCES chorusbattles(id),
+    message VARCHAR(200) NOT NULL,
+    date_posted TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    PRIMARY KEY (id)
+);

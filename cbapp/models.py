@@ -5,6 +5,7 @@ Contains classes for the objects that connect to our Postgres database.
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
+from sqlalchemy import desc
 from werkzeug import generate_password_hash, check_password_hash
 from flask import session
 
@@ -35,6 +36,56 @@ user_teams = db.Table('user_teams',
 Association table showing users on a particular team
 """
 
+subscriptions = db.Table('subscriptions',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id','chorusbattle_id'))
+"""
+Association table showing chorus battle that users are subscribed to to show notifications.
+"""
+
+class Notification(db.Model):
+    """
+    Class to store notifications made by user.
+    """
+    __tablename__='notifications'
+    id = db.Column(db.Integer, primary_key= True)
+    notifier = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False) # User who made the notification.
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False) # Chorus battle that the notification belongs to.
+    message = db.Column(db.String(200)) # The message in the notification.
+    date_posted = db.Column(db.DateTime(timezone=True), default=func.now()) # Date posted.
+
+    def __init__(self, notifier, chorusbattle_id, message):
+        self.notifier=notifier
+        self.chorusbattle_id=chorusbattle_id
+        self.message=message
+
+    @staticmethod
+    def is_subscribed(user_id, cb):
+        """
+        Checks if a user is subscribed to a cb.
+        """
+        subs = db.session.query(subscriptions).filter_by(user_id=user_id, chorusbattle_id=cb).all()
+        if len(subs) == 0:
+            return False
+
+        return True
+
+    @staticmethod
+    def get_notifications(user_id):
+        """
+        Gets a query object that gets all the notifications for subscription of a user_id.
+        """
+        # sql_query = """select * from notifications 
+        #     where chorusbattle_id in 
+        #     (select chorusbattle_id from subscriptions where user_id="""+str(user_id)+""") order by date_posted DESC;"""
+        # subs = db.session.query(Notification).from_statement(text(sql_query))
+        # print(subs)
+
+        subs = db.session.query(Notification).join(subscriptions, Notification.chorusbattle_id == subscriptions.c.chorusbattle_id).filter_by(user_id=user_id).order_by(Notification.date_posted.desc())
+        print(subs)
+        return subs
+
 class User(db.Model):
     """
     Chorus battle user class. This table stores the users in the system, and the user's information.
@@ -48,10 +99,13 @@ class User(db.Model):
     username = db.Column(db.String(100), unique=True) #: Unique username for the user.
     role_id = db.Column(db.Integer, db.ForeignKey('userroles.id')) #: User role for the user.
     user_icon = db.Column(db.LargeBinary) #: Icon for the user.
+    description = db.Column(db.String(500), default="No description yet!") # Description for the user.
+    current_status = db.Column(db.String(500), default="No current status!") # Current Status for the user.
     chorusbattles = db.relationship('ChorusBattle', secondary=judges, backref='users') #: A history of all the chorus btatles the user has participated in.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
-    
+    subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='subscriber')
+
     def __init__(self, firstname, lastname, email, password, username, role_id, user_icon):
         self.firstname = firstname.title()
         self.lastname = lastname.title()
@@ -130,6 +184,11 @@ class User(db.Model):
             return False
         return True
 
+    @staticmethod
+    def get_id_by_username(username):
+
+        return User.query.filter_by(username=username).first().id
+
 class ChorusBattle(db.Model):
     """
     Model to store chorus battle and related information.
@@ -148,6 +207,7 @@ class ChorusBattle(db.Model):
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
     # judges = db.relationship('Judge', secondary=judges)
+    subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name

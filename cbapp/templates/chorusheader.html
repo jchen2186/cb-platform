@@ -18,15 +18,24 @@
     <div class="level is-mobile">
       <div class ="level-left">
         <div class="level-item">
-          <a class="button">
-              <span class="icon is-small">
+          {% if not subbed %}
+          <a class="button" href= "{{ url_for('subscribe',cb=cb.id) }}">
+              <span class="icon is-small has-text-warning">
                <i class="fa fa-star"></i>
               </span>
               <span> Subscribe</span>
           </a>
+          {% else %}
+          <a class="button is-warning" href= "{{ url_for('subscribe',cb=cb.id) }}">
+              <span class="icon is-small">
+               <i class="fa fa-star"></i>
+              </span>
+              <span> Unsubscribe </span>
+          </a>
+          {% endif %}
         </div>
         <div class="level-item">
-          <a class="button is-success">
+          <a class="button is-success" href="{{ url_for('createTeam', cb=cb.id) }}">
               <span>Join this chorus battle</span>
           </a>
         </div>

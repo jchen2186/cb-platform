@@ -1,3 +1,19 @@
+.no-underline {
+	text-decoration: none !important;
+}
+
+.table {
+	background-color: hsl(0, 0%, 96%);
+}
+
+.media-link {
+	text-decoration: none !important;
+}
+
+.media-link:hover {
+	background-color: lightgray !important;
+}
+
 .user-panel {
 	border: none;
 	text-decoration: none !important;
@@ -30,7 +46,7 @@
 
 #user_icon {
 	border-radius: 50%;
-	margin: auto 0;
+	margin: auto auto;
 }
 
 #main-hero {

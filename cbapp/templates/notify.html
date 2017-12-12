@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero is-primary">
+<div class="hero-body has-text-centered">
+  <div class="container">
+    <h1 class="title">
+      Notifications
+    </h1>
+  </div>
+</div>
+</section>
+<section class="section">
+	<div class="container">
+		<h2 class="title">Send out a Notification to Subscribers</h2>
+
+		<form method="POST" action="/chorusbattle/{{cb}}/judge/notify">
+			<div class="field">
+				<div class="label">{{form.message.label}} </div>
+				<div class="control">
+					{{ form.message(class_="textarea") }}
+				</div>
+			</div>
+			<div class="field">
+					{{ form.submit(class_="button")}}
+			</div>
+		</form>
+	</div>
+</section>
+{% endblock %}

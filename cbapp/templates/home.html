@@ -1,30 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class=flashes>
-      {% for message in messages %}
-        {% if 'You are not' in message %}
-          <div class="notification is-danger">{{ message }}</div>
-        {% elif 'already' in message %}
-          <div class="notification is-primary">{{ message }}</div>
-        {% else %}
-          <div class="notification is-success">{{ message }}</div>
-        {% endif %}
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
 <section class="hero is-light">
   <div class="hero-body">
     <div class="container">
       <h1 class="title">
         Hello, {{ session.first_name }}!
       </h1>
-      <h2 class="subtitle">
+      <p class="subtitle">
         Here's what happened recently.
-      </h2>
+      </p>
 
     </div>
   </div>
@@ -33,9 +18,9 @@
   <div class="container">
     <div class="columns">
       <div class="column is-4">
-      	<h1 class="title is-4">
+      	<h2 class="title is-4">
           	My Chorus Battles
-        	</h1>
+        	</h2>
         	<article class="media">
           	<figure class="media-left">
           		<p class="image is-64x64">
@@ -72,31 +57,63 @@
           <br>
           <div class="button">See All</div>
       	<hr>
-        	<h1 class="title is-4">
+        	<h2 class="title is-4">
           	Following Chorus Battles
-        	</h1>
-
+        	</h2>
+            <div class="content">
+            {% if subs %}
+              <div class="tags">
+                {% for sub in subs%}
+                <span class="tag"><a href="{{ url_for('chorusInfo', cb=sub.id )}}">{{sub.name}}</a></span>
+                {% endfor %}
+              </div>
+            {% endif %}
               <br>
               <div class="button">See All</div>
+            </div>
       </div>
       <div class="column is-8">
+        {% if team_requests %}
+          <h1 class="title is-4">
+            Team Requests
+          </h1>
+          {% for team_request in team_requests %}
+          <div class="notification is-info">
+            <p class="content">
+              <a class="no-underline" href="{{ url_for('getUserProfile', username=team_request['username']) }}">{{ team_request['username'] }}</a> has requested to join <a class="no-underline" href="{{ url_for('team', teamID=team_request['id']) }}">{{ team_request['team_name'] }}</a>. <a class="button is-small is-success" href="{{ url_for('acceptTeam', teamID=team_request['id'], userID=team_request['userID']) }}">Invite</a> <a class="button is-small is-danger" href="{{ url_for('rejectTeam', teamID=team_request['id'], userID=team_request['userID']) }}">Reject</a>
+            </p>
+          </div>
+          {% endfor %}
+        {% endif %}
+        {% if team_invites %}
+          <h1 class="title is-4">
+            Team Invitations
+          </h1>
+          {% for team_invite in team_invites %}
+            <div class="notification is-info">
+              <p class="content">
+                You have been invited to <a class="no-underline" href="{{ url_for('team', teamID=team_invite.id) }}"><strong>{{ team_invite.team_name }}</strong></a>. <a class="button is-small is-success" href="{{ url_for('joinTeam', teamID=team_invite.id) }}">Accept</a> <a class="button is-small is-danger" href="{{ url_for('declineTeam', teamID=team_invite.id) }}">Decline</a>
+              </p>
+            </div>
+          {% endfor %}
+        {% endif %}
         <h1 class="title is-4">
           Notifications
-        </h1>
-        <div class="notification">
-          <p class="content">
-          <strong>Team</strong> in <strong>Serendipity CB</strong> posted their entry <em>Entry Title</em> for Round 1.
-          <br>
-          <small>1/1/2018 11:59 PM</small>
-          </p>
-        </div>
-        <div class="notification">
-          <p class="content">
-          	<strong>Forrest Robin</strong> is opened for sign-ups!
-          <br>
-          <small>1/1/2018 11:59 PM</small>
-          </p>
-        </div>
+        </h2>
+        <a class="button" href="/home/notifications/" style="margin-left:10px">See All </a>
+
+        {% if notifications %}
+          {% for notif in notifications%}
+            <div class="notification">
+              <p class="content">
+                {{ notif.message }}
+                <br>
+                <small>{{notif.date_posted}}</small>
+                
+              </p>
+            </div>
+          {% endfor %}
+        {% endif %}
 
 
         <div class="notification is-info">

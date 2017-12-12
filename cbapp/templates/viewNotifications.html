@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero is-info">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        Notifications
+      </h1>
+    </div>
+  </div>
+</section>
+<section class="section">
+	<div class="container">
+		<div class="content">
+			<a href="/home" class="button" >Back to dashboard</a>
+		</div>
+		  {% if notifications %}
+          {% for notif in notifications%}
+            <div class="notification">
+              <p class="content">
+                {{ notif.message }}
+                <br>
+                <small>{{notif.date_posted}}</small>
+                
+              </p>
+            </div>
+          {% endfor %}
+        {% endif %}
+        <div class="content">
+		{% if notifs.has_prev %}<a href="{{ url_for('viewNotifications', page=notifs.prev_num)}}" class="button is-primary">Newer</a>{% endif %}
+		{% if notifs.has_next %}<a href="{{ url_for('viewNotifications', page=notifs.next_num)}}" class="button is-warning">Older</a>{% endif %}
+	</div>
+	</div>
+	
+</section>
+{% endblock %}
