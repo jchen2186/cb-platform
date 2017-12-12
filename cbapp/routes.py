@@ -773,5 +773,10 @@ def search():
                 cbinfo.append(chorusbattle.name)
                 cbinfo.append(chorusbattle.description)
                 resultsCB.append(cbinfo)
-        #print(db.engine.execute("select name from chorusbattles"))
-    return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB)
+        for team in Team.query.all():
+            if request.form["search"].lower() in team.team_name.lower():
+                teamInfo = []
+                teamInfo.append(team.id)
+                teamInfo.append(team.team_name)
+                teamInfo.append(team.about)
+    return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
