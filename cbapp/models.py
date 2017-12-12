@@ -59,6 +59,21 @@ class Notification(db.Model):
         self.chorusbattle_id=chorusbattle_id
         self.message=message
 
+    @staticmethod
+    def get_notifications(user_id):
+        """
+        Calls a query that gets all the notifications for subscription of a user_id.
+        """
+        subs = db.session.query(subscriptions).filter_by(user_id=user_id)
+        notifs = []
+
+        for sub in subs:
+            n = Notification.query.filter_by(chorusbattle_id =sub.chorusbattle_id )
+            for msg in n:
+                notifs.append(msg)
+
+        print(notifs)
+
 class User(db.Model):
     """
     Chorus battle user class. This table stores the users in the system, and the user's information.
