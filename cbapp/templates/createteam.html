@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <section class="hero is-primary">
   <div class="hero-body">
     <div class="container">
@@ -13,7 +14,7 @@
 
 <section class="hero-body">
   <div class="container">
-    <form method="POST" action="/chorusbattle/{{ cb }}/createteam/" class="field">
+    <form enctype="multipart/form-data" method="POST" action="/chorusbattle/{{ cb }}/createteam/" class="field">
       {{ form.hidden_tag() }}
         
       <div class="field">
