@@ -3,10 +3,12 @@
 
 {% include "chorusheader.html" %}
 <div class="content column">
-  {% if session['role'] == 3 %}
-    <a class="button is-large is-info" href="/chorusbattle/{{ cb.id }}/entries/createround/">Create Round</a>
-  {% else %}
-    <a class="button is-large is-info" href="/chorusbattle/{{ cb.id }}/entries/create/">Create Entry</a>
+  {% if 'username' in session %}
+    {% if session['role'] == 3 %}
+      <a class="button is-large is-info" href="/chorusbattle/{{ cb.id }}/entries/createround/">Create Round</a>
+    {% else %}
+      <a class="button is-large is-info" href="/chorusbattle/{{ cb.id }}/entries/create/">Create Entry</a>
+    {% endif %}
   {% endif %}
 </div>
 <!-- Contains the entries for the chorus battle-->
