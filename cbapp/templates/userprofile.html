@@ -31,10 +31,10 @@
         <div class="columns">
           <div class="column is-8">
             <div class="notification">
-              <h2 class="title is-4">About</h2>
-              <p class="content">
-                {{ user.description }}
-              </p>
+              <h2 class="title is-4">About {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editDescription()">Edit</button>{% endif %}</h2>
+              <div class="" id="description">
+                {{ user.description.replace('\r\n', '<br />\n') | safe}}
+              </div>
             </div>
 
             <div class="notification">
@@ -63,7 +63,7 @@
               <h2 class="title is-4">Current Status {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editCurrentStatus()">Edit</button>{% endif %}</h2>
 
               <div class="content" id="current_status">
-                {{ user.current_status }}
+                {{ user.current_status.replace('\r\n', '<br />\n') | safe }}
               </div>
             </div>
           </div>
@@ -72,10 +72,31 @@
     </section>
 <script>
 
+  function editDescription() {
+    let description = document.getElementById('description');
+    if (description.classList.contains('is-active')) {
+      description.innerHTML = `{{ user.description.replace('\r\n', '<br />\n') | safe }}`;
+      description.classList.remove('is-active');
+    } else {
+      description.innerHTML = `
+      <form method="post" action="/user/{{ user.username }}/">
+        <div class="field">
+          <div class="control">
+          <textarea class="textarea" placeholder="{{ user.description }}" rows="4" cols="50" name="description">{{ user.description }}</textarea>
+          <br>
+          <input type="submit" class="button is-small is-info" value="Update" />
+          </div>
+        </div>
+      </form>
+      `;
+      description.classList.add('is-active');
+    }
+  }
+
   function editCurrentStatus() {
     let status = document.getElementById('current_status');
     if (status.classList.contains('is-active')) {
-      status.innerHTML = '{{ user.current_status }}';
+      status.innerHTML = `{{ user.current_status.replace('\r\n', '<br />\n') | safe }}`;
       status.classList.remove('is-active');
     } else {
       status.innerHTML = `
@@ -91,8 +112,6 @@
       `;
       status.classList.add('is-active');
     }
-
-
   }
 </script>
 {% endblock %}
