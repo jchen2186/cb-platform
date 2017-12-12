@@ -24,6 +24,15 @@ def validate_email(form, field):
     if not User.is_email_unique(field.data):
         raise ValidationError('There already exists an account with this email.')
 
+def validate_username_exists(form, field):
+    """
+    Checks whether a username exists. If it 
+    does not exist, it will raise a validation
+    error.
+    """
+    if User.is_username_unique(field.data):
+        raise ValidationError('This username does not exist.')
+
 class SignupForm(FlaskForm):
     """
     WTForm for sign up page.
@@ -70,7 +79,7 @@ class CreateTeamForm(FlaskForm):
     """WTForm for creating a chorus battle team."""
     team_name = StringField('Name of Team', validators=[
         DataRequired('Please enter a name for your team.')])
-    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member')])
+    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member'), validate_username_exists])
     teampic = FileField('Team Logo (Optional)')
     submit = SubmitField('Create Team')
 
