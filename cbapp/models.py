@@ -245,12 +245,8 @@ class ChorusBattle(db.Model):
     entries = db.relationship('Entry') #: Available entries in the chorus battle.
     teams = db.relationship('Team') #: Teams involved in this chorus battle.
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
-<<<<<<< HEAD
     judges = db.relationship('User', secondary=judges)
-=======
-    # judges = db.relationship('Judge', secondary=judges)
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
->>>>>>> 8c698d6ab651b9f9d5a6ece5e86a49e89c51ac9e
 
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
@@ -389,7 +385,6 @@ class Team(db.Model):
         return self.id
 
     
-
 
 class Judge(db.Model):
     """
