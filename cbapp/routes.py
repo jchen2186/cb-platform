@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore, judges
 import urllib.parse
 import os
 from base64 import b64encode
@@ -170,7 +170,7 @@ def chorusInfo(cb=None):
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
     teams_query = Team.query.filter_by(chorusbattle=cb).all()
-    # judges = Judge.query.filter_by(chorusbattle_id=cb)
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
     teams = []
 
     round_deadlines = []
@@ -191,6 +191,10 @@ def chorusInfo(cb=None):
 
         teams.append(temp)
 
+    cb_judges = []
+    for judge in judges_query:
+        cb_judges.append(User.query.filter_by(id=judge.judge_id).first())
+
     if row:
         current_user = User.query.filter_by(username=session['username']).first()
         user_id = current_user.id
@@ -203,7 +207,8 @@ def chorusInfo(cb=None):
             deadlines=round_deadlines,
             maxRound = maxRound,
             teams=teams,
-            subbed=subbed)
+            subbed=subbed,
+            judges=cb_judges)
 
 @app.route('/chorusbattle/<cb>/subscribe')
 def subscribe(cb=None):
@@ -701,7 +706,6 @@ def viewCommunity():
     return render_template('community.html', users=users, user_icons=user_icons, teams=teams, team_chorusbattles=team_chorusbattles, \
         team_icons=team_icons, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
-# work in progress
 @app.route('/user/<username>/', methods=['GET', 'POST'])
 def getUserProfile(username=None):
     """
@@ -732,6 +736,34 @@ def getUserProfile(username=None):
         return render_template("userprofile.html", user=row, teams=teams, role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
+
+@app.route('/chorusbattle/<cb>/round/<round_number>', methods=['GET', 'POST'])
+def chorusRound(cb=None,round_number=None):
+    """
+    The route '/chorusbattle/<cb>/round/<round_number>' directs a judge to a page
+    for a round where they can choose a winner
+    """
+    # If user is not a judge, redirect them out of the page
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session['role'] != 'Judge':
+        return redirect(url_for('chorusInfo', cb=cb))
+    round_id = db.session.query(Round.id).filter_by(chorusbattle_id=cb, round_number=round_number).first()
+    round_info = Round.query.filter_by(round_id).first()
+    ChorusBattle.query.filter_by(id=cb).first()
+    if request.method == 'GET':
+        if Round.has_winner():
+            return redirect(url_for('chorusInfo', cb=cb))
+        else:
+            return render_template('chorusRound.html',cb=cb, round=round_number)
+
+    else:
+        if form.validate():
+            Round.choose_winner(form.winning_team.data)
+            return redirect(url_for('chorusInfo', cb=cb, subbed=True))
+
+
+
 
 
 @app.route('/help/faq/', methods=['GET'])

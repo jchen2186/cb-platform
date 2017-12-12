@@ -60,7 +60,13 @@
 							<div class="tile is-child notification is-info">
 								<h3 class="title">Judges</h3>
 								<div class="content">
-									<p>Judge1, Judge2, Judge3</p>
+									{% if judges %}
+										{% for judge in judges %}
+											{{ judge.username }}
+										{% endfor %}
+									{% else %}
+										<p>No judges announced yet.</p>
+									{% endif %}
 								</div>
 								<h3 class="title">Start Date</h3>
 								<div class="content">
