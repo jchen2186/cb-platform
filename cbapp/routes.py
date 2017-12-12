@@ -7,8 +7,8 @@ user to the templates.
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm, NotificationForm
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions
 import urllib.parse
 import os
 from base64 import b64encode
@@ -18,8 +18,9 @@ import datetime
 # pylint: disable=C0103
 
 # connect app to the postgresql database (local to our machines)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
-                                                       'postgresql://localhost/cbapp')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://postgres:1@localhost:5432/cbapp')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
+
 db.init_app(app)
 app.secret_key = 'development-key'
 
@@ -107,10 +108,34 @@ def home():
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
     form in order to log in."""
-    print(session.items())
+    # print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+    # get 10 most recent notifications
+    notif = Notification.get_notifications(6).paginate(1,5,False).items
+    subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    sub_cbs = []
+    for sub in subs:
+        cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
+        temp = {}
+        temp['name'] = cb.name
+        temp['id'] = cb.id
+
+        sub_cbs.append(temp)
+
+    return render_template('home.html', notifications=notif, subs=sub_cbs,
+        icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/home/notifications/')
+@app.route('/home/notifications/<int:page>')
+def viewNotifications(page=1):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    notifs = Notification.get_notifications(6).paginate(page,10,False)
+    notifications = notifs.items
+    return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
+         icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
@@ -120,7 +145,9 @@ def chorusInfo(cb=None):
     as the variable cb.
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
-    teams = Team.query.filter_by(chorusbattle=cb).all()
+    teams_query = Team.query.filter_by(chorusbattle=cb).all()
+    # judges = Judge.query.filter_by(chorusbattle_id=cb)
+    teams = []
 
     round_deadlines = []
     maxRound = row.no_of_rounds
@@ -130,12 +157,52 @@ def chorusInfo(cb=None):
         roundQuery = Round.query.filter_by(chorusbattle=cb, round_number=rd).first()
         deadline = roundQuery.deadline
         round_deadlines.append(deadline)
+    
+    for team in teams_query:
+        temp = {}
+        temp["id"] = team.id
+        temp["team_name"] = team.team_name
+        if team.team_logo:
+            temp["team_logo"] = b64encode(team.team_logo).decode('utf-8')
+
+        teams.append(temp)
 
     if row:
+        current_user = User.query.filter_by(username=session['username']).first()
+        user_id = current_user.id
+        subbed = False
+        if 'username' in session:
+            subbed= Notification.is_subscribed(user_id, cb)
+
         return render_template('chorusinfo.html', cb=row, 
             icon=getUserIcon((session['username'] if 'username' in session else None)),
             deadlines=round_deadlines,
-            maxRound = maxRound)
+            maxRound = maxRound,
+            teams=teams,
+            subbed=subbed)
+
+@app.route('/chorusbattle/<cb>/subscribe')
+def subscribe(cb=None):
+    if 'username' not in session:
+         return redirect(url_for('login'))
+
+    current_user = User.query.filter_by(username=session['username']).first()
+    user_id = current_user.id
+
+    if not Notification.is_subscribed(user_id,cb):
+        this_cb = ChorusBattle.query.filter_by(id=cb).first()
+        current_user.subscriptions.append(this_cb)
+        db.session.commit()
+        chorusbattle_name = this_cb.name
+        flash('You subscribed to '+ chorusbattle_name +"!")
+        return redirect(url_for('chorusInfo', cb=cb, subbed=True))
+    else:
+        this_cb = ChorusBattle.query.filter_by(id=cb).first()
+        chorusbattle_name = this_cb.name
+        current_user.subscriptions.remove(this_cb)
+        db.session.commit()
+        flash('You are no longer subscribed to '+ chorusbattle_name +".")
+        return redirect(url_for('chorusInfo', cb=cb, subbed=True))
 
 @app.route('/chorusbattle/<cb>/entries/', methods=['GET'])
 def chorusEntries(cb=None):
@@ -162,7 +229,12 @@ def chorusEntries(cb=None):
             currRound.append({'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
         rounds.append(currRound)
     
-    return render_template('entries.html', cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    subbed = False
+    if 'username' in session:
+        user_id = User.get_id_by_username(session['username'])
+        subbed= Notification.is_subscribed(user_id, cb)
+
+    return render_template('entries.html', subbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
 def createEntry(cb=None):
@@ -347,6 +419,29 @@ def createChorusBattle():
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/chorusbattle/<cb>/judge/notify', methods=['GET', 'POST'])
+def writeNotification(cb=None):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # make sure to check the judge is a valid judge for this cb!
+    form = NotificationForm()
+
+    if request.method == "GET":
+        
+        return render_template('notify.html', cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)), form=form)
+    elif request.method == "POST":
+        message = form.message.data
+        user_id = User.get_id_by_username(session['username'])
+
+        newNotif= Notification(user_id,cb,message)
+
+        db.session.add(newNotif)
+        db.session.commit()
+
+        flash("Your notification has been posted!")
+        return redirect(url_for('chorusInfo', cb=cb))
 
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
 def judgeEntry(cb=None, entry=None):
