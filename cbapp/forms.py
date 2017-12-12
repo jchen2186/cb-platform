@@ -93,7 +93,9 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign in')
 
 class CreateTeamForm(FlaskForm):
-    """WTForm for creating a chorus battle team."""
+    """
+    WTForm for creating a chorus battle team.
+    """
     team_name = StringField('Name of Team', validators=[
         DataRequired('Please enter a name for your team.')])
     members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member'), validate_username_exists])
@@ -110,6 +112,7 @@ class CreateChorusBattleForm(FlaskForm):
         DataRequired('Please provide a brief description of your chorus battle.')])
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
+    judges = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a judge'), validate_username_exists])
     rules = TextAreaField('List of Rules', validators=[
         DataRequired('Please provide a list of rules.')])
     prizes = TextAreaField('Prizes', validators=[
@@ -121,7 +124,9 @@ class CreateChorusBattleForm(FlaskForm):
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
-    """WTForm for adding a round for a particular chorus battle."""
+    """
+    WTForm for adding a round for a particular chorus battle.
+    """
     # round_number = IntegerField('Round Number', validators=[
     #     DataRequired('Please enter the round number.')])
     theme = TextAreaField('Theme', validators=[
@@ -132,7 +137,9 @@ class CreateRoundForm(FlaskForm):
     submit = SubmitField('Create New Round')
 
 class InviteTeamForm(FlaskForm):
-    """WTForm for inviting a user to a team."""
+    """
+    WTForm for inviting a user to a team.
+    """
     username = StringField('Username', validators=[
         DataRequired('Please enter a username')])
     submit = SubmitField('Invite')

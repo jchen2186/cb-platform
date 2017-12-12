@@ -277,7 +277,6 @@ class Team(db.Model):
         self.team_logo = team_logo
         self.chorusbattle = chorusbattle
 
-
 class Judge(db.Model):
     """
     Model to store user_id of judges to the respective chorus battle. Uses association table judges.
@@ -289,3 +288,17 @@ class Judge(db.Model):
     def __init__(self, user_id, chorusbattle_id):
         self.user_id = user_id
         self.chorusbattle_id = chorusbattle_id
+
+class UserTeam(db.Model):
+    """
+    Model to store the correspondng team(s) for a user
+    """
+    __tablename__ = 'user_teams'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
+    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, primary_key = True)
+    member_status = db.Column(db.String(100), default='pending')
+
+    def __init__(self, user_id, team_id):
+        self.user_id = user_id
+        self.team_id = team_id
+        self.member_status = 'pending'

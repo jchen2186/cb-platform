@@ -95,7 +95,9 @@ def signup():
 
 @app.route('/logout/')
 def logout():
-    """The route '/logout' will remove the user from the current session."""
+    """
+    The route '/logout' will remove the user from the current session.
+    """
     session.pop('username', None)
     return redirect(url_for('index'))
 
@@ -104,7 +106,8 @@ def home():
     """
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
-    form in order to log in."""
+    form in order to log in.
+    """
     print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
@@ -287,22 +290,28 @@ def chorusBattleAll():
 def createChorusBattle():
     """
     The route '/create/chorusbattle' will direct the user, who has
-    to be a Judge, to the form where he/she will fill out information
+    to be a judge, to the form where he/she will fill out information
     relating to the chorus battle.
     After submitting the form, the user will be notified of any errors,
     if there are any. Otherwise, the chorus battle will be created.
     """
     form = CreateChorusBattleForm()
 
+    # If the user is not a judge, redirect them to the home page.
+    if session['role'] != 'Judge':
+        redirect(url_for('home'))
+
     if request.method == 'POST':
         if not form.validate():
             return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))    
         creator_id = User.query.filter_by(username=session['username']).first().id
-        newcb = ChorusBattle(form.name.data, form.description.data,
+        # Create a new chorus battle
+        new_cb = ChorusBattle(form.name.data, form.description.data,
                              form.rules.data, form.prizes.data, form.video_link.data, 
                              form.start_date.data, form.no_of_rounds.data, creator_id)
-
-        db.session.add(newcb)
+        for len()
+        new_cb_judge = Judge()
+        db.session.add(new_cb)
         db.session.commit()
 
         return redirect(url_for('chorusInfo', cb=newcb.id))
