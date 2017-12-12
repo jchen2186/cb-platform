@@ -47,9 +47,9 @@
         </div>
         <div class="column is-three-quarters">
           <h1 class="title">
-            {{ team.team_name }}  {% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% elif team_user %}
+            {{ team.team_name }}  {% if 'username' in session %}{% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% elif team_user %}
             {% if team_user.member_status == 'pending' %}<a class="button is-success" href="{{ url_for('joinTeam', teamID=team.id) }}">Accept</a> <a class="button is-danger" href="{{ url_for('declineTeam', teamID=team.id) }}">Decline</a>{% endif %}{% else %}
-            <a class="button is-info" href="{{ url_for('requestTeam', teamID=team.id) }}">Request to Join</a>{% endif %}
+            <a class="button is-info" href="{{ url_for('requestTeam', teamID=team.id) }}">Request to Join</a>{% endif %}{% endif %}
           </h1>
           <h2 class="subtitle">
           </h2>
