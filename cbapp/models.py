@@ -110,6 +110,23 @@ class JudgeScore(db.Model):
         self.transitions = transitions
         self.transitions_comment = transitions_comment
 
+    @staticmethod
+    def has_judged_before(judge_id,entry_id):
+        """
+        Returns whethere a judge has judged a particular entry before
+
+        Args:
+          judge_id(int): The id of the judge
+          entry_id(int): The id of the entry
+
+        Returns:
+          bool: True if the judge has judged the entry before, 
+                False if they have not.
+        """
+
+        return db.session.query(JudgeScore).filter_by(judge_id=judge_id, entry_id=entry_id).count() > 0
+
+
 class Notification(db.Model):
     """
     Class to store notifications made by user.
