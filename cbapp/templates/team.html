@@ -47,7 +47,10 @@
         </div>
         <div class="column is-three-quarters">
           <h1 class="title">
-            {{ team.team_name }}  {% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% endif %}
+            {{ team.team_name }}  {% if currentUser == team.leader_id %}<button class="button is-info" onclick="showInviteModal()">Invite user</button>{% elif invited %}<form method="GET" action="/team/{{ team.id }}/join/">
+                <button class="button is-info" type="submit">Join</button>
+              </form>
+              {% endif %}
           </h1>
           <h2 class="subtitle">
             Team Motto
@@ -76,7 +79,7 @@
         </div>
         <div class="notification" id="past-cb">
           <h2 class="title is-4">Past Chorus Battles</h2>
-          <p class="content">none yet : ( </p>
+          <p class="content"></p>
         </div>
       </div>
       <div class="column is-one-third">
@@ -98,7 +101,7 @@
         </div>
         <div class="notification" id="past-members">
           <h2 class="title is-4">Past Members</h2>
-          <p class="content">none yet : ( </p>
+          <p class="content"></p>
         </div>
       </div>
     </div> <!-- columns -->
