@@ -7,7 +7,7 @@ user to the templates.
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, InviteTeamForm, NotificationForm
 from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification
 import urllib.parse
 import os
@@ -108,12 +108,12 @@ def home():
     The route '/home' will redirect the user to the dashboard if the
     user is logged in. Otherwise, it will redirect the user to the login
     form in order to log in."""
-    print(session.items())
+    # print(session.items())
     if 'username' not in session:
         return redirect(url_for('login'))
 
     # get 10 most recent notifications
-    notif = Notification.get_notifications(1)
+    notif = Notification.get_notifications(7)
 
     return render_template('home.html', icon=getUserIcon((session['username'] if 'username' in session else None)))
 
@@ -150,12 +150,16 @@ def chorusInfo(cb=None):
     if row:
         current_user = User.query.filter_by(username=session['username']).first()
         user_id = current_user.id
+        subbed = False
+        if 'username' in session:
+            subbed= Notification.is_subscribed(user_id, cb)
+
         return render_template('chorusinfo.html', cb=row, 
             icon=getUserIcon((session['username'] if 'username' in session else None)),
             deadlines=round_deadlines,
             maxRound = maxRound,
             teams=teams,
-            subbed=Notification.is_subscribed(user_id, cb))
+            subbed=subbed)
 
 @app.route('/chorusbattle/<cb>/subscribe')
 def subscribe(cb=None):
@@ -205,7 +209,12 @@ def chorusEntries(cb=None):
             currRound.append({'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
         rounds.append(currRound)
     
-    return render_template('entries.html', cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    subbed = False
+    if 'username' in session:
+        user_id = User.get_id_by_username(session['username'])
+        subbed= Notification.is_subscribed(user_id, cb)
+
+    return render_template('entries.html', subbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
 def createEntry(cb=None):
@@ -390,6 +399,29 @@ def createChorusBattle():
 
     elif request.method == 'GET':
         return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/chorusbattle/<cb>/judge/notify', methods=['GET', 'POST'])
+def writeNotification(cb=None):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    # make sure to check the judge is a valid judge for this cb!
+    form = NotificationForm()
+
+    if request.method == "GET":
+        
+        return render_template('notify.html', cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)), form=form)
+    elif request.method == "POST":
+        message = form.message.data
+        user_id = User.get_id_by_username(session['username'])
+
+        newNotif= Notification(user_id,cb,message)
+
+        db.session.add(newNotif)
+        db.session.commit()
+
+        flash("Your notification has been posted!")
+        return redirect(url_for('chorusInfo', cb=cb))
 
 @app.route('/chorusbattle/<cb>/judge/<entry>', methods=['GET', 'POST'])
 def judgeEntry(cb=None, entry=None):

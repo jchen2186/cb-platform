@@ -49,7 +49,7 @@ class Notification(db.Model):
     """
     __tablename__='notifications'
     id = db.Column(db.Integer, primary_key= True)
-    notifier = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False) # User who made the notification.
+    notifier = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False) # User who made the notification.
     chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False) # Chorus battle that the notification belongs to.
     message = db.Column(db.String(200)) # The message in the notification.
     date_posted = db.Column(db.DateTime(timezone=True), default=func.now()) # Date posted.
@@ -181,6 +181,11 @@ class User(db.Model):
         if db.session.query(User.id).filter(User.email==email).count() > 0:
             return False
         return True
+
+    @staticmethod
+    def get_id_by_username(username):
+
+        return User.query.filter_by(username=username).first().id
 
 class ChorusBattle(db.Model):
     """
