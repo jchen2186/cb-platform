@@ -60,7 +60,7 @@
 
           <div class="column is-4">
             <div class="notification">
-              <h2 class="title is-4">Current Status <button class="button is-small is-info" onclick="editCurrentStatus()">Edit</button></h2>
+              <h2 class="title is-4">Current Status {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editCurrentStatus()">Edit</button>{% endif %}</h2>
 
               <div class="content" id="current_status">
                 {{ user.current_status }}
