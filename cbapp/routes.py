@@ -16,9 +16,9 @@ import copy
 # pylint: disable=C0103
 
 # connect app to the postgresql database (local to our machines)
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://postgres:1@localhost:5432/cbapp')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
-                                                       'postgresql://localhost/cbapp')
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://postgres:1@localhost:5432/cbapp')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
+
 db.init_app(app)
 app.secret_key = 'development-key'
 
