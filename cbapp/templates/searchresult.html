@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero is-info">
+	<div class="hero-body">
+		<div class="container">
+			<h1 class="title">
+				Search Results
+			</h1>
+		</div>
+	</div>
+</section>
+<br>
+<div class="container">
+	<!-- Search Results for Users -->
+	{% if resultsUsers|length > 0 %}
+	<div class="container">
+		<h2 class="title is-2">Users</h2>
+	</div>
+	<br>
+		{% for i in range(resultsUsers|length) %}
+		<div class="card">
+			<header class="card-header">
+				<p class="card-header-title">
+					<a href="/user/{{resultsUsers[i][0]}}">{{resultsUsers[i][0]}}</a>
+				</p>
+			</header>
+			<div class="card-content">
+				<div class="content">
+					{{resultsUsers[i][1]}}
+				</div>
+			</div>
+		</div>
+		<br>
+		{% endfor %}
+	{% endif %}
+
+	<!-- Search Results for Chorus Battles -->
+	{% if resultsCB|length > 0 %}
+		<div class="container">
+			<h2 class="title is-2">Chorus Battles</h2>
+		</div>
+		<br>
+		{% for i in range(resultsCB|length) %}
+		<div class="card">
+			<header class="card-header">
+				<p class="card-header-title">
+					<a href="/chorusbattle/{{resultsCB[i][0]}}">{{resultsCB[i][1]}}</a>
+				</p>
+			</header>
+			<div class="card-content">
+				<div class="content">
+					{{resultsCB[i][2]}}
+				</div>
+			</div>
+		</div>
+		<br>
+		{% endfor %}
+	{% endif %}
+
+	<!-- Search Results for Teams -->
+	{% if resultsTeams|length > 0 %}
+		<div class="container">
+			<h2 class="title is-2">Teams</h2>
+		</div>
+		<br>
+		{% for i in range(resultsTeams|length) %}
+		<div class="card">
+			<header class="card-header">
+				<p class="card-header-title">
+					<a href="/team/{{resultsTeams[i][0]}}">{{resultsTeams[i][1]}}</a>
+				</p>
+			</header>
+			<div class="card-content">
+				<div clas="content">
+					<!--{{resultsTeams[i][2]}}-->
+				</div>
+			</div>
+		</div>
+		<br>
+		{% endfor %}
+	{% endif %}
+</div>
+
+{% endblock %}
