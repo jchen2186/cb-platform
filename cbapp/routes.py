@@ -760,8 +760,14 @@ def search():
     resultsCB = []
     resultsTeams = []
     if request.method == "POST":
+        for user in User.query.all():
+            if request.form["search"].lower() in user.username(lower):
+                userInfo = []
+                userInfo.append(user.username)
+                userInfo.append(user.description)
+                resultsUsers.append(userInfo)
         for chorusbattle in ChorusBattle.query.all():
-            if request.form["search"] in chorusbattle.name:
+            if request.form["search"].lower() in chorusbattle.name.lower():
                 cbinfo = []
                 cbinfo.append(chorusbattle.id)
                 cbinfo.append(chorusbattle.name)
