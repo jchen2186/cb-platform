@@ -757,8 +757,14 @@ def getUserIcon(username):
 @app.route("/search/", methods=["GET", "POST"])
 def search():
     resultsUsers = []
-    resultsTeams = []
     resultsCB = []
+    resultsTeams = []
     if request.method == "POST":
-        print(ChorusBattle.query.filter_by(name).first)
+        for chorusbattle in ChorusBattle.query.all():
+            if request.form["search"] in chorusbattle.name:
+                cbinfo = []
+                cbinfo.append(chorusbattle.id)
+                cbinfo.append(chorusbattle.name)
+                resultsCB.append(cbinfo)
+        #print(db.engine.execute("select name from chorusbattles"))
     return render_template("searchresult.html")
