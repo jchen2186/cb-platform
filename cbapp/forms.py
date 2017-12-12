@@ -46,7 +46,9 @@ def validate_judge(form, field):
     if User.is_username_unique(field.data):
         # If username is not in the users table, raise an error
         raise ValidationError('This username does not exist.')
-    elif User.get_role(field.data) != 'Judge':
+        return
+    judge = User.query.filter_by(username=field.data[0]).first()
+    if judge.get_role() != 'Judge':
         # If the username exists but is not a judge, raise an error
         raise ValidationError('This user is not a judge.')
 

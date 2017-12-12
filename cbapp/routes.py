@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
 from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, UserTeam
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams
 import urllib.parse
 import os
 from base64 import b64encode
@@ -232,10 +232,20 @@ def createTeam(cb=None):
         print(type(datetime.datetime.now()),'>',type(deadline))
         flash('Sorry, the deadline for joining this chorus battle has passed.')
         return redirect(request.referrer or url_for('chorusInfo', cb=cb))
+    chorusrow = ChorusBattle.query.filter_by(id=cb).first()
+    leader = User.query.filter_by(username=session['username']).first()
+    # check if leader already created another team
+    for team in chorusrow.teams:
+        if team.leader_id == leader.id:
+            flash('You already lead a team in this chorus battle.')
+            return redirect(url_for('chorusInfo', cb=cb))
+
     form = CreateTeamForm()
     if request.method == 'POST':
+        
         if not form.validate():
             return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        
         # check if team name exists in competition
         teams = Team.query.filter_by(team_name=form.team_name.data).all()
         for team in teams:
@@ -247,38 +257,39 @@ def createTeam(cb=None):
         teampic = None
         if form.teampic.data:
             teampic = request.files.getlist('teampic')[0].read()
-        leader_id = User.get_user_id(session['username'])
+
         print(form.members, '\n',form.members.entries,'\n',  form.members.data)
-        newteam = Team(form.team_name.data, leader_id, teampic, cb)
+        # create team
+        newteam = Team(form.team_name.data, leader.id, teampic, cb)
         db.session.add(newteam)
         db.session.commit()
-        # Add the team leader to the user_teams table
-        leader = UserTeam(leader_id,newteam.get_id(),member_status='pending')
-        leader.member = User.get_user(session['username'])
-        # newteam.members.append(leader.member)
-        db.session.add(leader)
-
-        # Add each of the other team members to the user_teams table
-        for member in form.members:
-            team_member_id = User.get_user_id(member.data)
-            team_member = UserTeam(team_member_id,newteam.get_id(),member_status='pending')
-            team_member.member = User.get_user(member.data)
-            # newteam.members.append(team_member.member)
-            db.session.add(team_member)
-        
+        # invite leader
+        newteam.member.append(leader)
         db.session.commit()
-
-
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'member'" + \
+            "WHERE user_id=" + str(leader.id) + " and team_id=" + str(newteam.id) + ";")
+        flash('You have successfully created a team.')
         # invite members
         for member in form.members.data:
             invitee = User.query.filter_by(username=member).first()
             if invitee:
-                flash('You have invited ' + invitee.username + '.')
-
-        return redirect(url_for('team', teamID=newteam.get_id()))
-
-    elif request.method == 'GET':
-        return render_template("createteam.html", form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+                checkTeams = []
+                teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id, member_status='member').all()
+                for t in teamQuery:
+                    checkTeams.append(t.team_id)
+                in_team = False
+                for team in chorusrow.teams:
+                    if team.id in checkTeams:
+                        in_team = True
+                        flash(invitee.username + ' already belongs to a team in this chorus battle.')
+                if not in_team:
+                    newteam.member.append(invitee)
+                    flash('You have invited ' + invitee.username + '.')
+            else:
+                flash(member + ' is not a registered user.')
+        db.session.commit()
+        return redirect(url_for('team', teamID=newteam.id))
 
 @app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
 def inviteTeam(teamID=None):
@@ -363,8 +374,8 @@ def createChorusBattle():
                              form.start_date.data, form.no_of_rounds.data, creator_id)
         
         # Add judges to chorus battle
-        for judge in form.judges.data:
-            team_judge = User.query.filter_by(username=judge).first()
+        for judge in form.judges:
+            team_judge = User.query.filter_by(username=judge.data).first()
             new_cb.judges.append(team_judge)
         
         db.session.add(new_cb)
