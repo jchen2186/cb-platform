@@ -753,3 +753,12 @@ def getUserIcon(username):
     if user_icon:
         user_icon = b64encode(user_icon).decode('utf-8')
     return user_icon    
+
+@app.route("/search/", methods=["GET", "POST"])
+def search():
+    resultsUsers = []
+    resultsTeams = []
+    resultsCB = []
+    if request.method == "POST":
+        print(ChorusBattle.query.filter_by(name).first)
+    return render_template("searchresult.html")
