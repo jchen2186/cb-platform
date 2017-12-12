@@ -774,4 +774,4 @@ def search():
                 cbinfo.append(chorusbattle.description)
                 resultsCB.append(cbinfo)
         #print(db.engine.execute("select name from chorusbattles"))
-    return render_template("searchresult.html", resultsCB=resultsCB)
+    return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB)
