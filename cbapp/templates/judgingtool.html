@@ -5,22 +5,54 @@
 <div class="hero-body has-text-centered">
   <div class="container">
     <h1 class="title">
-      Judging for {{ chorusbattle['id'] }}
+      Judging for {{ chorusbattle['name'] }}
     </h1>
     <h2 class="subtitle">
-        Team 2&ensp;-&ensp;Entry {{ entry['id'] }} 
+        Team {{ entry['team_id'] }}&ensp;-&ensp;Entry {{ entry['id'] }} 
     </h2>
   </div>
 </div>
 </section>
 <br>
+{% if has_judged_before == True %}
+<div class ="hero-body">
+<div class="container">
+<div class="columns">
+	<div class="column is-one-quarter"></div>
+	<div class="column is-half  has-text-centered">
+		<div>
+			<iframe width="560" height="315" src=" {{ entry['video_link']}}" frameborder="0" allowfullscreen></iframe>
+		    <br><br><p> 
+	        </p>
+		</div>
+		<div class="notification is-primary">
+			<h1 class="subtitle is-3">
+				You have already judged this entry.
+			</h1>
+		</div>
+		<div class="notification">
+			<h2 class="subtitle is-4">Scores Given:</h2>
+				<ul>
+					<li><strong>Vocals:</strong> {{ judged_entry['vocals'] }}</li>
+					<li><strong>Instrumental:</strong> {{ judged_entry['instrumental'] }}</li>
+					<li><strong>Art:</strong> {{ judged_entry['art'] }}</li>
+					<li><strong>Editing:</strong> {{ judged_entry['editing'] }}</li>
+					<li><strong>Transitions:</strong> {{ judged_entry['transitions'] }}</li>
+				</ul>
+		</div>
+		<a href="/chorusbattle/{{ chorusbattle['id'] }}/entries" class="button is-primary">Return to Entries</a>
+	</div>
+</div>
+</div>
+</div>
+{% else %}
 <div class ="hero-body">
 <div class="container">
 <div class="columns">
 	<div class="column is-half">
 		<form method="POST" action="/chorusbattle/{{ chorusbattle['id'] }}/entries/{{ entry['id'] }}/judge"/>
 			{{ form.hidden_tag() }}
-	          
+	         
 			<table class="table">
 			<thead>
 			<tr>
@@ -29,7 +61,6 @@
 				<th><abbr title="Comments">Comments</abbr></th>
 			</tr>
 			</thead>
-
 			<tbody>
 			<tr>
 			<th>Vocals</th>
@@ -144,6 +175,8 @@
 </div>
 </div>
 </div>
+{% endif%}
+
 	
 
 {% endblock %}

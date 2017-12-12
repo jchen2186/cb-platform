@@ -616,14 +616,21 @@ def judgeEntry(cb=None, entry=None):
     if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
 
+    judge_id = User.get_user_id(session['username'])
     form = JudgeEntryForm()
     chorusbattle_info = ChorusBattle.query.filter_by(id=cb).first()
     entry_info = Entry.query.filter_by(id=entry).first()
-
+    has_judged_before = JudgeScore.has_judged_before(judge_id, int(entry))
     if request.method == 'GET':
-        return render_template("judgingtool.html", chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+        if has_judged_before:
+            judged_entry = JudgeScore.query.filter_by(judge_id=judge_id, entry_id=entry).first()
+            return render_template("judgingtool.html", has_judged_before=True, judged_entry=judged_entry, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+        else:
+            return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
                                 icon=getUserIcon((session['username'] if 'username' in session else None)))
     elif request.method == 'POST':
+
         if form.validate():
             judge_id = User.get_user_id(session['username'])
             new_judge_score = JudgeScore(judge_id,entry,
@@ -636,6 +643,10 @@ def judgeEntry(cb=None, entry=None):
             db.session.commit()
 
             return redirect(url_for('chorusEntries', cb=cb))
+        else:
+             return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
+                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
 def createRound(cb=None):

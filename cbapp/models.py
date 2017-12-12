@@ -124,8 +124,11 @@ class JudgeScore(db.Model):
                 False if they have not.
         """
 
-        return db.session.query(JudgeScore).filter_by(judge_id=judge_id, entry_id=entry_id).count() > 0
+        judged_entry = db.session.query(JudgeScore).filter_by(judge_id=judge_id, entry_id=entry_id).all()
+        if len(judged_entry) == 0:
+            return False
 
+        return True
 
 class Notification(db.Model):
     """
