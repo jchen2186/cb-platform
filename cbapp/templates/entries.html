@@ -48,7 +48,7 @@
     <div class="columns">
   		<div class="content column is-half">
   			<h2> {{entry.title }} </h2>
-          {% if session['role'] == 3 %}
+          {% if session['role'] == 'Judge' %}
             <a class="button is-info" href="/chorusbattle/{{ cb }}/judge/{{ entry.title }}"><span>Judge</span></a>
           {% endif %}
   			<p> {{ entry.owners }} </p>

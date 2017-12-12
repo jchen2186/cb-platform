@@ -115,26 +115,6 @@ def home():
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # get 10 most recent notifications
-    notif = Notification.get_notifications(6).paginate(1,5,False).items
-    subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
-    sub_cbs = []
-    for sub in subs:
-        cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
-        temp = {}
-        temp['name'] = cb.name
-        temp['id'] = cb.id
-
-        sub_cbs.append(temp)
-
-    return render_template('home.html', notifications=notif, subs=sub_cbs,
-        icon=getUserIcon((session['username'] if 'username' in session else None)))
-
-@app.route('/home/notifications/')
-@app.route('/home/notifications/<int:page>')
-def viewNotifications(page=1):
-    if 'username' not in session:
-        return redirect(url_for('login'))
     user = User.query.filter_by(username=session['username']).first()
     # check team invites
     team_invitesQuery = db.session.query(user_teams).filter_by(user_id=user.id, member_status='pending').all()
@@ -154,12 +134,29 @@ def viewNotifications(page=1):
                 'username': User.query.filter_by(id=team_request.user_id).first().username
                 })
     print(team_requests)
-    return render_template('home.html', team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    # get 10 most recent notifications
+    notif = Notification.get_notifications(user.id).paginate(1,5,False).items
+    subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    sub_cbs = []
+    for sub in subs:
+        cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
+        temp = {}
+        temp['name'] = cb.name
+        temp['id'] = cb.id
 
-#     notifs = Notification.get_notifications(6).paginate(page,10,False)
-#     notifications = notifs.items
-#     return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
-#          icon=getUserIcon((session['username'] if 'username' in session else None)))
+        sub_cbs.append(temp)
+    return render_template('home.html', notifications=notif, subs=sub_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+@app.route('/home/notifications/')
+@app.route('/home/notifications/<int:page>')
+def viewNotifications(page=1):
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    user = User.query.filter_by(username=session['username']).first().id
+    notifs = Notification.get_notifications(user).paginate(page,10,False)
+    notifications = notifs.items
+    return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
+         icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
