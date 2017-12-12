@@ -221,7 +221,12 @@ def createTeam(cb=None):
         print(form.members, '\n',form.members.entries,'\n',  form.members.data)
         newteam = Team(form.team_name.data, leader_id, teampic, cb)
         db.session.add(newteam)
+        # Add each team member to the user_teams table
+        for member in form.members.data:
+            db.session.add(UserTeam(member,newteam.id))
+        db.session.add(UserTeam(member,newteam.id))
         db.session.commit()
+
 
         return redirect(url_for('team', name=form.team_name.data))
 

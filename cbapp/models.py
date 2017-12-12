@@ -146,6 +146,21 @@ class User(db.Model):
         roles = ['Admin', 'Unassigned', 'Judge', 'Singer', 'Artist', 'Mixer', 'Animator']
         return roles[role - 1]
 
+    @staticmethod
+    def get_user_id(username):
+        """
+        Gets the user id of a particular user given the username
+
+        Args:
+          username (str): the username of the user
+
+        Returns:
+          int: the id of the user
+        """
+        user_id = db.session.query(User.id).filter(User.username == username)
+        return user_id
+
+
 
 class ChorusBattle(db.Model):
     """
@@ -298,7 +313,7 @@ class UserTeam(db.Model):
     team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False, primary_key = True)
     member_status = db.Column(db.String(100), default='pending')
 
-    def __init__(self, user_id, team_id):
+    def __init__(self, user_id, team_id, member_status='pending'):
         self.user_id = user_id
         self.team_id = team_id
-        self.member_status = 'pending'
+        self.member_status = member_status
