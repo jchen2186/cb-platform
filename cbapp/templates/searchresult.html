@@ -11,6 +11,28 @@
 </section>
 <br>
 <div class="container">
+	<!-- Search Results for Users -->
+	<div class="container">
+		<h2 class="title is-2">Users</h2>
+	</div>
+	<br>
+	{% for i in range(resultsUsers|length) %}
+	<div class="card">
+		<header class="card-header">
+			<p class="card-header-title">
+				<a href="/user/{{resultsUsers[i][0]}}">{{resultsUsers[i][0]}}</a>
+			</p>
+		</header>
+		<div class="card-content">
+			<div class="content">
+				{{resultsUsers[i][1]}}
+			</div>
+		</div>
+	</div>
+	<br>
+	{% endfor %}
+
+	<!-- Search Results for Chorus Battles -->
 	<div class="container">
 		<h2 class="title is-2">Chorus Battles</h2>
 	</div>
@@ -25,6 +47,7 @@
 		<div class="card-content">
 			<div class="content">
 				{{resultsCB[i][2]}}
+			</div>
 		</div>
 	</div>
 	<br>
