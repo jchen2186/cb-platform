@@ -92,7 +92,7 @@ CREATE TABLE subscriptions (
 );
 
 CREATE TABLE notifications(
-	id INTEGER,
+	id serial,
     notifier INTEGER REFERENCES users(id),
     chorusbattle_id INTEGER REFERENCES chorusbattles(id),
     message VARCHAR(200) NOT NULL,

@@ -116,3 +116,10 @@ class CreateEntryForm(FlaskForm):
     video_link = StringField('Link to the Chorus Battle Video', validators=[
         DataRequired('Please provide a link to your Chorus Battle Video')])
     submit = SubmitField('Submit Entry')
+
+class NotificationForm(FlaskForm):
+    """
+    WTForm for writing a notification.
+    """
+    message = TextAreaField("Message")
+    submit = SubmitField("Send")
