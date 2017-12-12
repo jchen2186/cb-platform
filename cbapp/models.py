@@ -26,6 +26,14 @@ chorusbattle_entries = db.Table('chorusbattle_entries',
 Association table showing chorus battlers for each entry
 """
 
+subscriptions = db.Table('subscriptions',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
+    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
+    db.PrimaryKeyConstraint('user_id','chorusbattle_id'))
+"""
+Association table showing chorus battle that users are subscribed to to show notifications.
+"""
+
 class UserTeam(db.Model):
     """
     Association object showing users on a particular team
@@ -39,22 +47,27 @@ class UserTeam(db.Model):
         self.team_id = team_id
         self.member_status = member_status
 
-# class JudgeScores(db.Model):
-#     """
-#     Association object that stores the judge's scores for an entry
-#     """
-#     judge_id =  
-#     entry_id = 
-#     vocals = 
-#     instrumental = 
+class JudgeScore(db.Model):
+    """
+    Association object that stores the judge's scores for an entry
+    """
+    __tablename__ = 'judge_scores'
+    judge_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, primary_key = True)
+    entry_id = db.Column(db.Integer, db.ForeignKey('entries.id'), nullable=False, primary_key = True)
+    vocals = db.Column(db.Integer, nullable=False)
+    instrumental = db.Column(db.Integer, nullable=False)
+    art = db.Column(db.Integer, nullable=False)
+    editing = db.Column(db.Integer, nullable=False)
+    transitions = db.Column(db.Integer, nullable=False)
 
-subscriptions = db.Table('subscriptions',
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable=False),
-    db.Column('chorusbattle_id', db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False),
-    db.PrimaryKeyConstraint('user_id','chorusbattle_id'))
-"""
-Association table showing chorus battle that users are subscribed to to show notifications.
-"""
+    def __init__(self,judge_id,entry_id,vocals,instrumental,art,editing,transitions):
+        self.judge_id = judge_id
+        self.entry_id = entry_id
+        self.vocals = vocals
+        self.instrumental = instrumental
+        self.art = art
+        self.editing = editing
+        self.transitions = transitions
 
 class Notification(db.Model):
     """
