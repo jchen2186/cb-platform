@@ -52,7 +52,6 @@
             <a class="button is-info" href="{{ url_for('requestTeam', teamID=team.id) }}">Request to Join</a>{% endif %}
           </h1>
           <h2 class="subtitle">
-            Team Motto
           </h2>
         </div>
       </div> <!-- columns -->
@@ -67,10 +66,6 @@
         <div class="notification" id="current-cb">
           <h2 class="title is-4">Current Chorus Battle!</h2>
           <p class="content">{% if chorusBattle %}<a class="no-underline" href="{{ url_for('chorusInfo', cb=team.chorusbattle) }}"><strong>{{ chorusBattle }}</strong></a>{% else%}none yet : ({% endif%}</p>
-        </div>
-        <div class="notification is-info" id="notices">
-          <h2 class="title is-4">Notices</h2>
-          <p class="content">[Media Posts]</p>
         </div>
         <div class="notification" id="about">
           <h2 class="title is-4">About {% if currentUser == team.leader_id %}<button class="button is-small is-info" onclick="editAbout()">Edit</button>{% endif %}</h2>
