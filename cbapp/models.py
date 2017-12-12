@@ -5,7 +5,7 @@ Contains classes for the objects that connect to our Postgres database.
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-from sqlalchemy import text
+from sqlalchemy import desc
 from werkzeug import generate_password_hash, check_password_hash
 from flask import session
 
@@ -76,12 +76,14 @@ class Notification(db.Model):
         """
         Gets a query object that gets all the notifications for subscription of a user_id.
         """
-        sql_query = """select * from notifications 
-            where chorusbattle_id in 
-            (select chorusbattle_id from subscriptions where user_id="""+str(user_id)+""") order by date_posted DESC;"""
-        subs = db.session.query(Notification).from_statement(text(sql_query))
-        print(subs)
+        # sql_query = """select * from notifications 
+        #     where chorusbattle_id in 
+        #     (select chorusbattle_id from subscriptions where user_id="""+str(user_id)+""") order by date_posted DESC;"""
+        # subs = db.session.query(Notification).from_statement(text(sql_query))
+        # print(subs)
 
+        subs = db.session.query(Notification).join(subscriptions, Notification.chorusbattle_id == subscriptions.c.chorusbattle_id).filter_by(user_id=user_id).order_by(Notification.date_posted.desc())
+        print(subs)
         return subs
 
 class User(db.Model):

@@ -113,7 +113,7 @@ def home():
         return redirect(url_for('login'))
 
     # get 10 most recent notifications
-    notif = Notification.get_notifications(6)
+    notif = Notification.get_notifications(6).paginate(1,5,False).items
 
     return render_template('home.html', notifications=notif,
         icon=getUserIcon((session['username'] if 'username' in session else None)))
