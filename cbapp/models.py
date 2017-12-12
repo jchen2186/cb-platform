@@ -5,6 +5,7 @@ Contains classes for the objects that connect to our Postgres database.
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
+from sqlalchemy import desc
 from werkzeug import generate_password_hash, check_password_hash
 from flask import session
 
@@ -105,15 +106,41 @@ class Notification(db.Model):
     """
     __tablename__='notifications'
     id = db.Column(db.Integer, primary_key= True)
-    notifier = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False)
-    message = db.Column(db.String(200))
-    date_posted = db.Column(db.DateTime(timezone=True), default=func.now())
+    notifier = db.Column(db.Integer, db.ForeignKey('users.id'),nullable=False) # User who made the notification.
+    chorusbattle_id = db.Column(db.Integer, db.ForeignKey('chorusbattles.id'), nullable=False) # Chorus battle that the notification belongs to.
+    message = db.Column(db.String(200)) # The message in the notification.
+    date_posted = db.Column(db.DateTime(timezone=True), default=func.now()) # Date posted.
 
     def __init__(self, notifier, chorusbattle_id, message):
         self.notifier=notifier
         self.chorusbattle_id=chorusbattle_id
         self.message=message
+
+    @staticmethod
+    def is_subscribed(user_id, cb):
+        """
+        Checks if a user is subscribed to a cb.
+        """
+        subs = db.session.query(subscriptions).filter_by(user_id=user_id, chorusbattle_id=cb).all()
+        if len(subs) == 0:
+            return False
+
+        return True
+
+    @staticmethod
+    def get_notifications(user_id):
+        """
+        Gets a query object that gets all the notifications for subscription of a user_id.
+        """
+        # sql_query = """select * from notifications 
+        #     where chorusbattle_id in 
+        #     (select chorusbattle_id from subscriptions where user_id="""+str(user_id)+""") order by date_posted DESC;"""
+        # subs = db.session.query(Notification).from_statement(text(sql_query))
+        # print(subs)
+
+        subs = db.session.query(Notification).join(subscriptions, Notification.chorusbattle_id == subscriptions.c.chorusbattle_id).filter_by(user_id=user_id).order_by(Notification.date_posted.desc())
+        print(subs)
+        return subs
 
 class User(db.Model):
     """
@@ -130,6 +157,7 @@ class User(db.Model):
     user_icon = db.Column(db.LargeBinary) #: Icon for the user.
     description = db.Column(db.String(500), default="No description yet!") # Description for the user.
     chorusbattles = db.relationship('ChorusBattle', secondary='cb_users', backref='users') #: A history of all the chorus btatles the user has participated in.
+    current_status = db.Column(db.String(500), default="No current status!") # Current Status for the user.
     entries = db.relationship('Entry', secondary=chorusbattle_entries, backref='users') #: All the entries the user has worked on.
     teams = db.relationship('Team', secondary=user_teams, backref='users') #: All the teams the users have joined.
     subscriptions = db.relationship('ChorusBattle', secondary=subscriptions, backref='subscriber')
@@ -262,6 +290,8 @@ class User(db.Model):
         user = db.session.query(User).filter(User.username == username).first()
         return user
 
+    def get_id_by_username(username):
+        return User.query.filter_by(username=username).first().id
 
 class ChorusBattle(db.Model):
     """

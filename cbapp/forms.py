@@ -194,3 +194,10 @@ class JudgeEntryForm(FlaskForm):
         DataRequired('Please select a score for the transitions.')])
     transitions_comment = TextAreaField()
     submit = SubmitField('Submit Entry')
+
+class NotificationForm(FlaskForm):
+    """
+    WTForm for writing a notification.
+    """
+    message = TextAreaField("Message")
+    submit = SubmitField("Send")
