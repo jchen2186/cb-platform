@@ -251,6 +251,11 @@ def createTeam(cb=None):
         db.session.commit()
         # invite leader
         newteam.member.append(leader)
+        db.session.commit()
+        db.engine.execute("UPDATE user_teams " + \
+            "SET member_status = 'member'" + \
+            "WHERE user_id=" + str(leader.id) + " and team_id=" + str(newteam.id) + ";")
+        flash('You have successfully created a team.')
         # invite members
         for member in form.members.data:
             invitee = User.query.filter_by(username=member).first()
