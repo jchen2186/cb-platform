@@ -9,13 +9,14 @@ our app works as intended.
 
 import unittest
 from unittest.mock import patch, DEFAULT, Mock
-# from bs4 import BeautifulSoup
 import cbapp
 import os.path as op
 import os
+from flask_testing import TestCase
+import flask # for test_request_context
 
-class TestCBAppUnit(unittest.TestCase):
-    """Class of unit tests for the chorus battle app."""
+class TestCBAppUnitFilesExist(unittest.TestCase):
+    """Class of unit tests for the chorus battle app that checks if files exist."""
     
     def setUp(self):
         """ Set up class for testing. """
@@ -260,52 +261,171 @@ class TestCBAppUnit(unittest.TestCase):
                                         'userprofile.html'))
         self.assertTrue(file_exists)
 
+class TestCBAppUnitRoutesExist(unittest.TestCase):
+    """Class of unit tests for the chorus battle app that checks if routes exist."""
+    
+    def setUp(self):
+        """ Set up class for testing. """
+        cbapp.app.config['TESTING'] = True
+        self.app = cbapp.app.test_client()
 
-    # def test_login_gets_login_template(self):
-    #     """Checks if the login route exists. The test passes if it does."""
-    #     with patch.multiple("cbapp.routes",
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.login()
-    #         render_template = mock_functions["render_template"]
+    def test_index_get_index_template(self):
+        """ Checks if the index route exists. """
+        with cbapp.app.test_request_context('/', method='GET'):
+            self.assertEqual(flask.request.path, '/')
+            self.assertEqual(flask.request.method, 'GET')
 
-    #         # session['username'] = None
+            with patch.multiple('cbapp.routes',
+                                request=DEFAULT,
+                                render_template=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT) as mock_functions:
+                cbapp.routes.index()
+                # Check if render_template is called when index route is visited
+                render_template = mock_functions['render_template']
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+                self.assertTrue(render_template.called)
 
-    #         #makes sure we are rendering a template on the login route
-    #         self.assertTrue(render_template.called)
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         #makes sure we are rendering the correct template on the login route
-    #         self.assertEqual(file_name, "login.html")
+            # Check if the template rendered is index.html
+            call_args = render_template.call_args
+            file_name = call_args[0][0]
+            self.assertEqual(file_name, "index.html")
 
-    # def test_index_get_index_template(self):
-    #     """Checks if the index route exists. The test passes if it does."""
-    #     # Create mock functions
-    #     with patch.multiple('cbapp.routes',
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.index()
-    #         # Check if render_template is called when index route is visited
-    #         render_template = mock_functions['render_template']
-    #         self.assertTrue(render_template.called)
+    def test_login_get_login_template(self):
+        """Checks if the login route exists when the request method is GET.
+        The user can't already be logged in."""
+        with cbapp.app.test_request_context('/login/', method='GET'):
+            self.assertEqual(flask.request.path, '/login/')
+            self.assertEqual(flask.request.method, 'GET')
 
-    #         # Check if the template rendered is index.html
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         self.assertEqual(file_name, "index.html")
+            with patch.multiple("cbapp.routes",
+                                # request=DEFAULT,
+                                render_template=DEFAULT,
+                                # validate=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT,
+                                flash=DEFAULT) as mock_functions:
+                cbapp.routes.login()
+                render_template = mock_functions["render_template"]
+                # validate = mock_functions['validate']
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+                flash = mock_functions['flash']
 
-    # def test_signup_get_singup_template(self):
-    #     """Checks if the signup route exists. The test passes if it does."""
-    #     with patch.multiple("cbapp.routes",
-    #                         request=DEFAULT,
-    #                         render_template=DEFAULT) as mock_functions:
-    #         cbapp.routes.signup()
-    #         render_template = mock_functions["render_template"]
-    #         self.assertTrue(render_template.called)
-    #         call_args = render_template.call_args
-    #         file_name = call_args[0][0]
-    #         self.assertEqual(file_name, "signup.html")
+                # makes sure we are rendering a template on the login route
+                self.assertTrue(render_template.called)
+                call_args = render_template.call_args
+                file_name = call_args[0][0]
+                # makes sure we are rendering the correct template on the login route
+                self.assertEqual(file_name, "login.html")
 
+    def test_login_post_login_template(self):
+        """Checks if the login route exists when the request method is POST,
+        but the form does not validate.
+        The user can't already be logged in."""
+        with cbapp.app.test_request_context('/login/', method='POST'):
+            self.assertEqual(flask.request.path, '/login/')
+            self.assertEqual(flask.request.method, 'POST')
+
+            with patch.multiple("cbapp.routes",
+                                # request=DEFAULT,
+                                render_template=DEFAULT,
+                                # validate=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT,
+                                flash=DEFAULT) as mock_functions:
+                cbapp.routes.login()
+                render_template = mock_functions["render_template"]
+                # validate = mock_functions['validate']
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+                flash = mock_functions['flash']
+
+                # makes sure we are rendering a template on the login route
+                self.assertTrue(render_template.called)
+                call_args = render_template.call_args
+                file_name = call_args[0][0]
+                # makes sure we are rendering the correct template on the login route
+                self.assertEqual(file_name, "login.html")
+
+    def test_signup_get_signup_template(self):
+        """Checks if the signup route exists when the request method is GET. The test passes if it does.
+        The user can't already be logged in."""
+        with cbapp.app.test_request_context('/signup/', method='GET'):
+            self.assertEqual(flask.request.path, '/signup/')
+            self.assertEqual(flask.request.method, 'GET')
+
+            with patch.multiple("cbapp.routes",
+                                # request=DEFAULT,
+                                render_template=DEFAULT,
+                                # validate=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT,
+                                flash=DEFAULT) as mock_functions:
+                cbapp.routes.signup()
+                render_template = mock_functions["render_template"]
+                # validate = mock_functions['validate']
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+                flash = mock_functions['flash']
+
+                self.assertTrue(render_template.called)
+                call_args = render_template.call_args
+                file_name = call_args[0][0]
+                self.assertEqual(file_name, "signup.html")
+
+    def test_signup_post_signup_template(self):
+        """Checks if the signup route exists when the request method is POST. The test passes if it does.
+        The user can't already be logged in."""
+        with cbapp.app.test_request_context('/signup/', method='POST'):
+            self.assertEqual(flask.request.path, '/signup/')
+            self.assertEqual(flask.request.method, 'POST')
+
+            with patch.multiple("cbapp.routes",
+                                # request=DEFAULT,
+                                render_template=DEFAULT,
+                                # validate=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT,
+                                flash=DEFAULT) as mock_functions:
+                cbapp.routes.signup()
+                render_template = mock_functions["render_template"]
+                # validate = mock_functions['validate']
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+                flash = mock_functions['flash']
+
+                self.assertTrue(render_template.called)
+                call_args = render_template.call_args
+                file_name = call_args[0][0]
+                self.assertEqual(file_name, "signup.html")
+    
+    def test_home_redirect_login_template(self):
+        """Checks if the home route redirects the user to login when the user is not logged in.
+        The test passes if it does."""
+        with cbapp.app.test_request_context('/home/', method='GET'):
+            self.assertEqual(flask.request.path, '/home/')
+            self.assertEqual(flask.request.method, 'GET')
+
+            with patch.multiple("cbapp.routes",
+                                request=DEFAULT,
+                                render_template=DEFAULT,
+                                redirect=DEFAULT,
+                                url_for=DEFAULT) as mock_functions:
+                cbapp.routes.home()
+                render_template = mock_functions["render_template"]
+                redirect = mock_functions['redirect']
+                url_for = mock_functions['url_for']
+
+                self.assertTrue(redirect.called)
+                self.assertTrue(url_for.called)
+
+                call_args = url_for.call_args
+                file_name = call_args[0][0]
+                self.assertEqual(file_name, "login")
+
+    # # need to fix this so it generates home when a user is logged in
     # def test_home_get_home_template(self):
     #     """Checks if the home route exists. The test passes if it does."""
     #     with patch.multiple("cbapp.routes",
@@ -413,3 +533,14 @@ class TestCBAppUnit(unittest.TestCase):
     #         call_args = render_template.call_args
     #         file_name = call_args[0][0]
     #         self.assertEqual(file_name, "faq.html")
+
+
+class TestCBAppUnitModels(unittest.TestCase):
+    """Class of unit tests for the chorus battle app that checks models work."""
+    
+    def setUp(self):
+        """ Set up class for testing. """
+        cbapp.app.config['TESTING'] = True
+        self.app = cbapp.app.test_client()
+
+
