@@ -38,7 +38,7 @@
 					<!-- <div id="user-icon"> -->
 						<!-- <img src=""> -->
 						<a href="{{ url_for('getUserProfile', username=session['username']) }}">
-      						<img class="image is-48x48" id="user_icon" src="{% if icon %}data:image/jpeg;charset=utf-8;base64, {{ icon }}{% else %}url_for('static', filename='img/BBB.png{% endif %}" />
+      						<img class="image is-48x48" id="user_icon" src="{% if icon %}data:image/jpeg;charset=utf-8;base64, {{ icon }}{% else %}{{ url_for('static', filename='img/BBB.png }}{% endif %}" />
       					</a>
 						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
 
