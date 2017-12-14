@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en-US">
 <head>
   <meta charset="utf-8">
@@ -37,11 +37,9 @@
 					{% if session['username'] %}
 					<!-- <div id="user-icon"> -->
 						<!-- <img src=""> -->
-						{% if icon %}
-							<a href="{{ url_for('getUserProfile', username=session['username']) }}">
-          						<img class="image is-48x48" id="user_icon" src="data:image/jpeg;charset=utf-8;base64, {{ icon }}" />
-          					</a>
-        				{% endif %}
+						<a href="{{ url_for('getUserProfile', username=session['username']) }}">
+      						<img class="image is-48x48" id="user_icon" src="{% if icon %}data:image/jpeg;charset=utf-8;base64, {{ icon }}{% else %}{{ url_for('static', filename='img/BBB.png') }}{% endif %}" />
+      					</a>
 						<a class="navbar-item" href="{{ url_for('logout') }}">Log Out</a>
 
 					<!-- </div> -->

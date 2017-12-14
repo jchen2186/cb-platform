@@ -268,7 +268,7 @@ def chorusEntries(cb=None):
         user_id = User.get_id_by_username(session['username'])
         subbed= Notification.is_subscribed(user_id, cb)
 
-    return render_template('entries.html', subbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('entries.html', entrysubbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
 def createEntry(cb=None):
@@ -319,7 +319,13 @@ def team(teamID=None):
             'user': copy.deepcopy(User.query.filter_by(id=member.user_id).first())
         }
         userObject['role'] = UserRole.query.filter_by(id=userObject['user'].role_id).first().role_title.capitalize()
-        userObject['user_icon'] = b64encode(userObject['user'].user_icon).decode('utf-8')
+        
+        user_icon = userObject['user'].user_icon
+        if user_icon:
+            userObject['user_icon'] = b64encode(user_icon).decode('utf-8')
+        else:
+            userObject['user_icon'] = None
+
         team_members.append(userObject)
     if team:
         team_logo = None
