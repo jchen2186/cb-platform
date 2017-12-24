@@ -22,19 +22,20 @@
           	My Chorus Battles
         	</h2>
         	<article class="media">
-          	<figure class="media-left">
-          		<p class="image is-64x64">
-                    <img src="https://bulma.io/images/placeholders/128x128.png">
-                </p>
-            </figure>
             <div class="media-content">
+              {% if my_cbs %}
+                {% for cb in my_cbs%}
             	<div class="content">
                 	<p>
-                    	<strong>Serendipity CB</strong>
-                        <br>
-                        <small>Judge</small>
+                    	<a href="{{ url_for('chorusInfo', cb=cb.id )}}"><strong>{{ cb.name }}</strong></a>
                 	</p>
                 </div>
+                {% endfor %}
+              {% else %}
+              <div class="content">
+                <p> You are not part of any chorus battles</p>
+              </div>
+              {% endif %}
             </div>
           </article>               
           <br>
