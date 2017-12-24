@@ -4,22 +4,26 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
+import os
+import urllib.parse
+import copy
+import datetime
+from base64 import b64encode
 from sqlalchemy.sql.expression import func
 from flask import flash, render_template, request, session, redirect, url_for
 from cbapp import app
-from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm, CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
-from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams, Notification, subscriptions, JudgeScore, judges
-import urllib.parse
-import os
-from base64 import b64encode
-import copy
-import datetime
+from .forms import SignupForm, LoginForm, CreateChorusBattleForm, CreateEntryForm,\
+CreateRoundForm, CreateTeamForm, JudgeEntryForm, InviteTeamForm, NotificationForm
+from .models import db, User, ChorusBattle, UserRole, Entry, Round, Team, user_teams,\
+Notification, subscriptions, JudgeScore, judges
 
 # pylint: disable=C0103
+# pylint: disable=no-member
 
 # connect app to the postgresql database (local to our machines)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://postgres:1@localhost:5432/cbapp')
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL','postgresql://localhost/cbapp')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL',
+                                                       'postgresql://postgres:1@localhost:5432/cbapp')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://localhost/cbapp')
 
 db.init_app(app)
 app.secret_key = 'development-key'
@@ -117,7 +121,8 @@ def home():
 
     user = User.query.filter_by(username=session['username']).first()
     # check team invites
-    team_invitesQuery = db.session.query(user_teams).filter_by(user_id=user.id, member_status='pending').all()
+    team_invitesQuery = db.session.query(user_teams).filter_by(user_id=user.id,
+                                                               member_status='pending').all()
     team_invites = []
     for team in team_invitesQuery:
         team_invites.append(Team.query.filter_by(id=team.team_id).first())
@@ -125,7 +130,8 @@ def home():
     owned_teams = Team.query.filter_by(leader_id=user.id).all()
     team_requests = []
     for owned_team in owned_teams:
-        team_requestsQuery = db.session.query(user_teams).filter_by(team_id=owned_team.id, member_status='request').all()
+        team_requestsQuery = db.session.query(user_teams).filter_by(team_id=owned_team.id,
+                                                                    member_status='request').all()
         for team_request in team_requestsQuery:
             team_requests.append({
                 'id': owned_team.id,
@@ -135,11 +141,11 @@ def home():
                 })
     # print(team_requests)
     # get 10 most recent notifications
-    notif = Notification.get_notifications(user.id).paginate(1,5,False).items
+    notif = Notification.get_notifications(user.id).paginate(1, 5, False).items
     subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
     sub_cbs = []
 
-    # get the teams the user is associated with 
+    # get the teams the user is associated with
     team_cbs=db.session.query(user_teams).filter_by(user_id=User.get_id_by_username(session['username'])).all()
     judge_cbs = db.session.query(judges).filter_by(user_id=User.get_id_by_username(session['username'])).all()
     my_cbs_id = []
@@ -176,7 +182,11 @@ def home():
 
     recs = ChorusBattle.query.order_by(func.random()).limit(3).all()
     print(recs)
-    return render_template('home.html', recs=recs, notifications=notif, subs=sub_cbs, my_cbs=my_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('home.html', recs=recs, notifications=notif,
+                           subs=sub_cbs, my_cbs=my_cbs, team_requests=team_requests,
+                           team_invites=team_invites,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
 @app.route('/home/notifications/')
 @app.route('/home/notifications/<int:page>')
@@ -184,10 +194,12 @@ def viewNotifications(page=1):
     if 'username' not in session:
         return redirect(url_for('login'))
     user = User.query.filter_by(username=session['username']).first().id
-    notifs = Notification.get_notifications(user).paginate(page,10,False)
+    notifs = Notification.get_notifications(user).paginate(page, 10, False)
     notifications = notifs.items
-    return render_template('viewNotifications.html', notifications=notifications, notifs=notifs,
-         icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('viewNotifications.html', notifications=notifications,
+                           notifs=notifs,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/', methods=['GET'])
 def chorusInfo(cb=None):
@@ -210,7 +222,7 @@ def chorusInfo(cb=None):
         roundQuery = Round.query.filter_by(chorusbattle=cb, round_number=rd).first()
         deadline = roundQuery.deadline
         round_deadlines.append(deadline)
-    
+
     for team in teams_query:
         temp = {}
         temp["id"] = team.id
@@ -219,9 +231,9 @@ def chorusInfo(cb=None):
             temp["team_logo"] = b64encode(team.team_logo).decode('utf-8')
 
         teams.append(temp)
-    
+
     for judge in judges_query:
-        temp={}
+        temp = {}
         temp["user_id"] = judge.user_id
         temp['name'] = User.query.filter_by(id=judge.user_id).first().username
 
@@ -232,25 +244,26 @@ def chorusInfo(cb=None):
         if 'username' in session:
             current_user = User.query.filter_by(username=session['username']).first()
             user_id = current_user.id
-            subbed= Notification.is_subscribed(user_id, cb)
+            subbed = Notification.is_subscribed(user_id, cb)
 
-        return render_template('chorusinfo.html', cb=row, 
-            icon=getUserIcon((session['username'] if 'username' in session else None)),
-            deadlines=round_deadlines,
-            maxRound = maxRound,
-            teams=teams,
-            subbed=subbed,
-            judges=judges_list)
+        return render_template('chorusinfo.html', cb=row,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)),
+                               deadlines=round_deadlines,
+                               maxRound=maxRound,
+                               teams=teams,
+                               subbed=subbed,
+                               judges=judges_list)
 
 @app.route('/chorusbattle/<cb>/subscribe')
 def subscribe(cb=None):
     if 'username' not in session:
-         return redirect(url_for('login'))
+        return redirect(url_for('login'))
 
     current_user = User.query.filter_by(username=session['username']).first()
     user_id = current_user.id
 
-    if not Notification.is_subscribed(user_id,cb):
+    if not Notification.is_subscribed(user_id, cb):
         this_cb = ChorusBattle.query.filter_by(id=cb).first()
         current_user.subscriptions.append(this_cb)
         db.session.commit()
@@ -287,15 +300,20 @@ def chorusEntries(cb=None):
 
         entries = Entry.query.filter_by(chorusbattle=cb, round_number=rd).all()
         for entry in entries:
-            currRound.append({'id': entry.id, 'title':entry.title, 'owners':Team.query.filter_by(id=entry.team_id).first().team_name, 'description':entry.description, 'video_link':entry.video_link})
+            currRound.append({'id': entry.id, 'title':entry.title,
+                              'owners':Team.query.filter_by(id=entry.team_id).first().team_name,
+                              'description':entry.description, 'video_link':entry.video_link})
         rounds.append(currRound)
-    
+
     subbed = False
     if 'username' in session:
         user_id = User.get_id_by_username(session['username'])
-        subbed= Notification.is_subscribed(user_id, cb)
+        subbed = Notification.is_subscribed(user_id, cb)
 
-    return render_template('entries.html', entrysubbed=subbed, cb=row, maxRound=maxRound, roundCount=roundCount, rounds=rounds, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('entries.html', entrysubbed=subbed, cb=row,
+                           maxRound=maxRound, roundCount=roundCount, rounds=rounds,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/entries/create/', methods=['GET', 'POST'])
 def createEntry(cb=None):
@@ -308,7 +326,9 @@ def createEntry(cb=None):
     if request.method == 'POST':
         if not form.validate():
             # we need to update the entries table on postgres
-            return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+            return render_template('createentry.html', cb=cb, rd=rd, form=form,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
         newEntry = Entry(form.team_name.data, form.title.data, form.description.data,
                          form.video_link.data, cb, rd)
 
@@ -318,7 +338,9 @@ def createEntry(cb=None):
         return redirect(url_for('chorusEntries', cb=newEntry.chorusbattle))
 
     elif request.method == 'GET':
-        return render_template('createentry.html', cb=cb, rd=rd, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('createentry.html', cb=cb, rd=rd, form=form,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
 
 @app.route('/team/<teamID>/', methods=['GET', 'POST'])
 def team(teamID=None):
@@ -339,14 +361,15 @@ def team(teamID=None):
             flash('You have successfully changed the about section')
         db.session.commit()
     form = InviteTeamForm()
-    team_users = db.session.query(user_teams).filter_by(team_id=teamID, member_status='member').all()
+    team_users = db.session.query(user_teams).filter_by(team_id=teamID,
+                                                        member_status='member').all()
     team_members = []
     for member in team_users:
         userObject = {
             'user': copy.deepcopy(User.query.filter_by(id=member.user_id).first())
         }
         userObject['role'] = UserRole.query.filter_by(id=userObject['user'].role_id).first().role_title.capitalize()
-        
+
         user_icon = userObject['user'].user_icon
         if user_icon:
             userObject['user_icon'] = b64encode(user_icon).decode('utf-8')
@@ -360,15 +383,26 @@ def team(teamID=None):
             team_logo = b64encode(team.team_logo).decode('utf-8')
         chorusBattle = None
         chorusBattle = ChorusBattle.query.filter_by(id=team.chorusbattle).first().name
-        currentUser = User.query.filter_by(username=(session['username'] if 'username' in session else None)).first()
+        currentUser = User.query.filter_by(username=(session['username']\
+                                            if 'username' in session else None)).first()
         if currentUser:
-            team_user = db.session.query(user_teams).filter_by(user_id=currentUser.id, team_id=teamID).first()
+            team_user = db.session.query(user_teams).filter_by(user_id=currentUser.id,
+                                                               team_id=teamID).first()
             print(team_user)
             if team_user:
                 print(team_user.member_status)
             currentUser = currentUser.id
-            return render_template('team.html', currentUser = currentUser, team_user=team_user, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
-        return render_template('team.html', currentUser = currentUser, team_user=None, form=form, chorusBattle=chorusBattle, team=team, team_logo=team_logo, team_members=team_members, icon=getUserIcon((session['username'] if 'username' in session else None)))
+            return render_template('team.html', currentUser=currentUser,
+                                   team_user=team_user, form=form,
+                                   chorusBattle=chorusBattle, team=team,
+                                   team_logo=team_logo, team_members=team_members,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
+        return render_template('team.html', currentUser=currentUser, team_user=None,
+                               form=form, chorusBattle=chorusBattle, team=team,
+                               team_logo=team_logo, team_members=team_members,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
     return redirect(request.referrer or url_for('home'))
 
 @app.route('/chorusbattle/<cb>/createteam/', methods=['GET', 'POST'])
@@ -379,8 +413,8 @@ def createTeam(cb=None):
     """
     deadline = ChorusBattle.query.filter_by(id=cb).first().start_date
     if datetime.datetime.now() > deadline:
-        print(datetime.datetime.now(),'>',deadline)
-        print(type(datetime.datetime.now()),'>',type(deadline))
+        print(datetime.datetime.now(), '>', deadline)
+        print(type(datetime.datetime.now()), '>', type(deadline))
         flash('Sorry, the deadline for joining this chorus battle has passed.')
         return redirect(request.referrer or url_for('chorusInfo', cb=cb))
     chorusrow = ChorusBattle.query.filter_by(id=cb).first()
@@ -393,23 +427,27 @@ def createTeam(cb=None):
 
     form = CreateTeamForm()
     if request.method == 'POST':
-        
         if not form.validate():
-            return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
-        
+            return render_template('createteam.html', form=form, cb=cb,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
+
         # check if team name exists in competition
         teams = Team.query.filter_by(team_name=form.team_name.data).all()
         for team in teams:
-            print('team',team.team_name,'in',str(team.chorusbattle))
-            print('new',form.team_name.data,'in',cb)
+            print('team', team.team_name, 'in', str(team.chorusbattle))
+            print('new', form.team_name.data, 'in', cb)
             if str(team.chorusbattle) == cb:
                 flash('Team name is already registered in this chorus battle')
-                return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+                return render_template('createteam.html',
+                                       form=form, cb=cb,
+                                       icon=getUserIcon((session['username']\
+                                        if 'username' in session else None)))
         teampic = None
         if form.teampic.data:
             teampic = request.files.getlist('teampic')[0].read()
 
-        print(form.members, '\n',form.members.entries,'\n',  form.members.data)
+        print(form.members, '\n', form.members.entries, '\n', form.members.data)
         # create team
         newteam = Team(form.team_name.data, leader.id, teampic, cb)
         db.session.add(newteam)
@@ -426,7 +464,8 @@ def createTeam(cb=None):
             invitee = User.query.filter_by(username=member).first()
             if invitee:
                 checkTeams = []
-                teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id, member_status='member').all()
+                teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id,
+                                                                   member_status='member').all()
                 for t in teamQuery:
                     checkTeams.append(t.team_id)
                 in_team = False
@@ -441,7 +480,9 @@ def createTeam(cb=None):
                 flash(member + ' is not a registered user.')
         db.session.commit()
         return redirect(url_for('team', teamID=newteam.id))
-    return render_template('createteam.html', form=form, cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('createteam.html', form=form, cb=cb,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 @app.route('/team/<teamID>/invite/', methods=['GET', 'POST'])
 def inviteTeam(teamID=None):
     """
@@ -454,13 +495,15 @@ def inviteTeam(teamID=None):
         if User.query.filter_by(username=session['username']).first().id == team.leader_id:
             invitee = User.query.filter_by(username=form.username.data).first()
             if invitee:
-                team_user = db.session.query(user_teams).filter_by(user_id=invitee.id, team_id=teamID).first()
+                team_user = db.session.query(user_teams).filter_by(user_id=invitee.id,
+                                                                   team_id=teamID).first()
                 if team_user:
                     flash('You have already invited ' + invitee.username + '.')
                 else:
                     chorusrow = ChorusBattle.query.filter_by(id=team.chorusbattle).first()
                     checkTeams = []
-                    teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id, member_status='member').all()
+                    teamQuery = db.session.query(user_teams).filter_by(user_id=invitee.id,
+                                                                       member_status='member').all()
                     for t in teamQuery:
                         checkTeams.append(t.team_id)
                     in_team = False
@@ -508,7 +551,8 @@ def acceptTeam(teamID=None, userID=None):
     """
     user = User.query.filter_by(id=userID).first()
     if user:
-        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID, member_status='request').first()
+        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID,
+                                                           member_status='request').first()
         if team_user:
             db.engine.execute("UPDATE user_teams " + \
                 "SET member_status = 'pending'" + \
@@ -523,11 +567,13 @@ def acceptTeam(teamID=None, userID=None):
 @app.route('/team/<teamID>/reject/<userID>/', methods=['GET'])
 def rejectTeam(teamID=None, userID=None):
     """
-    The route /team/<teamID>/reject/ allows team leaders to reject users that requested to join.
+    The route /team/<teamID>/reject/ allows team leaders to reject users that
+    requested to join.
     """
     user = User.query.filter_by(id=userID).first()
     if user:
-        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID, member_status='request').first()
+        team_user = db.session.query(user_teams).filter_by(user_id=userID, team_id=teamID,
+                                                           member_status='request').first()
         if team_user:
             db.engine.execute("UPDATE user_teams " + \
                 "SET member_status = 'rejected'" + \
@@ -595,7 +641,9 @@ def chorusBattleAll():
                      'link': urllib.parse.quote('/chorusbattle/' + str(cb.id))})
 
 
-    return render_template("chorusbattles.html", info=info, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template("chorusbattles.html", info=info,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
 @app.route('/create/chorusbattle/', methods=['GET', 'POST'])
 def createChorusBattle():
@@ -614,25 +662,29 @@ def createChorusBattle():
 
     if request.method == 'POST':
         if not form.validate():
-            return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))    
+            return render_template('createchorusbattle.html', form=form,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
         creator_id = User.query.filter_by(username=session['username']).first().id
         # Create a new chorus battle
         new_cb = ChorusBattle(form.name.data, form.description.data,
-                             form.rules.data, form.prizes.data, form.video_link.data, 
-                             form.start_date.data, form.no_of_rounds.data, creator_id)
-        
+                              form.rules.data, form.prizes.data, form.video_link.data,
+                              form.start_date.data, form.no_of_rounds.data, creator_id)
+
         # Add judges to chorus battle
         for judge in form.judges:
             team_judge = User.query.filter_by(username=judge.data).first()
             new_cb.judges.append(team_judge)
-        
+
         db.session.add(new_cb)
         db.session.commit()
 
         return redirect(url_for('chorusInfo', cb=new_cb.id))
 
     elif request.method == 'GET':
-        return render_template('createchorusbattle.html', form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('createchorusbattle.html', form=form,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
 
 @app.route('/chorusbattle/<cb>/judge/notify', methods=['GET', 'POST'])
 def writeNotification(cb=None):
@@ -643,13 +695,14 @@ def writeNotification(cb=None):
     form = NotificationForm()
 
     if request.method == "GET":
-        
-        return render_template('notify.html', cb=cb, icon=getUserIcon((session['username'] if 'username' in session else None)), form=form)
+        return render_template('notify.html', cb=cb,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)), form=form)
     elif request.method == "POST":
         message = form.message.data
         user_id = User.get_id_by_username(session['username'])
 
-        newNotif= Notification(user_id,cb,message)
+        newNotif = Notification(user_id, cb, message)
 
         db.session.add(newNotif)
         db.session.commit()
@@ -676,29 +729,40 @@ def judgeEntry(cb=None, entry=None):
     has_judged_before = JudgeScore.has_judged_before(judge_id, int(entry))
     if request.method == 'GET':
         if has_judged_before:
-            judged_entry = JudgeScore.query.filter_by(judge_id=judge_id, entry_id=entry).first()
-            return render_template("judgingtool.html", has_judged_before=True, judged_entry=judged_entry, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
-                                icon=getUserIcon((session['username'] if 'username' in session else None)))
-        else:
-            return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
-                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+            judged_entry = JudgeScore.query.filter_by(judge_id=judge_id,
+                                                      entry_id=entry).first()
+            return render_template("judgingtool.html", has_judged_before=True,
+                                   judged_entry=judged_entry,
+                                   chorusbattle=chorusbattle_info,
+                                   entry=entry_info, form=form,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
+        return render_template("judgingtool.html", has_judged_before=False,
+                               chorusbattle=chorusbattle_info,
+                               entry=entry_info, form=form,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
     elif request.method == 'POST':
 
         if form.validate():
             judge_id = User.get_user_id(session['username'])
-            new_judge_score = JudgeScore(judge_id,entry,
-                                        form.vocals.data,form.vocals_comment.data,
-                                        form.instrumental.data,form.instrumental_comment.data,
-                                        form.art.data,form.art_comment.data,
-                                        form.editing.data,form.editing_comment.data,
-                                        form.transitions.data,form.transitions_comment.data)
+            new_judge_score = JudgeScore(judge_id, entry,
+                                         form.vocals.data, form.vocals_comment.data,
+                                         form.instrumental.data,
+                                         form.instrumental_comment.data,
+                                         form.art.data, form.art_comment.data,
+                                         form.editing.data, form.editing_comment.data,
+                                         form.transitions.data,
+                                         form.transitions_comment.data)
             db.session.add(new_judge_score)
             db.session.commit()
 
             return redirect(url_for('chorusEntries', cb=cb))
-        else:
-             return render_template("judgingtool.html", has_judged_before=False, chorusbattle=chorusbattle_info, entry=entry_info, form=form, 
-                                icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template("judgingtool.html", has_judged_before=False,
+                               chorusbattle=chorusbattle_info,
+                               entry=entry_info, form=form,
+                               icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
 
 
 @app.route('/chorusbattle/<cb>/entries/createround/', methods=['GET', 'POST'])
@@ -716,7 +780,9 @@ def createRound(cb=None):
         print(dir(form.deadline.widget))
         print((form.deadline.raw_data))
         if not form.validate():
-            return render_template('createround.html', cb=cb, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+            return render_template('createround.html', cb=cb, form=form,
+                                   icon=getUserIcon((session['username']\
+                                    if 'username' in session else None)))
 
         newRound = Round(cb, form.theme.data, form.deadline.data)
         db.session.add(newRound)
@@ -728,10 +794,16 @@ def createRound(cb=None):
         return redirect(url_for('chorusEntries', cb=cb))
 
     elif request.method == 'GET':
-        return render_template('createround.html', cb=cb, form=form, icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template('createround.html', cb=cb, form=form,
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
 
 @app.route('/community/', methods=['GET'])
 def viewCommunity():
+    """
+    The route '/community/' directs the user to the community page
+    where teams and other users can be viewed.
+    """
     users = User.query.order_by(func.random()).limit(20).all()
     user_icons = []
     for user in users:
@@ -751,10 +823,12 @@ def viewCommunity():
             team_icons.append(None)
         team_chorusbattles.append(ChorusBattle.query.filter_by(id=team.chorusbattle).first().name)
     print(users, teams)
-    return render_template('community.html', users=users, user_icons=user_icons, teams=teams, team_chorusbattles=team_chorusbattles, \
-        team_icons=team_icons, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template('community.html', users=users, user_icons=user_icons,
+                           teams=teams, team_chorusbattles=team_chorusbattles,\
+                           team_icons=team_icons,
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
-# work in progress
 @app.route('/user/<username>/', methods=['GET', 'POST'])
 def getUserProfile(username=None):
     """
@@ -773,7 +847,8 @@ def getUserProfile(username=None):
                     flash('You have successfully changed your description')
                 db.session.commit()
             return redirect(url_for('getUserProfile', username=username))
-        teamQuery = db.session.query(user_teams).filter_by(user_id=row.id, member_status='member').all()
+        teamQuery = db.session.query(user_teams).filter_by(user_id=row.id,
+                                                           member_status='member').all()
         teams = []
         for team in teamQuery:
             t = Team.query.filter_by(id=team.team_id).first()
@@ -785,7 +860,10 @@ def getUserProfile(username=None):
                 'chorusbattle': team_chorusbattle
                 })
 
-        return render_template("userprofile.html", user=row, teams=teams, role=row.get_role(), user_icon=getUserIcon(username), icon=getUserIcon((session['username'] if 'username' in session else None)))
+        return render_template("userprofile.html", user=row, teams=teams,
+                               role=row.get_role(), user_icon=getUserIcon(username),
+                               icon=getUserIcon((session['username']\
+                                if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
 
@@ -797,10 +875,12 @@ def faq():
     page. This page contains the user documentation which will assist the
     end users who are using the app.
     """
-    return render_template("faq.html", icon=getUserIcon((session['username'] if 'username' in session else None)))
+    return render_template("faq.html",
+                           icon=getUserIcon((session['username']\
+                            if 'username' in session else None)))
 
 def getUserIcon(username):
-    """ 
+    """
     This function grabs the user_icon from db based on queried username.
     """
     if not username:
@@ -808,16 +888,21 @@ def getUserIcon(username):
     user_icon = User.query.filter_by(username=username).first().user_icon
     if user_icon:
         user_icon = b64encode(user_icon).decode('utf-8')
-    return user_icon    
+    return user_icon
 
 @app.route("/search/", methods=["GET", "POST"])
 def search():
+    """
+    The route '/search/' directs the user to a list of users, chorus battles,
+    and teams that fit the given query.
+    """
     resultsUsers = []
     resultsCB = []
     resultsTeams = []
     if request.method == "POST":
         if request.form["search"] == "":
-            return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
+            return render_template("searchresult.html", resultsUsers=resultsUsers,
+                                   resultsCB=resultsCB, resultsTeams=resultsTeams)
         else:
             for user in User.query.all():
                 if request.form["search"].lower() in user.username.lower():
@@ -839,4 +924,5 @@ def search():
                     teamInfo.append(team.team_name)
                     teamInfo.append(team.about)
                     resultsTeams.append(teamInfo)
-        return render_template("searchresult.html", resultsUsers=resultsUsers, resultsCB=resultsCB, resultsTeams=resultsTeams)
+        return render_template("searchresult.html", resultsUsers=resultsUsers,
+                               resultsCB=resultsCB, resultsTeams=resultsTeams)

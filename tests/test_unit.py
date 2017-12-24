@@ -6,18 +6,19 @@ our app works as intended.
 #note: comment out garbage in __init__ py to run pytest without other errors
 
 # pylint: disable=C0103
+# pylint: disable=unused-variable
 
 import unittest
 from unittest.mock import patch, DEFAULT, Mock
-import cbapp
 import os.path as op
 import os
+import cbapp
 from flask_testing import TestCase
 import flask # for test_request_context
 
 class TestCBAppUnitFilesExist(unittest.TestCase):
     """Class of unit tests for the chorus battle app that checks if files exist."""
-    
+
     def setUp(self):
         """ Set up class for testing. """
         cbapp.app.config['TESTING'] = True
@@ -272,7 +273,7 @@ class TestCBAppUnitFilesExist(unittest.TestCase):
 
 class TestCBAppUnitRoutesExist(unittest.TestCase):
     """Class of unit tests for the chorus battle app that checks if routes exist."""
-    
+
     def setUp(self):
         """ Set up class for testing. """
         cbapp.app.config['TESTING'] = True
@@ -359,7 +360,8 @@ class TestCBAppUnitRoutesExist(unittest.TestCase):
                 self.assertEqual(file_name, "login.html")
 
     def test_signup_get_signup_template(self):
-        """Checks if the signup route exists when the request method is GET. The test passes if it does.
+        """Checks if the signup route exists when the request method is GET.
+        The test passes if it does.
         The user can't already be logged in."""
         with cbapp.app.test_request_context('/signup/', method='GET'):
             self.assertEqual(flask.request.path, '/signup/')
@@ -409,7 +411,7 @@ class TestCBAppUnitRoutesExist(unittest.TestCase):
                 call_args = render_template.call_args
                 file_name = call_args[0][0]
                 self.assertEqual(file_name, "signup.html")
-    
+
     def test_home_redirect_login_template(self):
         """Checks if the home route redirects the user to login when the user is not logged in.
         The test passes if it does."""
@@ -595,13 +597,10 @@ class TestCBAppUnitRoutesExist(unittest.TestCase):
     #         file_name = call_args[0][0]
     #         self.assertEqual(file_name, "faq.html")
 
-
 class TestCBAppUnitModels(unittest.TestCase):
     """Class of unit tests for the chorus battle app that checks models work."""
-    
+
     def setUp(self):
         """ Set up class for testing. """
         cbapp.app.config['TESTING'] = True
         self.app = cbapp.app.test_client()
-
-
