@@ -133,11 +133,32 @@ def home():
                 'userID': team_request.user_id,
                 'username': User.query.filter_by(id=team_request.user_id).first().username
                 })
-    print(team_requests)
+    # print(team_requests)
     # get 10 most recent notifications
     notif = Notification.get_notifications(user.id).paginate(1,5,False).items
     subs = db.session.query(subscriptions).filter_by(user_id=User.get_id_by_username(session['username'])).all()
     sub_cbs = []
+
+    # get the teams the user is associated with 
+    team_cbs=db.session.query(user_teams).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    judge_cbs = db.session.query(judges).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    my_cbs_id = []
+    my_cbs = []
+    print("team_cbs", team_cbs)
+    for judge in judge_cbs:
+        # print("judge is", judge)
+        if judge["chorusbattle_id"] not in my_cbs_id:
+            my_cbs_id.append(judge["chorusbattle_id"])
+
+    for team in team_cbs:
+        # get the teams the user is in
+        current_team = Team.query.filter_by(id=team[1]).first()
+        print(current_team)
+        # get the associated cb with the team
+        if current_team.chorusbattle not in my_cbs_id:
+            my_cbs_id.append(current_team.chorusbattle)
+
+    print(my_cbs_id)
     for sub in subs:
         cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
         temp = {}
@@ -145,7 +166,17 @@ def home():
         temp['id'] = cb.id
 
         sub_cbs.append(temp)
-    return render_template('home.html', notifications=notif, subs=sub_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+    for cbid in my_cbs_id:
+        cb = ChorusBattle.query.filter_by(id=cbid).first()
+        temp = {}
+        temp['name'] = cb.name
+        temp['id'] = cb.id
+
+        my_cbs.append(temp)
+
+    recs = ChorusBattle.query.order_by(func.random()).limit(3).all()
+    print(recs)
+    return render_template('home.html', recs=recs, notifications=notif, subs=sub_cbs, my_cbs=my_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/home/notifications/')
 @app.route('/home/notifications/<int:page>')
