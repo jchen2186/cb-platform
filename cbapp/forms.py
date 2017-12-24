@@ -2,46 +2,45 @@
 This module contains the structure of all of the forms used on the app.
 """
 
+from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
-from wtforms import TextAreaField, DateTimeField, IntegerField, FileField, ValidationError, FieldList
+from wtforms import TextAreaField, DateTimeField, IntegerField, FileField,\
+ValidationError, FieldList
 from wtforms.validators import DataRequired, Email, Length
 from .models import User, ChorusBattle
-from datetime import datetime
 
 """
 Custom Validators
 """
 def validate_username(form, field):
     """
-    Checks whether username is unique. If is not
-    unique, it will raise a validation error.
+    Checks whether username is unique.
+    If is not unique, it will raise a validation error.
     """
     if not User.is_username_unique(field.data):
         raise ValidationError('Username is taken. Please try another username.')
 
 def validate_email(form, field):
     """
-    Checks whether email is unique. If it is not
-    unique, it will raise a validation error.
+    Checks whether email is unique.
+    If it is not unique, it will raise a validation error.
     """
     if not User.is_email_unique(field.data):
         raise ValidationError('There already exists an account with this email.')
 
 def validate_username_exists(form, field):
     """
-    Checks whether a username exists. If it 
-    does not exist, it will raise a validation
-    error.
+    Checks whether a username exists.
+    If it does not exist, it will raise a validation error.
     """
     if User.is_username_unique(field.data):
         raise ValidationError('This username does not exist.')
 
 def validate_judge(form, field):
     """
-    Checks whether a user is a judge. If the 
-    user is not a judge, it will raise a
-    validation error.
+    Checks whether a user is a judge.
+    If the user is not a judge, it will raise a validation error.
     """
     if User.is_username_unique(field.data):
         # If username is not in the users table, raise an error
@@ -100,7 +99,9 @@ class CreateTeamForm(FlaskForm):
     """
     team_name = StringField('Name of Team', validators=[
         DataRequired('Please enter a name for your team.')])
-    members = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a member'), validate_username_exists])
+    members = FieldList(StringField('Username'), min_entries=1,
+                        validators=[DataRequired('Please enter a member'),
+                                    validate_username_exists])
     teampic = FileField('Team Logo (Optional)')
     submit = SubmitField('Create Team')
 
@@ -114,7 +115,8 @@ class CreateChorusBattleForm(FlaskForm):
         DataRequired('Please provide a brief description of your chorus battle.')])
     # it would be nice if there was a stringfield for each separate rule
     # and the user is able to add a stringfield by clicking a button if more rules are needed
-    judges = FieldList(StringField('Username'), min_entries=1, validators=[DataRequired('Please enter a judge'), validate_judge])
+    judges = FieldList(StringField('Username'), min_entries=1,
+                       validators=[DataRequired('Please enter a judge'), validate_judge])
     rules = TextAreaField('List of Rules', validators=[
         DataRequired('Please provide a list of rules.')])
     prizes = TextAreaField('Prizes', validators=[
@@ -122,7 +124,9 @@ class CreateChorusBattleForm(FlaskForm):
     video_link = StringField('Link to the Chorus Battle Introduction Video')
     no_of_rounds = StringField('Number of Rounds', validators=[
         DataRequired('Please enter the number of rounds.')])
-    start_date = DateTimeField('Start Date/Time', default=datetime.now, format="%Y-%m-%dT%H:%M", validators=[DataRequired('Please enter a start date and time.')])
+    start_date = DateTimeField('Start Date/Time', default=datetime.now,
+                               format="%Y-%m-%dT%H:%M",
+                               validators=[DataRequired('Please enter a start date and time.')])
     submit = SubmitField('Create Chorus Battle')
 
 class CreateRoundForm(FlaskForm):
@@ -166,16 +170,16 @@ class JudgeEntryForm(FlaskForm):
     """
 
     # Each category will be graded on a scale of 1 to 10
-    grades =   [(1, '1'),
-                (2, '2'),
-                (3, '3'),
-                (4, '4'),
-                (5, '5'),
-                (6, '6'),
-                (7, '7'),
-                (8, '8'),
-                (9, '9'),
-                (10, '10')]
+    grades = [(1, '1'),
+              (2, '2'),
+              (3, '3'),
+              (4, '4'),
+              (5, '5'),
+              (6, '6'),
+              (7, '7'),
+              (8, '8'),
+              (9, '9'),
+              (10, '10')]
 
     # The judges can select the scores for vocals, instrumental, art, editing, and transitions.
     vocals = SelectField('Vocals', coerce=int, choices=grades, validators=[
