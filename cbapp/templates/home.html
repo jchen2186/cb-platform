@@ -51,6 +51,8 @@
                 <span class="tag"><a href="{{ url_for('chorusInfo', cb=sub.id )}}">{{sub.name}}</a></span>
                 {% endfor %}
               </div>
+              {% else %}
+              <p>You are not subscribed to any chorus battles.</p>
             {% endif %}
               <br>
               <div class="button">See All</div>
