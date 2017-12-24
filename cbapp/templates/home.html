@@ -102,43 +102,21 @@
 
         <div class="notification is-info">
           <h2 class="title is-4">Check out these chorus battles!</h2>
+          {% for rec in recs %}
           <article class="media">
-            <figure class="media-left">
-             <p class="image is-64x64">
-              <img src="https://bulma.io/images/placeholders/128x128.png">
-            </p>
-            </figure>
             <div class="media-content">
               <div class="content">
                 <p>
-                  <strong>Acension</strong> 
+                  <a href="{{ url_for('chorusInfo', cb=rec.id )}}"><strong>{{ rec.name }}</strong></a>
                   <br>
-                  Each level, teams will be given themes to help guide their entries, but otherwise, teams are encouraged to be as creative as possible with what they are given. After each level, there will be a period of time for the judges to review and score entries based on a selection of categories. Scores will be tallied up, and groups will be ranked based on their overall scores for each individual level. Groups with the highest ranked scores will progress to further levels.
+                  {{ rec.description }}
                   <br>
-                  <small>Sign-up ends: 1/1/18</small>
+                  <small>Sign-up ends: {{ rec.start_date }}</small>
                 </p>
               </div>
             </div>
-        	</article>
-        	<hr>
-          <article class="media">
-            <figure class="media-left">
-             <p class="image is-64x64">
-              <img src="https://bulma.io/images/placeholders/128x128.png">
-            </p>
-            </figure>
-            <div class="media-content">
-              <div class="content">
-                <p>
-                  <strong>Rank 1</strong> 
-                  <br>
-                  Prove your worth in this legendary competition to show that you are deserving of the title "Rank 1" in the Chorus Battle community.
-                  <br>
-                  <small>Sign-up ends: 1/1/18</small>
-                </p>
-              </div>
-            </div>
-        	</article>          	
+        	</article>   
+          {% endfor %}     	
 
         </div>
        

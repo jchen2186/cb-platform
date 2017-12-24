@@ -173,7 +173,10 @@ def home():
         temp['id'] = cb.id
 
         my_cbs.append(temp)
-    return render_template('home.html', notifications=notif, subs=sub_cbs, my_cbs=my_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
+
+    recs = ChorusBattle.query.order_by(func.random()).limit(3).all()
+    print(recs)
+    return render_template('home.html', recs=recs, notifications=notif, subs=sub_cbs, my_cbs=my_cbs, team_requests=team_requests, team_invites=team_invites, icon=getUserIcon((session['username'] if 'username' in session else None)))
 
 @app.route('/home/notifications/')
 @app.route('/home/notifications/<int:page>')
