@@ -250,8 +250,9 @@ def chorusInfo(cb=None):
         judges_list.append(temp)
 
     cb_judges = []
-    for judge in judges_query:
-        cb_judges.append(User.query.filter_by(id=judge.judge_id).first())
+    if len(judges_query) > 0:
+        for judge in judges_query:
+                user = User.query.filter_by(id=judge.user_id).first()
 
     if row:
         subbed = False
