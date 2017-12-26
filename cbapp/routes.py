@@ -147,15 +147,16 @@ def home():
     sub_cbs = []
 
     # get the teams the user is associated with
+
     team_cbs=db.session.query(user_teams).filter_by(user_id=User.get_id_by_username(session['username'])).all()
-    judge_cbs = db.session.query(judges).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    judge_cbs = db.session.query(User).join(judges).join(ChorusBattle).filter_by(id=User.get_id_by_username(session['username'])).all()
     my_cbs_id = []
     my_cbs = []
     print("team_cbs", team_cbs)
     for judge in judge_cbs:
-        # print("judge is", judge)
-        if judge["chorusbattle_id"] not in my_cbs_id:
-            my_cbs_id.append(judge["chorusbattle_id"])
+        print("judge is", judge)
+        if judge[0] not in my_cbs_id:
+            my_cbs_id.append(judge[0])
 
     for team in team_cbs:
         # get the teams the user is in
@@ -168,18 +169,26 @@ def home():
     print(my_cbs_id)
     for sub in subs:
         cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
-        temp = {}
-        temp['name'] = cb.name
-        temp['id'] = cb.id
+        if cb:
+            temp = {}
+            temp['name'] = cb.name
+            temp['id'] = cb.id
+            sub_cbs.append(temp)
+        
+        
 
-        sub_cbs.append(temp)
+        
     for cbid in my_cbs_id:
         cb = ChorusBattle.query.filter_by(id=cbid).first()
-        temp = {}
-        temp['name'] = cb.name
-        temp['id'] = cb.id
+        if cb:
+            temp = {}
+            temp['name'] = cb.name
+            temp['id'] = cb.id
+            my_cbs.append(temp)
+        
+        
 
-        my_cbs.append(temp)
+       
 
     recs = ChorusBattle.query.order_by(func.random()).limit(3).all()
     print(recs)
