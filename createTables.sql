@@ -67,6 +67,7 @@ CREATE TABLE rounds (
 	theme VARCHAR(500),
 	deadline TIMESTAMP WITH TIMEZONE,
 	round_number INTEGER,
+	winner INTEGER REFERENCES teams(id),
 	PRIMARY KEY (id),
 	CONSTRAINT chorusbattle_id FOREIGN KEY(chorusbattle) REFERENCES chorusbattles(id)
 );
@@ -138,3 +139,9 @@ CREATE TABLE cb_users (
 	chorusbattle_id INTEGER REFERENCES chorusbattles(id),
 	PRIMARY KEY (user_id, chorusbattle_id)
 );
+
+ALTER TABLE chorusbattles 
+	ADD COLUMN winner INTEGER REFERENCES teams(id);
+
+ALTER TABLE rounds 
+	ADD COLUMN winner INTEGER REFERENCES teams(id);

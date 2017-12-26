@@ -69,13 +69,21 @@
         </div>
         <div class="notification" id="about">
           <h2 class="title is-4">About {% if currentUser == team.leader_id %}<button class="button is-small is-info" onclick="editAbout()">Edit</button>{% endif %}</h2>
-          <p class="content" id="aboutText">{{ team.about.replace('\r\n', '<br />\n') | safe }}</p>
+          <p class="content" id="aboutText">
+            {% if team.about %}
+            {{ team.about.replace('\r\n', '<br />\n') | safe }}
+            {% endif %}
+          </p>
         </div>
       </div>
       <div class="column is-one-third">
         <div class="notification" id="looking-roles">
           <h2 class="title is-4">Open Roles {% if currentUser == team.leader_id %}<button class="button is-small is-info" onclick="editOpenRoles()">Edit</button>{% endif %}</h2>
-          <p class="content" id="open_roles">{{ team.open_roles.replace('\r\n', '<br />\n') | safe }}</p>
+          <p class="content" id="open_roles">
+            {% if team.open_roles %}
+            {{ team.open_roles.replace('\r\n', '<br />\n') | safe }}
+            {% endif %}
+          </p>
         </div>
         <div class="notification" id="current-members">
           <h2 class="title is-4">Current Members</h2>
@@ -103,7 +111,9 @@
 function editOpenRoles() {
   let status = document.getElementById('open_roles');
   if (status.classList.contains('is-active')) {
-    status.innerHTML = `{{ team.open_roles.replace('\r\n', '<br />\n') | safe }}`;
+    status.innerHTML = `{% if team.open_roles %}
+                        {{ team.open_roles.replace('\r\n', '<br />\n') | safe }}
+                        {% endif %}`;
     status.classList.remove('is-active');
   } else {
     status.innerHTML = `
@@ -124,7 +134,9 @@ function editOpenRoles() {
   function editAbout() {
   let about = document.getElementById('aboutText');
   if (about.classList.contains('is-active')) {
-    about.innerHTML = `{{ team.about.replace('\r\n', '<br />\n') | safe }}`;
+    about.innerHTML = `{% if team.about %}
+                      {{ team.about.replace('\r\n', '<br />\n') | safe }}
+                      {% endif %}`;
     about.classList.remove('is-active');
   } else {
     about.innerHTML = `

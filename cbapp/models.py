@@ -303,7 +303,7 @@ class User(db.Model):
         Returns:
           int: the id of the user
         """
-        user_id = db.session.query(User.id).filter(User.username == username)
+        user_id = db.session.query(User.id).filter(User.username == username).first()[0]
         return user_id
 
     @staticmethod
@@ -342,7 +342,6 @@ class ChorusBattle(db.Model):
     rounds = db.relationship('Round') #: Rounds in the chorus battle.
     judges = db.relationship('User', secondary='judges')
     subscribers = db.relationship("User", secondary='subscriptions', backref="subbed_cbs")
-
     def __init__(self, name, description, rules, prizes, video_link, start_date, no_of_rounds, creator_id):
         self.name = name
         self.description = description
@@ -371,6 +370,14 @@ class ChorusBattle(db.Model):
         """
         self.description = description
 
+    def set_winner(self, winner_id):
+        """
+        Sets the winner for a chorus battle.
+        
+        Args:
+            winner_id(int): the id of the winning team
+        """
+        self.winner = winner_id
 
     @staticmethod
     def get_chorus_battle_name(id):
@@ -378,13 +385,26 @@ class ChorusBattle(db.Model):
         Gets the chorus battle name for a chorus battle given the id.
 
         Args:
-          id(int): The id of the chorus battle
+            id(int): The id of the chorus battle
             
         Returns:
-          str: The name of the chorus battle
+            str: The name of the chorus battle
         """
         cb_name = db.session.query(ChorusBattle.name).filter(ChorusBattle.id == id)
         return cb_name
+
+    @staticmethod
+    def choose_winner(chorusbattle_id, team_id):
+        """
+        Chooses the winner of a particular chorus battle.
+
+        Args:
+          chorusbattle_id(int): The id of the chorus battle
+          team_id(int): THe id of the team
+        """
+        selected_chorusbattle = db.session.query(ChorusBattle).filter_by(id = chorusbattle_id)
+        selected_chorusbattle.set_winner(team_id)
+
 
 class UserRole(db.Model):
     """
@@ -430,6 +450,10 @@ class Entry(db.Model):
         self.chorusbattle = chorusid
         self.round_number = round_number
 
+    @staticmethod
+    def get_entries_for_round(round_id):
+        return db.session.query(Entry).filter_by(round_number=round_id).all()
+
 class Round(db.Model):
     """ 
     Model to store the rounds of a chorus battle. It contains information about the round.
@@ -440,12 +464,48 @@ class Round(db.Model):
     theme = db.Column(db.String(500)) #: User-inputted theme for the round of the chorus battle.
     deadline = db.Column(db.DateTime(timezone=True)) #: Deadline for the submissions of the round.
     round_number = db.Column(db.Integer) #: Round number to show the progression of the chorus battle.
+    winner = db.Column(db.Integer,db.ForeignKey('teams.id'))
 
     def __init__(self, chorusbattle, theme, deadline):
         self.chorusbattle = chorusbattle
         self.theme = theme
         self.deadline = deadline
         self.round_number = db.session.query(Round.round_number).filter_by(chorusbattle=chorusbattle).count() + 1
+
+    def set_winner(self, winner_id):
+        """
+        Sets the winner for a round of a chorus battle.
+        
+        Args:
+            winner_id(int): the id of the winning team
+        """
+        self.winner = winner_id
+
+    @staticmethod
+    def choose_winner(round_id, team_id):
+        """
+        Chooses the winner of a particular round.
+
+        Args:
+          round_id(int): The id of the round
+          team_id(int): THe id of the team
+        """
+        selected_round = db.session.query(Round).filter_by(id = round_id).first()
+        selected_round.set_winner(team_id)
+
+    @staticmethod
+    def has_winner(round_id):
+        """
+        Returns whether a round has a winner.
+
+        Returns:
+            bool: True if round has winner, False if it does not.
+        """
+        round_winner = db.session.query(Round.winner).filter_by(id = round_id).first()
+        if round_winner:
+            return True
+        else:
+            return False
 
 class Team(db.Model):
     """

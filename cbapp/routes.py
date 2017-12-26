@@ -4,6 +4,7 @@ This module contains the routes that allows flask to help navigate the
 user to the templates.
 """
 
+
 import os
 import urllib.parse
 import copy
@@ -146,15 +147,16 @@ def home():
     sub_cbs = []
 
     # get the teams the user is associated with
+
     team_cbs=db.session.query(user_teams).filter_by(user_id=User.get_id_by_username(session['username'])).all()
-    judge_cbs = db.session.query(judges).filter_by(user_id=User.get_id_by_username(session['username'])).all()
+    judge_cbs = db.session.query(User).join(judges).join(ChorusBattle).filter_by(id=User.get_id_by_username(session['username'])).all()
     my_cbs_id = []
     my_cbs = []
     print("team_cbs", team_cbs)
     for judge in judge_cbs:
-        # print("judge is", judge)
-        if judge["chorusbattle_id"] not in my_cbs_id:
-            my_cbs_id.append(judge["chorusbattle_id"])
+        print("judge is", judge)
+        if judge[0] not in my_cbs_id:
+            my_cbs_id.append(judge[0])
 
     for team in team_cbs:
         # get the teams the user is in
@@ -167,18 +169,26 @@ def home():
     print(my_cbs_id)
     for sub in subs:
         cb = ChorusBattle.query.filter_by(id=sub.chorusbattle_id).first()
-        temp = {}
-        temp['name'] = cb.name
-        temp['id'] = cb.id
+        if cb:
+            temp = {}
+            temp['name'] = cb.name
+            temp['id'] = cb.id
+            sub_cbs.append(temp)
+        
+        
 
-        sub_cbs.append(temp)
+        
     for cbid in my_cbs_id:
         cb = ChorusBattle.query.filter_by(id=cbid).first()
-        temp = {}
-        temp['name'] = cb.name
-        temp['id'] = cb.id
+        if cb:
+            temp = {}
+            temp['name'] = cb.name
+            temp['id'] = cb.id
+            my_cbs.append(temp)
+        
+        
 
-        my_cbs.append(temp)
+       
 
     recs = ChorusBattle.query.order_by(func.random()).limit(3).all()
     print(recs)
@@ -209,8 +219,11 @@ def chorusInfo(cb=None):
     as the variable cb.
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
+    if row == None:
+        return redirect(url_for('chorusBattleAll'))
+
     teams_query = Team.query.filter_by(chorusbattle=cb).all()
-    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb)
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
     teams = []
     judges_list = []
 
@@ -238,6 +251,11 @@ def chorusInfo(cb=None):
         temp['name'] = User.query.filter_by(id=judge.user_id).first().username
 
         judges_list.append(temp)
+
+    cb_judges = []
+    if len(judges_query) > 0:
+        for judge in judges_query:
+                user = User.query.filter_by(id=judge.user_id).first()
 
     if row:
         subbed = False
@@ -691,7 +709,15 @@ def writeNotification(cb=None):
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # make sure to check the judge is a valid judge for this cb!
+    # check if judge is a valid judge for this cb
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
+    current_user_id = User.get_user_id(session['username'])
+    judges_list = []
+    for judge in judges_query:
+        judges_list.append(judge.user_id)
+    if current_user_id not in judges_list:
+        return redirect(url_for('chorusInfo',cb=cb))
+
     form = NotificationForm()
 
     if request.method == "GET":
@@ -721,6 +747,15 @@ def judgeEntry(cb=None, entry=None):
         return redirect(url_for('home'))
     if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
+
+    # check if judge is a valid judge for this cb
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
+    current_user_id = User.get_user_id(session['username'])
+    judges_list = []
+    for judge in judges_query:
+        judges_list.append(judge.user_id)
+    if current_user_id not in judges_list:
+        return redirect(url_for('chorusInfo',cb=cb))
 
     judge_id = User.get_user_id(session['username'])
     form = JudgeEntryForm()
@@ -866,6 +901,38 @@ def getUserProfile(username=None):
                                 if 'username' in session else None)))
     return redirect(request.referrer or url_for('index'))
     # return render_template("userprofile.html")
+
+@app.route('/chorusbattle/<cb>/round/<round_number>', methods=['GET', 'POST'])
+def chorusRound(cb=None,round_number=None):
+    """
+    The route '/chorusbattle/<cb>/round/<round_number>' directs a judge to a page
+    for a round where they can choose a winner
+    """
+    # If user is not a judge, redirect them out of the page
+    if 'username' not in session:
+        return redirect(url_for('login'))
+    if session['role'] != 'Judge':
+        return redirect(url_for('chorusInfo', cb=cb))
+    round_id = db.session.query(Round.id).filter_by(chorusbattle=cb).first()
+    round_info = db.session.query(Round).filter_by(id=round_id).first() 
+    form = ChooseRoundWinnerForm()
+    if request.method == 'GET':
+        return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
+    else:
+        if form.validate():
+            winning_team_id = db.session.query(Team.id).filter_by(team_name=form.winning_entry.data).first()
+            if winning_team_id:
+                Round.choose_winner(round_id,winning_team_id)
+                db.session.commit()
+                return redirect(url_for('chorusInfo', cb=cb))
+            else:
+                flash('Invalid team name.')
+                return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
+        else:
+            return render_template('chorusRound.html',cb=cb, round_number=round_number, round=round_id, form=form)
+
+
+
 
 
 @app.route('/help/faq/', methods=['GET'])

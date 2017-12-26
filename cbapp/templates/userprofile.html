@@ -33,7 +33,10 @@
             <div class="notification">
               <h2 class="title is-4">About {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editDescription()">Edit</button>{% endif %}</h2>
               <div class="" id="description">
+                {% if user.description %}
                 {{ user.description.replace('\r\n', '<br />\n') | safe}}
+                {% endif %}
+                
               </div>
             </div>
 
@@ -63,7 +66,9 @@
               <h2 class="title is-4">Current Status {% if session['username'] == user.username %}<button class="button is-small is-info" onclick="editCurrentStatus()">Edit</button>{% endif %}</h2>
 
               <div class="content" id="current_status">
+                {% if user.current_status %}
                 {{ user.current_status.replace('\r\n', '<br />\n') | safe }}
+                {% endif %}
               </div>
             </div>
           </div>
@@ -75,7 +80,9 @@
   function editDescription() {
     let description = document.getElementById('description');
     if (description.classList.contains('is-active')) {
-      description.innerHTML = `{{ user.description.replace('\r\n', '<br />\n') | safe }}`;
+      description.innerHTML = `{% if user.description %}
+                {{ user.description.replace('\r\n', '<br />\n') | safe}}
+                {% endif %}`;
       description.classList.remove('is-active');
     } else {
       description.innerHTML = `
@@ -96,7 +103,9 @@
   function editCurrentStatus() {
     let status = document.getElementById('current_status');
     if (status.classList.contains('is-active')) {
-      status.innerHTML = `{{ user.current_status.replace('\r\n', '<br />\n') | safe }}`;
+      status.innerHTML = `{% if user.current_status %}
+                {{ user.current_status.replace('\r\n', '<br />\n') | safe }}
+                {% endif %}`;
       status.classList.remove('is-active');
     } else {
       status.innerHTML = `

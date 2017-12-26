@@ -25,7 +25,7 @@
 {% for round in rounds %}
 <div class="container">
   <div class="columns">
-    <div class="column is-8"></div>
+    <div class="column is-4"></div>
     <div class="column is-4">
 
       <div class="notification">
@@ -47,14 +47,15 @@
 	<div class="media-content">
     <div class="columns">
   		<div class="content column is-half">
-  			<h2> {{entry.title }} </h2>
+  			<h2> {{ entry.title }} </h2>
           {% if session['role'] == 'Judge' %}
-            <a class="button is-info" href="/chorusbattle/{{ cb.id }}/entries/{{ entry.id }}/judge"><span>Judge</span></a>
+            <p><a class="button is-info" href="/chorusbattle/{{ cb.id }}/entries/{{ entry.id }}/judge"><span>Judge</span></a></p>
           {% endif %}
   			<p> {{ entry.owners }} </p>
   			<p> {{ entry.description }} </p>
+        <iframe class="entryVideo" width="560" height="315" src="{{ entry.video_link }}" frameborder="0" allowfullscreen></iframe>
       </div>
-      <iframe class="entryVideo" width="560" height="315" src="{{ entry.video_link }}" frameborder="0" allowfullscreen></iframe>
+      
 		</div>
 	</div>
   </article>
