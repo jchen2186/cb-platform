@@ -219,6 +219,9 @@ def chorusInfo(cb=None):
     as the variable cb.
     """
     row = ChorusBattle.query.filter_by(id=cb).first()
+    if row == None:
+        return redirect(url_for('chorusBattleAll'))
+
     teams_query = Team.query.filter_by(chorusbattle=cb).all()
     judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
     teams = []
@@ -706,7 +709,15 @@ def writeNotification(cb=None):
     if 'username' not in session:
         return redirect(url_for('login'))
 
-    # make sure to check the judge is a valid judge for this cb!
+    # check if judge is a valid judge for this cb
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
+    current_user_id = User.get_user_id(session['username'])
+    judges_list = []
+    for judge in judges_query:
+        judges_list.append(judge.user_id)
+    if current_user_id not in judges_list:
+        return redirect(url_for('chorusInfo',cb=cb))
+
     form = NotificationForm()
 
     if request.method == "GET":
@@ -736,6 +747,15 @@ def judgeEntry(cb=None, entry=None):
         return redirect(url_for('home'))
     if session['role'] != 'Judge':
         return redirect(url_for('chorusInfo', cb=cb))
+
+    # check if judge is a valid judge for this cb
+    judges_query = db.session.query(judges).filter_by(chorusbattle_id=cb).all()
+    current_user_id = User.get_user_id(session['username'])
+    judges_list = []
+    for judge in judges_query:
+        judges_list.append(judge.user_id)
+    if current_user_id not in judges_list:
+        return redirect(url_for('chorusInfo',cb=cb))
 
     judge_id = User.get_user_id(session['username'])
     form = JudgeEntryForm()

@@ -303,7 +303,7 @@ class User(db.Model):
         Returns:
           int: the id of the user
         """
-        user_id = db.session.query(User.id).filter(User.username == username)
+        user_id = db.session.query(User.id).filter(User.username == username).first()[0]
         return user_id
 
     @staticmethod
