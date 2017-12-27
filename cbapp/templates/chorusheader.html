@@ -44,16 +44,14 @@
         <div class="level-item">
           <a class="button is-primary" href=
           {% if "entries" in request.path %}
-            "/chorusbattle/{{ cb.id }}
+            "/chorusbattle/{{ cb.id }}"
           {% else %}
-            "/chorusbattle/{{ cb.id }}/entries"
+            "/chorusbattle/{{ cb.id }}/entries">
           {% endif %}
-           >   <span>Entries</span>
+              <span>Entries</span>
           </a>
         </div>
-      </div> 
-
-        <!-- level-left -->
+      </div> <!-- level-left -->
     </div> <!-- level -->
   </div> <!-- container -->
 </section>
