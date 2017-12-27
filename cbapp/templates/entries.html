@@ -17,9 +17,11 @@
     {% for i in range(1, roundCount+1) %}
       <li class="round-tabs"><a onclick="changeTab(event,{{ i }})">Round {{ i }}</a></li>
     {% endfor %}
+    {% if maxRound %}
     {% for i in range(roundCount+1, maxRound) %}
       <li class="round-tabs"><a disabled>Round {{ i }}</a></li>
     {% endfor %}
+    {% endif %}
   </ul>
 </div>
 {% for round in rounds %}
