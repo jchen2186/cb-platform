@@ -430,18 +430,20 @@ def createTeam(cb=None):
      will allow them to create a team
     """
     deadline = ChorusBattle.query.filter_by(id=cb).first().start_date
-    if datetime.datetime.now() > deadline:
-        print(datetime.datetime.now(), '>', deadline)
-        print(type(datetime.datetime.now()), '>', type(deadline))
-        flash('Sorry, the deadline for joining this chorus battle has passed.')
-        return redirect(request.referrer or url_for('chorusInfo', cb=cb))
+    if deadline:
+        if datetime.datetime.now() > deadline:
+            print(datetime.datetime.now(), '>', deadline)
+            print(type(datetime.datetime.now()), '>', type(deadline))
+            flash('Sorry, the deadline for joining this chorus battle has passed.')
+            return redirect(request.referrer or url_for('chorusInfo', cb=cb))
     chorusrow = ChorusBattle.query.filter_by(id=cb).first()
     leader = User.query.filter_by(username=session['username']).first()
     # check if leader already created another team
-    for team in chorusrow.teams:
-        if team.leader_id == leader.id:
-            flash('You already lead a team in this chorus battle.')
-            return redirect(url_for('chorusInfo', cb=cb))
+    if chorusrow.teams:
+        for team in chorusrow.teams:
+            if team.leader_id == leader.id:
+                flash('You already lead a team in this chorus battle.')
+                return redirect(url_for('chorusInfo', cb=cb))
 
     form = CreateTeamForm()
     if request.method == 'POST':
